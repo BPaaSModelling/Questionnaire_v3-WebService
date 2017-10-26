@@ -208,7 +208,7 @@ public class Insert {
 		ParameterizedSparqlString querStr = new ParameterizedSparqlString();
 		
 		querStr.append("INSERT DATA{");
-		querStr.append("bpaas:CloudService" + "CloudService"+id  +" rdf:type bpaas:CloudService ;");
+		querStr.append("bdata:CloudService" + "CloudService"+id  +" rdf:type bpaas:CloudService ;");
 		System.out.println("    CloudService ID: "+ "CloudService"+id);
 		querStr.append("rdfs:label \"" + csm.getLabel() +"\" ;");
 		System.out.println("    CloudService Label: "+ csm.getLabel());
