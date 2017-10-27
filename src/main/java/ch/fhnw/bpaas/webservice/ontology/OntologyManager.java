@@ -2,6 +2,7 @@ package ch.fhnw.bpaas.webservice.ontology;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.List;
@@ -155,10 +156,31 @@ public final class OntologyManager {
 	}
 
 	public void insertQuery(ParameterizedSparqlString queryStr) {
+		boolean online = false;
+		if (online){
 		addNamespacesToQuery(queryStr);
 		UpdateRequest update = UpdateFactory.create(queryStr.toString());
 		UpdateProcessor up = UpdateExecutionFactory.createRemote(update, UPDATEENDPOINT);
 		up.execute();
+		} else {
+			addNamespacesToQuery(queryStr);
+			Model temp1 = ModelFactory.createOntologyModel();
+			Model temp2 = ModelFactory.createOntologyModel();
+			temp1.read("bdata.ttl", "TTL");
+			UpdateAction.parseExecute(queryStr.toString(), temp2);
+			temp1.add(temp2);
+			
+			String fileName = "CloudService_Inserted.ttl";
+			FileWriter out;
+			try {
+				out = new FileWriter( fileName );
+				temp1.write(out, "TTL");
+				out.close();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}	
+		}
 	}
 
 	public static String getREADENDPOINT() {
