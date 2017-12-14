@@ -32,6 +32,8 @@ public class GlobalVariables {
 	public static final String BOOLEAN_TRUE_URI = "true^^http://www.w3.org/2001/XMLSchema#boolean";
 	public static final String BOOLEAN_FALSE_URI = "false^^http://www.w3.org/2001/XMLSchema#boolean";
 	
+	public static final String FUNCTIONAL_DOMAIN = "http://ikm-group.ch/archiMEO/questionnaire#Functional";
+	
 	public static String getComparisonOperatorString(String operatorURI){
 		String result = "";
 		switch(operatorURI){
