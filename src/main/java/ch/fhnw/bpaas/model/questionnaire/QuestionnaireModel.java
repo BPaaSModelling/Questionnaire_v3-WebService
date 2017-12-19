@@ -5,16 +5,13 @@ import java.util.ArrayList;
 public class QuestionnaireModel {
 	
 	private boolean completed;
-	private ArrayList<QuestionnaireItem> questions;
-	private int rule_counter;
+	private ArrayList<QuestionnaireItem> completedQuestionList;
+	private int currentQuestionID;
+	private ArrayList<Answer> selectedDomainList;
 	
 	public QuestionnaireModel(){
-		questions = new ArrayList<QuestionnaireItem>();
-		rule_counter = 0;
-	}
-	
-	public ArrayList<QuestionnaireItem> getQuestions() {
-		return questions;
+		completedQuestionList = new ArrayList<QuestionnaireItem>();
+		currentQuestionID = 0;
 	}
 
 	public boolean isCompleted() {
@@ -25,17 +22,31 @@ public class QuestionnaireModel {
 		this.completed = completed;
 	}
 
-	public void setQuestions(ArrayList<QuestionnaireItem> questions) {
-		this.questions = questions;
+	public ArrayList<QuestionnaireItem> getCompletedQuestionList() {
+		return completedQuestionList;
 	}
 
-	public int getRule_counter() {
-		return rule_counter;
+	public void setCompletedQuestionList(ArrayList<QuestionnaireItem> completedQuestionList) {
+		this.completedQuestionList = completedQuestionList;
 	}
 
-	public void setRule_counter(int rule_counter) {
-		this.rule_counter = rule_counter;
+	public int getCurrentQuestionID() {
+		return currentQuestionID;
 	}
+
+	public void setCurrentQuestionID(int currentQuestionID) {
+		this.currentQuestionID = currentQuestionID;
+	}
+
+	public ArrayList<Answer> getSelectedDomainList() {
+		return selectedDomainList;
+	}
+
+	public void setSelectedQuestionDomainList(ArrayList<Answer> selectedDomainList) {
+		this.selectedDomainList = selectedDomainList;
+	}
+	
+	
 
 	
 

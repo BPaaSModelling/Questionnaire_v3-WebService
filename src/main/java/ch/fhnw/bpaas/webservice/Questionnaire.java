@@ -24,6 +24,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceElementModel;
+import ch.fhnw.bpaas.model.cloudservice.CloudServiceModel;
 import ch.fhnw.bpaas.model.questionnaire.Answer;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireModel;
@@ -41,10 +42,12 @@ public class Questionnaire {
 	private OntologyManager ontology = OntologyManager.getInstance();
 	private boolean debug_properties = false;
 	private String hotword_rule = "?value";
+
 	
 	@GET
 	@Path("/getDomains")
 	public Response getDomains() {
+		
 		System.out.println("\n####################<start>####################");
 		System.out.println("/requested parameters to get question domains" );
 		System.out.println("####################<end>####################");
@@ -102,121 +105,121 @@ public class Questionnaire {
 		return allDomains;
 	}
 	
-	@GET
-	@Path("/getQuestionsFromDomains")
-	public Response getQuestionsFromDomains(@QueryParam("domains") String domains_received) {
-		Gson gson = new Gson(); 
-		Answer[] domains = gson.fromJson(domains_received, Answer[].class);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/requested questions from domains" );
-		System.out.println("/received " + domains_received + " domains" );
-		System.out.println("/received " + domains.length + " domains" );
-		System.out.println("####################<end>####################");
-		ArrayList<QuestionnaireItem> result = new ArrayList<QuestionnaireItem>();
-		
-		try {
-				result = queryQuestionsFromDomains(domains);
-				if (debug_properties){
-				for (int index = 0; index < result.size(); index++){
-				System.out.println("Element "+index+": ");
-				System.out.println("QuestionLabel -->" + result.get(index).getQuestionLabel());
-				System.out.println("QuestionURI -->" + result.get(index).getQuestionURI());
-				System.out.println("QuestionURI -->" + result.get(index).getAnswerType());
-				System.out.println("");
-				}
-				}
-		} catch (NoResultsException e) {
-			e.printStackTrace();
-		}
-		
-		String json = gson.toJson(result);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search genereated json: " +json);
-		System.out.println("####################<end>####################");
-		return Response.status(Status.OK).entity(json).build();
-	}
-
-	private ArrayList<QuestionnaireItem> queryQuestionsFromDomains(Answer[] domain_received) throws NoResultsException{
-		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-		ArrayList<QuestionnaireItem> allQuestions = new ArrayList<QuestionnaireItem>();
-		
-		
-			
-			queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
-			queryStr.append("?question rdfs:label ?label .");
-			queryStr.append("?question rdf:type ?qType . ");
-			queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
-			queryStr.append("?question rdf:type ?dType .");
-			queryStr.append("?dType rdfs:label ?dTypeLabel .");
-			queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
-			queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-			queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
-			queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
-			queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
-			queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
-			queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
-			queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
-			String first_part = "FILTER (";
-			String middle_part = "";
-			String last_part = ")";
-			for (int i = 0; i < domain_received.length; i++){
-				if (middle_part != ""){
-					middle_part =  middle_part + " || ";
-				}
-				middle_part = middle_part + "?dType = <" + domain_received[i].getAnswerID()+">";
-			}
-			queryStr.append(first_part + middle_part + last_part);
-			queryStr.append("}");
-			queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
-		
-		QueryExecution qexec = ontology.query(queryStr);
-		ResultSet results = qexec.execSelect();
-		
-		if (results.hasNext()) {
-			while (results.hasNext()) {
-				QuestionnaireItem question = new QuestionnaireItem();
-				
-				QuerySolution soln = results.next();
-				question.setQuestionURI(soln.get("?question").toString());
-				question.setQuestionLabel(soln.get("?label").toString());
-				question.setAnswerType(soln.get("?qType").toString());
-				question.setDomainLabel(soln.get("?dTypeLabel").toString());
-				question.setAnnotationRelation(soln.get("?relation").toString());
-				
-				if (soln.get("?rule") != null ){
-					question.setRuleToApply(soln.get("?rule").toString());
-					}
-				
-				if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
-						soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
-					//Call for the answers
-					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
-				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
-					//Call for the namespace
-					question.setSearchNamespace(soln.get("?searchnamespace").toString());
-					//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
-					//Call for the searchType (Classes of Instances)
-					if (soln.get("?searchType").toString() == null ||
-						soln.get("?searchType").toString().equals("") ||
-						soln.get("?searchType").toString().equals(GlobalVariables.BOOLEAN_FALSE_URI)){
-						question.setSearchOnClassesInsteadOfInstances(false);
-					} else {
-						question.setSearchOnClassesInsteadOfInstances(true);
-					}	
-				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
-					//Call for the Datatype
-					question.setAnswerDatatype(soln.get("?datatype").toString());
-					question.setComparisonOperationAnswers(getComparisonOperations());
-				}
-				
-				allQuestions.add(question);
-			}
-		} else {
-			throw new NoResultsException("nore more results");
-		}
-		qexec.close();
-		return allQuestions;
-	}
+//	@GET
+//	@Path("/getQuestionsFromDomains")
+//	public Response getQuestionsFromDomains(@QueryParam("domains") String domains_received) {
+//		Gson gson = new Gson(); 
+//		Answer[] domains = gson.fromJson(domains_received, Answer[].class);
+//		System.out.println("\n####################<start>####################");
+//		System.out.println("/requested questions from domains" );
+//		System.out.println("/received " + domains_received + " domains" );
+//		System.out.println("/received " + domains.length + " domains" );
+//		System.out.println("####################<end>####################");
+//		ArrayList<QuestionnaireItem> result = new ArrayList<QuestionnaireItem>();
+//		
+//		try {
+//				result = queryQuestionsFromDomains(domains);
+//				if (debug_properties){
+//				for (int index = 0; index < result.size(); index++){
+//				System.out.println("Element "+index+": ");
+//				System.out.println("QuestionLabel -->" + result.get(index).getQuestionLabel());
+//				System.out.println("QuestionURI -->" + result.get(index).getQuestionURI());
+//				System.out.println("QuestionURI -->" + result.get(index).getAnswerType());
+//				System.out.println("");
+//				}
+//				}
+//		} catch (NoResultsException e) {
+//			e.printStackTrace();
+//		}
+//		
+//		String json = gson.toJson(result);
+//		System.out.println("\n####################<start>####################");
+//		System.out.println("/search genereated json: " +json);
+//		System.out.println("####################<end>####################");
+//		return Response.status(Status.OK).entity(json).build();
+//	}
+//
+//	private ArrayList<QuestionnaireItem> queryQuestionsFromDomains(Answer[] domain_received) throws NoResultsException{
+//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+//		ArrayList<QuestionnaireItem> allQuestions = new ArrayList<QuestionnaireItem>();
+//		
+//		
+//			
+//			queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
+//			queryStr.append("?question rdfs:label ?label .");
+//			queryStr.append("?question rdf:type ?qType . ");
+//			queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+//			queryStr.append("?question rdf:type ?dType .");
+//			queryStr.append("?dType rdfs:label ?dTypeLabel .");
+//			queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+//			queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
+//			queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
+//			queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
+//			queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
+//			queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
+//			queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
+//			queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
+//			String first_part = "FILTER (";
+//			String middle_part = "";
+//			String last_part = ")";
+//			for (int i = 0; i < domain_received.length; i++){
+//				if (middle_part != ""){
+//					middle_part =  middle_part + " || ";
+//				}
+//				middle_part = middle_part + "?dType = <" + domain_received[i].getAnswerID()+">";
+//			}
+//			queryStr.append(first_part + middle_part + last_part);
+//			queryStr.append("}");
+//			queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
+//		
+//		QueryExecution qexec = ontology.query(queryStr);
+//		ResultSet results = qexec.execSelect();
+//		
+//		if (results.hasNext()) {
+//			while (results.hasNext()) {
+//				QuestionnaireItem question = new QuestionnaireItem();
+//				
+//				QuerySolution soln = results.next();
+//				question.setQuestionURI(soln.get("?question").toString());
+//				question.setQuestionLabel(soln.get("?label").toString());
+//				question.setAnswerType(soln.get("?qType").toString());
+//				question.setDomainLabel(soln.get("?dTypeLabel").toString());
+//				question.setAnnotationRelation(soln.get("?relation").toString());
+//				
+//				if (soln.get("?rule") != null ){
+//					question.setRuleToApply(soln.get("?rule").toString());
+//					}
+//				
+//				if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
+//						soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
+//					//Call for the answers
+//					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
+//				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
+//					//Call for the namespace
+//					question.setSearchNamespace(soln.get("?searchnamespace").toString());
+//					//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
+//					//Call for the searchType (Classes of Instances)
+//					if (soln.get("?searchType").toString() == null ||
+//						soln.get("?searchType").toString().equals("") ||
+//						soln.get("?searchType").toString().equals(GlobalVariables.BOOLEAN_FALSE_URI)){
+//						question.setSearchOnClassesInsteadOfInstances(false);
+//					} else {
+//						question.setSearchOnClassesInsteadOfInstances(true);
+//					}	
+//				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
+//					//Call for the Datatype
+//					question.setAnswerDatatype(soln.get("?datatype").toString());
+//					question.setComparisonOperationAnswers(getComparisonOperations());
+//				}
+//				
+//				allQuestions.add(question);
+//			}
+//		} else {
+//			throw new NoResultsException("nore more results");
+//		}
+//		qexec.close();
+//		return allQuestions;
+//	}
 	
 	@GET
 	@Path("/getSuitableCloudservices")
@@ -394,7 +397,6 @@ public class Questionnaire {
 	}
 	
 	private String formatURIForQueries(String URI){
-		System.out.println("Ecco qui: "+URI);
 		if (URI.startsWith("http://")){
 			return "<"+URI+">";
 		}else{
@@ -556,23 +558,23 @@ public class Questionnaire {
 //	
 //	}
 //	*/
-	@GET
-	@Path("/getFunctionalQuestions")
-	public Response getFunctionalQuestions() {
+	@POST
+	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
+	@Consumes(MediaType.APPLICATION_JSON)
+	@Path("/getNextQuestion")
+	public Response getFunctionalQuestions(String parsed_json) {
 		Gson gson = new Gson(); 
 		System.out.println("\n####################<start>####################");
-		System.out.println("/requested functional questions" );
+		System.out.println("/Received request for next question" );
 		System.out.println("####################<end>####################");
-		ArrayList<QuestionnaireItem> result = new ArrayList<QuestionnaireItem>();
 		
+		System.out.println("/Questionnaire received: " +parsed_json);
+		
+		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);
+		QuestionnaireItem result = new QuestionnaireItem();
 		try {
-				result = queryFunctionalQuestions();
-				if (debug_properties){
-				for (int index = 0; index < result.size(); index++){
-				System.out.println("Element "+index+": ");
-				System.out.println("");
-				}
-				}
+				result = detectNextQuestion(qm.getCompletedQuestionList().size());
+				
 		} catch (NoResultsException e) {
 			e.printStackTrace();
 		}
@@ -584,17 +586,23 @@ public class Questionnaire {
 		return Response.status(Status.OK).entity(json).build();
 	}
 
-	private ArrayList<QuestionnaireItem> queryFunctionalQuestions() throws NoResultsException{
+	private QuestionnaireItem detectNextQuestion(int num_of_completed_questions) throws NoResultsException{
+		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+		
+		if (num_of_completed_questions >2){
+			//TODO: Go to calculate entropy
+		} else {
+			
+		
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-		ArrayList<QuestionnaireItem> allQuestions = new ArrayList<QuestionnaireItem>();
-		
-		
 			
 			queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
 			queryStr.append("?question rdfs:label ?label .");
-			queryStr.append("?question rdf:type <" + GlobalVariables.FUNCTIONAL_DOMAIN + "> . ");
 			queryStr.append("?question rdf:type ?qType . ");
 			queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+			queryStr.append("?question rdf:type ?dType .");
+			queryStr.append("?dType rdfs:label ?dTypeLabel .");
+			queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 			queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
 			queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
 			queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
@@ -602,6 +610,23 @@ public class Questionnaire {
 			queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
 			queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
 			queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
+//			String first_part = "FILTER (";
+//			String middle_part = "";
+//			String last_part = ")";
+//			for (int i = 0; i < domain_received.length; i++){
+//				if (middle_part != ""){
+//					middle_part =  middle_part + " || ";
+//				}
+//				middle_part = middle_part + "?dType = <" + domain_received[i].getAnswerID()+">";
+//			}
+//			queryStr.append(first_part + middle_part + last_part);
+			if (num_of_completed_questions == 0){
+				queryStr.append("FILTER (?label = \"Which Object does reflect the functional requirement you want to express?\")");
+			}else if (num_of_completed_questions == 1){
+				queryStr.append("FILTER (?label = \"Which Action does reflect the functional requirement you want to express?\")");
+			}else if (num_of_completed_questions== 2){
+				queryStr.append("FILTER (?label = \"Which APQC category does reflect the functional requirement you want to express?\")");
+			}
 			queryStr.append("}");
 			queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
 		
@@ -616,6 +641,7 @@ public class Questionnaire {
 				question.setQuestionURI(soln.get("?question").toString());
 				question.setQuestionLabel(soln.get("?label").toString());
 				question.setAnswerType(soln.get("?qType").toString());
+				question.setDomainLabel(soln.get("?dTypeLabel").toString());
 				question.setAnnotationRelation(soln.get("?relation").toString());
 				
 				if (soln.get("?rule") != null ){
@@ -644,13 +670,16 @@ public class Questionnaire {
 					question.setComparisonOperationAnswers(getComparisonOperations());
 				}
 				
-				allQuestions.add(question);
+				pickedQuestion = question;
 			}
 		} else {
 			throw new NoResultsException("nore more results");
 		}
 		qexec.close();
-		return allQuestions;
-	}
+		
+		
+			}
+		return pickedQuestion;
+		}
 }
 
