@@ -458,7 +458,7 @@ public class Questionnaire {
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);
 		QuestionnaireItem result = new QuestionnaireItem();
 		try {
-				result = detectNextQuestion(qm.getCompletedQuestionList().size());
+				result = detectNextQuestion(qm.getCompletedQuestionList().size(), qm);
 				
 		} catch (NoResultsException e) {
 			e.printStackTrace();
@@ -471,15 +471,16 @@ public class Questionnaire {
 		return Response.status(Status.OK).entity(json).build();
 	}
 
-	private QuestionnaireItem detectNextQuestion(int num_of_completed_questions) throws NoResultsException{
+	private QuestionnaireItem detectNextQuestion(int num_of_completed_questions, QuestionnaireModel qm) throws NoResultsException{
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 		
 		if (num_of_completed_questions >2){
 			
 			
-			QuestionnaireModel thisQuestionnaire = new QuestionnaireModel(); //TODO : num_of_completed_question? I need to get as parameter the questionnaire's info
+			QuestionnaireModel thisQuestionnaire = new QuestionnaireModel(); 
 			
 			ArrayList<QuestionnaireItem> questions= thisQuestionnaire.getCompletedQuestionList();
+			
 			
 			//TODO: Get list of attributes
 			//TODO: Create attribute map
@@ -765,19 +766,15 @@ public class Questionnaire {
 //	}
 	
 	private ArrayList<EntropyCloudService> getCloudServiceList(){
-		return new ArrayList<EntropyCloudService>();
 		
-		
-				?cs a bpaas:CloudService . 
-				?cs rdfs:label ?label . 
-				?properties rdfs:domain bpaas:CloudService .
-				?cs ?properties ?values
-				} ORDER BY ?cs ?label ?properties ?values
+		//TODO:Ste buon divertimento :D io mi metto a fare il test set e l'entropia
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		queryStr.append("SELECT ?cs ?label ?properties ?values WHERE {");
-		queryStr.append("<"+element_URI+">" + " questionnaire:questionHasAnswers ?answer .");
-		queryStr.append("?answer rdfs:label ?label .");
-		queryStr.append("}");
+		queryStr.append("?cs a bpaas:CloudService .");
+		queryStr.append("?cs rdfs:label ?label . ");
+		queryStr.append("?properties rdfs:domain bpaas:CloudService .");
+		queryStr.append("?cs ?properties ?values");
+		queryStr.append("} ORDER BY ?cs ?label ?properties ?values");
 		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
@@ -789,7 +786,7 @@ public class Questionnaire {
 			answers.add(new Answer(soln.get("?answer").toString(), soln.get("?label").toString()));
 		}
 		qexec.close();
-		return answers;
+		return new ArrayList<EntropyCloudService>();
 		
 	}
 	
