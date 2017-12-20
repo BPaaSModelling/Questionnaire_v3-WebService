@@ -444,40 +444,13 @@ public class Questionnaire {
 //	}
 //	*/
 	
-	@POST
-	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
-	@Consumes(MediaType.APPLICATION_JSON)
-	@Path("/getNextQuestion")
-	public Response getFunctionalQuestions(String parsed_json) {
-		Gson gson = new Gson(); 
-		System.out.println("\n####################<start>####################");
-		System.out.println("/Received request for next question" );
-		System.out.println("####################<end>####################");
-		
-		System.out.println("/Questionnaire received: " +parsed_json);
-		
-		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);
-		QuestionnaireItem result = new QuestionnaireItem();
-		try {
-				result = detectNextQuestion(qm.getCompletedQuestionList().size(), qm);
-				
-		} catch (NoResultsException e) {
-			e.printStackTrace();
-		}
-		
-		String json = gson.toJson(result);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search genereated json: " +json);
-		System.out.println("####################<end>####################");
-		return Response.status(Status.OK).entity(json).build();
-	}
 
-	private QuestionnaireItem detectNextQuestion(int num_of_completed_questions, QuestionnaireModel qm) throws NoResultsException{
+	private QuestionnaireItem detectNextQuestion(QuestionnaireModel qm) throws NoResultsException{
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 		
-		if (num_of_completed_questions >2){
+		if (qm.getCompletedQuestionList().size() >2){
 			
-								
+			getCloudServiceList(qm);					
 			//TODO: Get list of attributes
 			//TODO: Test attribute MAP | //TODO: Create attribute map	
 			
@@ -586,11 +559,11 @@ public class Questionnaire {
 //				middle_part = middle_part + "?dType = <" + domain_received[i].getAnswerID()+">";
 //			}
 //			queryStr.append(first_part + middle_part + last_part);
-			if (num_of_completed_questions == 0){
+			if (qm.getCompletedQuestionList().size() == 0){
 				queryStr.append("FILTER (?label = \"Which Object does reflect the functional requirement you want to express?\")");
-			}else if (num_of_completed_questions == 1){
+			}else if (qm.getCompletedQuestionList().size() == 1){
 				queryStr.append("FILTER (?label = \"Which Action does reflect the functional requirement you want to express?\")");
-			}else if (num_of_completed_questions== 2){
+			}else if (qm.getCompletedQuestionList().size()== 2){
 				queryStr.append("FILTER (?label = \"Which APQC category does reflect the functional requirement you want to express?\")");
 			}
 			queryStr.append("}");
@@ -766,7 +739,8 @@ public class Questionnaire {
 //	@GET
 //	@Path("/testEntropy")
 //	public Response  getCloudServiceList(){
-	public ArrayList<EntropyCloudService> getCloudServiceList(){
+	public ArrayList<EntropyCloudService> getCloudServiceList(QuestionnaireModel qm){
+		String tempStrForDomain = "";
 		//TODO:Ste buon divertimento :D io mi metto a fare il test set e l'entropia
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		queryStr.append("SELECT ?q ?dType ?annotationRelation ?cs ?csLabel ?value WHERE {");
@@ -777,6 +751,14 @@ public class Questionnaire {
 		queryStr.append("?cs rdfs:label ?csLabel .");
 		queryStr.append("?cs ?annotationRelation ?value");
 		//generate filter based on domains
+		
+		for (int i = 0; i < qm.getSelectedDomainList().size(); i++){
+			if (i != 0){
+				tempStrForDomain = tempStrForDomain + " || ";
+			}
+			tempStrForDomain = tempStrForDomain + "?dType = " + qm.getSelectedDomainList().get(i).getAnswerID();
+		}
+		queryStr.append("FILTER (" + tempStrForDomain + ")");
 		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
 		queryStr.append("} ORDER BY ?csLabel ?annotationRelation ?value");
 		
