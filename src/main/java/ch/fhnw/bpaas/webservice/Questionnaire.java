@@ -26,6 +26,7 @@ import com.google.gson.JsonArray;
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceElementModel;
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceModel;
 import ch.fhnw.bpaas.model.entropy.EntropyCloudService;
+import ch.fhnw.bpaas.model.entropy.EntropyCloudServiceAttribute;
 import ch.fhnw.bpaas.model.questionnaire.Answer;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireModel;
@@ -476,14 +477,10 @@ public class Questionnaire {
 		
 		if (num_of_completed_questions >2){
 			
-			
-			QuestionnaireModel thisQuestionnaire = new QuestionnaireModel(); 
-			
-			ArrayList<QuestionnaireItem> questions= thisQuestionnaire.getCompletedQuestionList();
-			
-			
+								
 			//TODO: Get list of attributes
-			//TODO: Create attribute map
+			//TODO: Test attribute MAP | //TODO: Create attribute map	
+			
 			//TODO: Calculate entropy and check if not 0
 			//TODO: Select attribute with max entropy
 			
