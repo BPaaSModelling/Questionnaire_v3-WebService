@@ -436,128 +436,12 @@ public class Questionnaire {
 //
 //	
 //	
-//	/**
-//	 * @author Devid
-//	 * @param Funcional requirement, action, obj, apqc
-//	 * @return Attribute Map based on funcional requirement 
-//	 * @throws NoDomainQuestionLeftException 
-//	 * @throws NoActionAndObjectQuestionLeftException
-//	 */
-//	
-//	private HashMap<String, ArrayList<String>> getAttributeMap(String action, String obj, String apqc ) throws NoResultsException{
-//		
-//	HashMap<String,String> attributeList=new HashMap<String,String>();
-//	attributeList=queryAttributeFullListFromCloudServiceList();
-//	
-//	HashMap<String, ArrayList<String>> attributeMap=new HashMap<String, ArrayList<String>>();
-//	
-//	ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-//	//query creation
-//	String cols="";
-//	
-//	for (int i = 0; i < attributeList.size(); i++) {
-//		cols="?"+attributeList.get(i).toString()+" ";
-//	}
-//	
-//	queryStr.append("SELECT ?cloudservice "+ cols +" WHERE {");
-//	queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
-//	
-//	queryStr.append("?cloudservice bpaas:cloudServiceHasObject ?object .");
-//	queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?action .");
-//	queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
-//	
-//	for (int j = 0; j < attributeList.size(); j++) {
-//		String key= attributeList.get(j);
-//		queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
-//	}	
-//	
-//	queryStr.append("FILTER (?object = fbpdo:"+obj+ ").");
-//	queryStr.append("FILTER (?action = fbpdo:"+action+ ").");
-//	queryStr.append("FILTER (?action = fbpdo:"+apqc+ ").");
-//	queryStr.append("}");		
-//	
-//	// query execution		
-//	QueryExecution qexec = ontology.query(queryStr);
-//	ResultSet results = qexec.execSelect();
-//	
-//	// resultMap will contain the Cloud Services <string, arrayList string>
-//	ArrayList<String> resultMap = new ArrayList<String>();
-//	
-//	//storing result from query in HashMap containing cloudsocket's information
-//	if(!results.hasNext()){ //if result is empty throw the exception
-//		qexec.close();
-//		throw new NoResultsException("no cloud services for this action and object have been found");
-//	}else{
-//	//scan result and populate the array of Cloud Services matching with action and object
-//		while(results.hasNext()) {
-//			QuerySolution soln=results.next();
-//			String value=soln.get("?cloudservice").toString();//TODO CHECK THIS ID
-//			resultMap.add(value);
-//		}
-//	}
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	
-//	return attributeMap;
-//	
-//	
-//	}
-//
-//	
-//	/** 
-//	 * @author Devid
-//	 * @return HashMap<String,String> of Cloud Services' properties and annotationRelation
-//	 * @throws NoFunctionalRequirementLeftException
-//	 *
-//	 */
-//	
-//	private HashMap<String,String> queryAttributeFullListFromCloudServiceList() throws NoResultsException {
-//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-//		//query creation
-//		queryStr.append("SELECT ?question ?ar WHERE {");
-//		queryStr.append("?qClass rdfs:subClassOf* questionnaire:Question .");
-//		queryStr.append("?question rdf:type ?qClass .");
-//		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?ar");
-//		queryStr.append("}");		
-//		
-//		// query execution		
-//		QueryExecution qexec = ontology.query(queryStr);
-//		ResultSet results = qexec.execSelect();
-//		
-//		// resultMap will contain property and his annotationRelation
-//		HashMap<String, String> resultMap = new HashMap<String, String>();
-//		if(!results.hasNext()){
-//			qexec.close();
-//			throw new NoResultsException("all domain questions have been answerd; asking for new domain");
-//		}else{
-//			
-//			while(results.hasNext()){
-//				QuerySolution soln = results.next();
-//				String key = soln.get("?question").toString();
-//				String value = null;
-//				try{
-//					value = soln.get("?ar").toString();
-//				}catch(NullPointerException e){
-//					value = soln.get("?ar").toString();;
-//				}
-//				
-//				if(!resultMap.containsKey(key)){
-//					resultMap.put(key, value);
-//				}
-//			}
-//			qexec.close();
-//			return resultMap;
-//		}
 //	
 //	
 //	
 //	}
 //	*/
+	
 	@POST
 	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})
 	@Consumes(MediaType.APPLICATION_JSON)
@@ -590,7 +474,90 @@ public class Questionnaire {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 		
 		if (num_of_completed_questions >2){
-			//TODO: Go to calculate entropy
+			
+			
+			QuestionnaireModel thisQuestionnaire = new QuestionnaireModel(); //TODO : num_of_completed_question? I need to get as parameter the questionnaire's info
+			
+			ArrayList<QuestionnaireItem> questions= thisQuestionnaire.getCompletedQuestionList();
+			
+			//TODO: Get list of attributes
+			//TODO: Create attribute map
+			//TODO: Calculate entropy and check if not 0
+			//TODO: Select attribute with max entropy
+			
+			String pickedAttributeQuestion="";//temp variable to store the result of the entropy calculation
+			
+
+			ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+				
+				queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
+				queryStr.append("?question rdfs:label ?label .");
+				queryStr.append("?question rdf:type ?qType . ");
+				queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+				queryStr.append("?question rdf:type ?dType .");
+				queryStr.append("?dType rdfs:label ?dTypeLabel .");
+				queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+				queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
+				queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
+				queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
+				queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
+				queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
+				queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
+				queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
+				
+				//filter (?relation = pickedAttributeQuestion);  to check
+				queryStr.append("FILTER (?relation = "+ pickedAttributeQuestion + ")");
+				
+				queryStr.append("}");
+				queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
+			
+			QueryExecution qexec = ontology.query(queryStr);
+			ResultSet results = qexec.execSelect();
+			
+			if (results.hasNext()) {
+				while (results.hasNext()) {
+					QuestionnaireItem question = new QuestionnaireItem();
+					
+					QuerySolution soln = results.next();
+					question.setQuestionURI(soln.get("?question").toString());
+					question.setQuestionLabel(soln.get("?label").toString());
+					question.setAnswerType(soln.get("?qType").toString());
+					question.setDomainLabel(soln.get("?dTypeLabel").toString());
+					question.setAnnotationRelation(soln.get("?relation").toString());
+					
+					if (soln.get("?rule") != null ){
+						question.setRuleToApply(soln.get("?rule").toString());
+						}
+					
+					if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
+							soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
+						//Call for the answers
+						question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
+					}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
+						//Call for the namespace
+						question.setSearchNamespace(soln.get("?searchnamespace").toString());
+						//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
+						//Call for the searchType (Classes of Instances)
+						if (soln.get("?searchType").toString() == null ||
+							soln.get("?searchType").toString().equals("") ||
+							soln.get("?searchType").toString().equals(GlobalVariables.BOOLEAN_FALSE_URI)){
+							question.setSearchOnClassesInsteadOfInstances(false);
+						} else {
+							question.setSearchOnClassesInsteadOfInstances(true);
+						}	
+					}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
+						//Call for the Datatype
+						question.setAnswerDatatype(soln.get("?datatype").toString());
+						question.setComparisonOperationAnswers(getComparisonOperations());
+					}
+					
+					pickedQuestion = question;
+				}
+			} else {
+				throw new NoResultsException("nore more results");
+			}
+			qexec.close();			
+			
 		} else {
 			
 		
@@ -681,5 +648,119 @@ public class Questionnaire {
 			}
 		return pickedQuestion;
 		}
+	
+	
+//	
+//	/**
+//	 * @author Devid
+//	 * @param Funcional requirement, action, obj, apqc
+//	 * @return Attribute Map based on funcional requirement 
+//	 * @throws NoDomainQuestionLeftException 
+//	 * @throws NoActionAndObjectQuestionLeftException
+//	 */
+//	
+//	private HashMap<String, ArrayList<String>> getAttributeMap(String action, String obj, String apqc ) throws NoResultsException{
+//		
+//		HashMap<String,String> attributeList=new HashMap<String,String>();
+//		attributeList=queryAttributeFullListFromCloudServiceList();
+//
+//		HashMap<String, ArrayList<String>> attributeMap=new HashMap<String, ArrayList<String>>();
+//
+//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+//		//query creation
+//		String cols="";
+//
+//		for (int i = 0; i < attributeList.size(); i++) {
+//			cols="?"+attributeList.get(i).toString()+" ";
+//		}
+//
+//		queryStr.append("SELECT ?cloudservice "+ cols +" WHERE {");
+//		queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
+//
+//		queryStr.append("?cloudservice bpaas:cloudServiceHasObject ?object .");
+//		queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?action .");
+//		queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
+//
+//		for (int j = 0; j < attributeList.size(); j++) {
+//			String key= attributeList.get(j);
+//			queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
+//		}	
+//
+//		queryStr.append("FILTER (?object = fbpdo:"+obj+ ").");
+//		queryStr.append("FILTER (?action = fbpdo:"+action+ ").");
+//		queryStr.append("FILTER (?action = fbpdo:"+apqc+ ").");
+//		queryStr.append("}");		
+//
+//		// query execution		
+//		QueryExecution qexec = ontology.query(queryStr);
+//		ResultSet results = qexec.execSelect();
+//
+//		// resultMap will contain the Cloud Services <string, arrayList string>
+//		ArrayList<String> resultMap = new ArrayList<String>();
+//
+//		//storing result from query in HashMap containing cloudsocket's information
+//		if(!results.hasNext()){ //if result is empty throw the exception
+//			qexec.close();
+//			throw new NoResultsException("no cloud services for this action and object have been found");
+//		}else{
+//			//scan result and populate the array of Cloud Services matching with action and object
+//			while(results.hasNext()) {
+//				QuerySolution soln=results.next();
+//				String value=soln.get("?cloudservice").toString();//TODO CHECK THIS ID
+//				resultMap.add(value);
+//			}
+//		}
+//	return attributeMap;
+//
+//
+//	}
+//	
+//	
+//	/** 
+//	 * @author Devid
+//	 * @return HashMap<String,String> of Cloud Services' properties and annotationRelation
+//	 * @throws NoFunctionalRequirementLeftException
+//	 *
+//	 */
+//	
+//	private HashMap<String,String> queryAttributeFullListFromCloudServiceList() throws NoResultsException {
+//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+//		//query creation
+//		queryStr.append("SELECT ?question ?ar WHERE {");
+//		queryStr.append("?qClass rdfs:subClassOf* questionnaire:Question .");
+//		queryStr.append("?question rdf:type ?qClass .");
+//		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?ar");
+//		queryStr.append("}");		
+//		
+//		// query execution		
+//		QueryExecution qexec = ontology.query(queryStr);
+//		ResultSet results = qexec.execSelect();
+//		
+//		// resultMap will contain property and his annotationRelation
+//		HashMap<String, String> resultMap = new HashMap<String, String>();
+//		if(!results.hasNext()){
+//			qexec.close();
+//			throw new NoResultsException("all domain questions have been answerd; asking for new domain");
+//		}else{
+//			
+//			while(results.hasNext()){
+//				QuerySolution soln = results.next();
+//				String key = soln.get("?question").toString();
+//				String value = null;
+//				try{
+//					value = soln.get("?ar").toString();
+//				}catch(NullPointerException e){
+//					value = soln.get("?ar").toString();;
+//				}
+//				
+//				if(!resultMap.containsKey(key)){
+//					resultMap.put(key, value);
+//				}
+//			}
+//			qexec.close();
+//			return resultMap;
+//		}
+//
+//	}
 }
 
