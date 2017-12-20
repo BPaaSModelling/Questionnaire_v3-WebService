@@ -54,7 +54,6 @@ public class EntropyMain {
 		
 		ArrayList<String> cs2AttributeApossibleValues = new ArrayList<String>();
 		cs2AttributeApossibleValues.add("archive the log when full");
-		cs2AttributeApossibleValues.add("do not overwrite event");
 		cs2AttributeA.setPossibleValues(cs2AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs2AttributeB = new EntropyCloudServiceAttribute();
@@ -68,7 +67,7 @@ public class EntropyMain {
 		cs2AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs2AttributeCpossibleValues = new ArrayList<String>();
-		cs2AttributeCpossibleValues.add("Customizable Plan");
+		cs2AttributeCpossibleValues.add("Free of Charge");
 		cs2AttributeC.setPossibleValues(cs2AttributeCpossibleValues);
 		
 		
@@ -88,8 +87,7 @@ public class EntropyMain {
 		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
 		
 		ArrayList<String> cs3AttributeApossibleValues = new ArrayList<String>();
-		cs3AttributeApossibleValues.add("archive the log when full");
-		cs3AttributeApossibleValues.add("do not overwrite event");
+		cs3AttributeApossibleValues.add("overwrite event as needed");
 		cs3AttributeA.setPossibleValues(cs3AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs3AttributeB = new EntropyCloudServiceAttribute();
@@ -103,8 +101,9 @@ public class EntropyMain {
 		cs3AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs3AttributeCpossibleValues = new ArrayList<String>();
-		cs3AttributeCpossibleValues.add("Customizable Plan");
+		cs3AttributeCpossibleValues.add("Monthly Fee");
 		cs3AttributeC.setPossibleValues(cs3AttributeCpossibleValues);
+		
 		
 		
 		ArrayList<EntropyCloudServiceAttribute> cs3AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
@@ -115,6 +114,163 @@ public class EntropyMain {
 		cs3.setId("service3");
 		cs3.setAttributes(cs3AttributeList);
 		attributeMap.add(cs3);
+		
+
+		
+		//-----------------------------------------------------------------------
+		//------------ CLOUD SERVICE 4
+		//-----------------------------------------------------------------------
+		EntropyCloudServiceAttribute cs4AttributeA = new EntropyCloudServiceAttribute();
+		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		
+		ArrayList<String> cs4AttributeApossibleValues = new ArrayList<String>();
+		cs4AttributeApossibleValues.add("overwrite event as needed");
+		cs4AttributeA.setPossibleValues(cs4AttributeApossibleValues);
+		
+		EntropyCloudServiceAttribute cs4AttributeB = new EntropyCloudServiceAttribute();
+		cs4AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
+		
+		ArrayList<String> cs4AttributeBpossibleValues = new ArrayList<String>();
+		cs4AttributeBpossibleValues.add("at_most_2_hours");
+		cs4AttributeB.setPossibleValues(cs4AttributeBpossibleValues);
+		
+		EntropyCloudServiceAttribute cs4AttributeC = new EntropyCloudServiceAttribute();
+		cs4AttributeC.setId("PAYMENT PLAN"); //attribute C
+		
+		ArrayList<String> cs4AttributeCpossibleValues = new ArrayList<String>();
+		cs4AttributeCpossibleValues.add("Customizable Plan");
+		cs4AttributeC.setPossibleValues(cs4AttributeCpossibleValues);
+		
+		
+		
+		ArrayList<EntropyCloudServiceAttribute> cs4AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
+		cs4AttributeList.add(cs4AttributeA);
+		cs4AttributeList.add(cs4AttributeB);
+		cs4AttributeList.add(cs4AttributeC);
+		EntropyCloudService cs4= new EntropyCloudService();
+		cs4.setId("service4");
+		cs4.setAttributes(cs4AttributeList);
+		attributeMap.add(cs4);
+		
+		
+		//-----------------------------------------------------------------------
+		//------------ CLOUD SERVICE 5
+		//-----------------------------------------------------------------------
+		EntropyCloudServiceAttribute cs5AttributeA = new EntropyCloudServiceAttribute();
+		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		
+		ArrayList<String> cs5AttributeApossibleValues = new ArrayList<String>();
+		cs5AttributeApossibleValues.add("archive the log when full");
+		cs5AttributeA.setPossibleValues(cs5AttributeApossibleValues);
+		
+		EntropyCloudServiceAttribute cs5AttributeB = new EntropyCloudServiceAttribute();
+		cs5AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
+		
+		ArrayList<String> cs5AttributeBpossibleValues = new ArrayList<String>();
+		cs5AttributeBpossibleValues.add("at_most_2_hours");
+		cs5AttributeB.setPossibleValues(cs5AttributeBpossibleValues);
+		
+		EntropyCloudServiceAttribute cs5AttributeC = new EntropyCloudServiceAttribute();
+		cs5AttributeC.setId("PAYMENT PLAN"); //attribute C
+		
+		ArrayList<String> cs5AttributeCpossibleValues = new ArrayList<String>();
+		cs5AttributeCpossibleValues.add("Customizable Plan");
+		cs5AttributeC.setPossibleValues(cs5AttributeCpossibleValues);
+		
+		
+		
+		ArrayList<EntropyCloudServiceAttribute> cs5AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
+		cs5AttributeList.add(cs5AttributeA);
+		cs5AttributeList.add(cs5AttributeB);
+		cs5AttributeList.add(cs5AttributeC);
+		EntropyCloudService cs5= new EntropyCloudService();
+		cs5.setId("service5");
+		cs5.setAttributes(cs5AttributeList);
+		attributeMap.add(cs5);
+		
+		
+		//-----------------------------------------------------------------------
+		//------------ CLOUD SERVICE 6
+		//-----------------------------------------------------------------------
+		EntropyCloudServiceAttribute cs6AttributeA = new EntropyCloudServiceAttribute();
+		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		
+		ArrayList<String> cs6AttributeApossibleValues = new ArrayList<String>();
+		cs6AttributeApossibleValues.add(" "); // TODO: TO be tested without any space inside/ With empty value
+		cs6AttributeA.setPossibleValues(cs6AttributeApossibleValues);
+		
+		EntropyCloudServiceAttribute cs6AttributeB = new EntropyCloudServiceAttribute();
+		cs6AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
+		
+		ArrayList<String> cs6AttributeBpossibleValues = new ArrayList<String>();
+		cs6AttributeBpossibleValues.add("at_most_4_hours");
+		cs6AttributeB.setPossibleValues(cs6AttributeBpossibleValues);
+		
+		EntropyCloudServiceAttribute cs6AttributeC = new EntropyCloudServiceAttribute();
+		cs6AttributeC.setId("PAYMENT PLAN"); //attribute C
+		
+		ArrayList<String> cs6AttributeCpossibleValues = new ArrayList<String>();
+		cs6AttributeCpossibleValues.add("Customizable Plan");
+		cs6AttributeC.setPossibleValues(cs6AttributeCpossibleValues);
+		
+		
+		
+		ArrayList<EntropyCloudServiceAttribute> cs6AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
+		cs6AttributeList.add(cs6AttributeA);
+		cs6AttributeList.add(cs6AttributeB);
+		cs6AttributeList.add(cs6AttributeC);
+		EntropyCloudService cs6= new EntropyCloudService();
+		cs6.setId("service6");
+		cs6.setAttributes(cs6AttributeList);
+		attributeMap.add(cs6);
+		
+		
+		
+		//-----------------------------------------------------------------------
+		//------------ CLOUD SERVICE 7
+		//-----------------------------------------------------------------------
+		EntropyCloudServiceAttribute cs7AttributeA = new EntropyCloudServiceAttribute();
+		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		
+		ArrayList<String> cs7AttributeApossibleValues = new ArrayList<String>();
+		cs7AttributeApossibleValues.add("archive the log when full");
+		cs7AttributeApossibleValues.add("do not overwrite event");
+		cs4AttributeApossibleValues.add("overwrite event as needed");
+		cs7AttributeA.setPossibleValues(cs7AttributeApossibleValues);
+		
+		EntropyCloudServiceAttribute cs7AttributeB = new EntropyCloudServiceAttribute();
+		cs7AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
+		
+		ArrayList<String> cs7AttributeBpossibleValues = new ArrayList<String>();
+		cs7AttributeBpossibleValues.add("at_most_1_working_day");
+		cs7AttributeB.setPossibleValues(cs7AttributeBpossibleValues);
+		
+		EntropyCloudServiceAttribute cs7AttributeC = new EntropyCloudServiceAttribute();
+		cs7AttributeC.setId("PAYMENT PLAN"); //attribute C
+		
+		ArrayList<String> cs7AttributeCpossibleValues = new ArrayList<String>();
+		cs7AttributeCpossibleValues.add("Monthly Fee");
+		cs7AttributeCpossibleValues.add("Customizable Plan");
+		cs7AttributeC.setPossibleValues(cs7AttributeCpossibleValues);
+		
+		
+		
+		ArrayList<EntropyCloudServiceAttribute> cs7AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
+		cs7AttributeList.add(cs7AttributeA);
+		cs7AttributeList.add(cs7AttributeB);
+		cs7AttributeList.add(cs7AttributeC);
+		EntropyCloudService cs7= new EntropyCloudService();
+		cs7.setId("service7");
+		cs7.setAttributes(cs7AttributeList);
+		attributeMap.add(cs7);
+		
+		
+		
+		
+		
+		
+		
+		
 		
 		
 		
