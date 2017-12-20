@@ -442,6 +442,17 @@ questiondata:ServiceSupport
   rdf:type questionnaire:CloudServiceDomain ;
   rdfs:label "Service Support" ;
 .
+questiondata:ServiceSupportChannel
+  rdf:type questionnaire:CloudServiceElement ;
+  rdf:type questionnaire:MultiSelection ;
+  questionnaire:cloudServiceElementHasCloudServiceDomain questiondata:ServiceSupport ;
+  questionnaire:questionHasAnnotationRelation bpaas:cloudServiceHasSupportChannel ;
+  questionnaire:questionHasAnswers bpaas:SupportEmail ;
+  questionnaire:questionHasAnswers bpaas:SupportFacebook ;
+  questionnaire:questionHasAnswers bpaas:SupportForum ;
+  questionnaire:questionHasAnswers bpaas:SupportTelephone ;
+  rdfs:label "Select your support channels" ;
+.
 questiondata:Should_the_process_be_executed_on_a_daily_weekly_monthly_or_yearly_basis
   rdf:type questionnaire:Performance ;
   rdf:type questionnaire:SingleSelection ;

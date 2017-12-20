@@ -762,30 +762,96 @@ public class Questionnaire {
 //
 //	}
 	
-	private ArrayList<EntropyCloudService> getCloudServiceList(){
-		
+	
+//	@GET
+//	@Path("/testEntropy")
+//	public Response  getCloudServiceList(){
+	public ArrayList<EntropyCloudService> getCloudServiceList(){
 		//TODO:Ste buon divertimento :D io mi metto a fare il test set e l'entropia
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-		queryStr.append("SELECT ?cs ?label ?properties ?values WHERE {");
-		queryStr.append("?cs a bpaas:CloudService .");
-		queryStr.append("?cs rdfs:label ?label . ");
-		queryStr.append("?properties rdfs:domain bpaas:CloudService .");
-		queryStr.append("?cs ?properties ?values");
-		queryStr.append("} ORDER BY ?cs ?label ?properties ?values");
+		queryStr.append("SELECT ?q ?dType ?annotationRelation ?cs ?csLabel ?value WHERE {");
+		queryStr.append("?q rdf:type ?dType .");
+		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+		queryStr.append("?q questionnaire:questionHasAnnotationRelation ?annotationRelation .");
+		queryStr.append("?cs rdf:type bpaas:CloudService .");
+		queryStr.append("?cs rdfs:label ?csLabel .");
+		queryStr.append("?cs ?annotationRelation ?value");
+		//generate filter based on domains
+		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
+		queryStr.append("} ORDER BY ?csLabel ?annotationRelation ?value");
 		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 		
-		Set<Answer> answers = new HashSet<Answer>();
+		ArrayList<EntropyCloudService> ecss = new ArrayList<EntropyCloudService>();
+		EntropyCloudService currentCSE = null;
+		EntropyCloudServiceAttribute currentCsAttribute = null;
+		ArrayList<String> currentAttributeValues = null;
+		String currentCsName = "";
+		String currentCsAttributeName = "";
 
 		while (results.hasNext()) {
+
 			QuerySolution soln = results.next();
-			answers.add(new Answer(soln.get("?answer").toString(), soln.get("?label").toString()));
+			//if the cloudservice that I am parsing is different from the previous one
+			if (!soln.get("?cs").toString().equals(currentCsName)){
+
+				//I create a new one
+				if (!currentCsName.equals("")){
+					//but first, I check if it's the first
+					ecss.add(currentCSE);
+				}
+				currentCSE = new EntropyCloudService();
+				currentCSE.setId(soln.get("?cs").toString());
+				currentCSE.setLabel(soln.get("?csLabel").toString());
+				currentCsName = soln.get("?cs").toString();
+			}
+			//I parse attributes
+			//I check if I am parsing a new attribute
+			if (!currentCsAttributeName.equals(soln.get("?annotationRelation").toString())){
+				
+				if (currentAttributeValues != null){
+					//if it is not the initial null array, then I add those values to the current property
+					currentCsAttribute.setValues(currentAttributeValues);
+					currentCSE.getAttributes().add(currentCsAttribute);
+				}
+				//I create a new array to hold all the values for the next attribute
+				currentAttributeValues = new ArrayList<String>();
+				//I set the new current attribute for matching
+				currentCsAttributeName = soln.get("?annotationRelation").toString();
+				//And I create a new Attribute
+				currentCsAttribute = new EntropyCloudServiceAttribute();
+				currentCsAttribute.setId(soln.get("?annotationRelation").toString());
+				currentCsAttribute.setDomain(soln.get("?dType").toString());
+			}
+			currentAttributeValues.add(soln.get("?value").toString());	
+		}
+		if (debug_properties){
+		for (int i = 0; i < ecss.size(); i++){
+			System.out.println("=======");
+			System.out.println(ecss.get(i).getId()+ " - " + ecss.get(i).getLabel());
+			for (int j = 0; j < ecss.get(i).getAttributes().size(); j++){
+				System.out.println("----> " + ecss.get(i).getAttributes().get(j).getId() + " - " + ecss.get(i).getAttributes().get(j).getDomain());
+				for (int k = 0; k < ecss.get(i).getAttributes().get(j).getValues().size(); k++){
+					System.out.println("---------> " + ecss.get(i).getAttributes().get(j).getValues().get(k));
+				}
+			}
+		}
 		}
 		qexec.close();
-		return new ArrayList<EntropyCloudService>();
+		
+		Gson gson = new Gson(); 
+		
+		String json = gson.toJson(ecss);
+		
+		//return Response.status(Status.OK).entity(json).build();
+		return ecss;
 		
 	}
+	
+	
+	
+
 	
 }
 

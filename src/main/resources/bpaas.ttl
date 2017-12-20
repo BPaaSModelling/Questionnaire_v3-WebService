@@ -556,6 +556,11 @@ bpaas:ServiceSupport
   rdfs:subClassOf archi:BusinessService ;
   rdfs:subClassOf bpaas:ServiceLevelObjective ;
 .
+bpaas:ServiceSupportChannel
+  rdf:type owl:Class ;
+  rdfs:label "Service support channel" ;
+  rdfs:subClassOf bpaas:ServiceSupport ;
+.
 bpaas:ServiceSupportResponsiveness
   rdf:type owl:Class ;
   rdfs:label "ServiceSupportResponsiveness" ;
@@ -603,8 +608,24 @@ bpaas:Sunday
   rdf:type bpaas:ServiceSupport ;
   rdfs:label "Sunday" ;
 .
+bpaas:SupportEmail
+  rdf:type bpaas:ServiceSupportChannel ;
+  rdfs:label "Support email" ;
+.
+bpaas:SupportFacebook
+  rdf:type bpaas:ServiceSupportChannel ;
+  rdfs:label "Support facebook" ;
+.
+bpaas:SupportForum
+  rdf:type bpaas:ServiceSupportChannel ;
+  rdfs:label "Support forum" ;
+.
 bpaas:SupportServiceHasServiceSupportPeriod
   rdf:type owl:ObjectProperty ;
+.
+bpaas:SupportTelephone
+  rdf:type bpaas:ServiceSupportChannel ;
+  rdfs:label "Support telephone" ;
 .
 bpaas:Switzerland
   rdf:type owl:Class ;
@@ -1032,6 +1053,12 @@ bpaas:cloudServiceHasStoredDataLocation
   rdfs:domain bpaas:CloudService ;
   rdfs:label "cloudServiceHasStoredDataLocation" ;
   rdfs:range bpaas:PhysicalLocation ;
+.
+bpaas:cloudServiceHasSupportChannel
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain bpaas:CloudService ;
+  rdfs:label "cloud service has support channel" ;
+  rdfs:range bpaas:ServiceSupportChannel ;
 .
 bpaas:cloudServiceHasTargetMarket
   rdf:type owl:ObjectProperty ;

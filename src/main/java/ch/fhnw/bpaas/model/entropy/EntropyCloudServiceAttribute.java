@@ -3,29 +3,32 @@ package ch.fhnw.bpaas.model.entropy;
 import java.util.ArrayList;
 
 public class EntropyCloudServiceAttribute {
+	
 private String id;
-private ArrayList<String> possibleValues;
-private String annotationRelation;
+private ArrayList<String> values;
+private String domain;
+
 public EntropyCloudServiceAttribute() {
-	this.possibleValues = new ArrayList<String>();
+	this.values = new ArrayList<String>();
 }
+
 public String getId() {
 	return id;
 }
 public void setId(String id) {
 	this.id = id;
 }
-public ArrayList<String> getPossibleValues() {
-	return possibleValues;
+public ArrayList<String> getValues() {
+	return values;
 }
-public void setPossibleValues(ArrayList<String> possibleValues) {
-	this.possibleValues = possibleValues;
+public void setValues(ArrayList<String> values) {
+	this.values = values;
 }
-public String getAnnotationRelation() {
-	return annotationRelation;
+public String getDomain() {
+	return domain;
 }
-public void setAnnotationRelation(String annotationRelation) {
-	this.annotationRelation = annotationRelation;
+public void setDomain(String domain) {
+	this.domain = domain;
 }
 
 
