@@ -3,7 +3,7 @@ package ch.fhnw.bpaas.model.cloudservice;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CloudService {
+public class CloudServiceTest {
 
 	private String id;
 	private String name;
@@ -22,7 +22,7 @@ public class CloudService {
 	private String serviceSupportHrsStart;
 	private String serviceSupportHrsEnd;
 
-	public CloudService(String id, String name) {
+	public CloudServiceTest(String id, String name) {
 		setID(id);
 		setName(name);
 		coverage = new HashSet<String>();

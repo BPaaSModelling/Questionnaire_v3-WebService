@@ -25,6 +25,7 @@ import com.google.gson.JsonArray;
 
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceElementModel;
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceModel;
+import ch.fhnw.bpaas.model.entropy.EntropyCloudService;
 import ch.fhnw.bpaas.model.questionnaire.Answer;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireModel;
@@ -762,5 +763,35 @@ public class Questionnaire {
 //		}
 //
 //	}
+	
+	private ArrayList<EntropyCloudService> getCloudServiceList(){
+		return new ArrayList<EntropyCloudService>();
+		
+		
+				?cs a bpaas:CloudService . 
+				?cs rdfs:label ?label . 
+				?properties rdfs:domain bpaas:CloudService .
+				?cs ?properties ?values
+				} ORDER BY ?cs ?label ?properties ?values
+		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+		queryStr.append("SELECT ?cs ?label ?properties ?values WHERE {");
+		queryStr.append("<"+element_URI+">" + " questionnaire:questionHasAnswers ?answer .");
+		queryStr.append("?answer rdfs:label ?label .");
+		queryStr.append("}");
+		
+		QueryExecution qexec = ontology.query(queryStr);
+		ResultSet results = qexec.execSelect();
+		
+		Set<Answer> answers = new HashSet<Answer>();
+
+		while (results.hasNext()) {
+			QuerySolution soln = results.next();
+			answers.add(new Answer(soln.get("?answer").toString(), soln.get("?label").toString()));
+		}
+		qexec.close();
+		return answers;
+		
+	}
+	
 }
 
