@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class EntropyMain {
 
-	private ArrayList<EntropyCloudService> createTestAttributeMap() {
+	public static ArrayList<EntropyCloudService> createTestAttributeMap() {
 		
 		
 		ArrayList<EntropyCloudService> attributeMap = new ArrayList<EntropyCloudService>() ;
@@ -20,21 +20,21 @@ public class EntropyMain {
 		ArrayList<String> cs1AttributeApossibleValues = new ArrayList<String>();
 		cs1AttributeApossibleValues.add("archive the log when full");
 		cs1AttributeApossibleValues.add("do not overwrite event");
-		cs1AttributeA.setPossibleValues(cs1AttributeApossibleValues);
+		cs1AttributeA.setValues(cs1AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs1AttributeB = new EntropyCloudServiceAttribute();
 		cs1AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs1AttributeBpossibleValues = new ArrayList<String>();
 		cs1AttributeBpossibleValues.add("at_most_1_working_day");
-		cs1AttributeB.setPossibleValues(cs1AttributeBpossibleValues);
+		cs1AttributeB.setValues(cs1AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs1AttributeC = new EntropyCloudServiceAttribute();
 		cs1AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs1AttributeCpossibleValues = new ArrayList<String>();
 		cs1AttributeCpossibleValues.add("Customizable Plan");
-		cs1AttributeC.setPossibleValues(cs1AttributeCpossibleValues);
+		cs1AttributeC.setValues(cs1AttributeCpossibleValues);
 		
 		
 		ArrayList<EntropyCloudServiceAttribute> cs1AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
@@ -54,21 +54,21 @@ public class EntropyMain {
 		
 		ArrayList<String> cs2AttributeApossibleValues = new ArrayList<String>();
 		cs2AttributeApossibleValues.add("archive the log when full");
-		cs2AttributeA.setPossibleValues(cs2AttributeApossibleValues);
+		cs2AttributeA.setValues(cs2AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs2AttributeB = new EntropyCloudServiceAttribute();
 		cs2AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs2AttributeBpossibleValues = new ArrayList<String>();
 		cs2AttributeBpossibleValues.add("at_most_1_working_day");
-		cs2AttributeB.setPossibleValues(cs2AttributeBpossibleValues);
+		cs2AttributeB.setValues(cs2AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs2AttributeC = new EntropyCloudServiceAttribute();
 		cs2AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs2AttributeCpossibleValues = new ArrayList<String>();
 		cs2AttributeCpossibleValues.add("Free of Charge");
-		cs2AttributeC.setPossibleValues(cs2AttributeCpossibleValues);
+		cs2AttributeC.setValues(cs2AttributeCpossibleValues);
 		
 		
 		ArrayList<EntropyCloudServiceAttribute> cs2AttributeList = new ArrayList<EntropyCloudServiceAttribute>();
@@ -88,21 +88,21 @@ public class EntropyMain {
 		
 		ArrayList<String> cs3AttributeApossibleValues = new ArrayList<String>();
 		cs3AttributeApossibleValues.add("overwrite event as needed");
-		cs3AttributeA.setPossibleValues(cs3AttributeApossibleValues);
+		cs3AttributeA.setValues(cs3AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs3AttributeB = new EntropyCloudServiceAttribute();
 		cs3AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs3AttributeBpossibleValues = new ArrayList<String>();
 		cs3AttributeBpossibleValues.add("at_most_1_working_day");
-		cs3AttributeB.setPossibleValues(cs3AttributeBpossibleValues);
+		cs3AttributeB.setValues(cs3AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs3AttributeC = new EntropyCloudServiceAttribute();
 		cs3AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs3AttributeCpossibleValues = new ArrayList<String>();
 		cs3AttributeCpossibleValues.add("Monthly Fee");
-		cs3AttributeC.setPossibleValues(cs3AttributeCpossibleValues);
+		cs3AttributeC.setValues(cs3AttributeCpossibleValues);
 		
 		
 		
@@ -125,21 +125,21 @@ public class EntropyMain {
 		
 		ArrayList<String> cs4AttributeApossibleValues = new ArrayList<String>();
 		cs4AttributeApossibleValues.add("overwrite event as needed");
-		cs4AttributeA.setPossibleValues(cs4AttributeApossibleValues);
+		cs4AttributeA.setValues(cs4AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs4AttributeB = new EntropyCloudServiceAttribute();
 		cs4AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs4AttributeBpossibleValues = new ArrayList<String>();
 		cs4AttributeBpossibleValues.add("at_most_2_hours");
-		cs4AttributeB.setPossibleValues(cs4AttributeBpossibleValues);
+		cs4AttributeB.setValues(cs4AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs4AttributeC = new EntropyCloudServiceAttribute();
 		cs4AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs4AttributeCpossibleValues = new ArrayList<String>();
 		cs4AttributeCpossibleValues.add("Customizable Plan");
-		cs4AttributeC.setPossibleValues(cs4AttributeCpossibleValues);
+		cs4AttributeC.setValues(cs4AttributeCpossibleValues);
 		
 		
 		
@@ -161,21 +161,21 @@ public class EntropyMain {
 		
 		ArrayList<String> cs5AttributeApossibleValues = new ArrayList<String>();
 		cs5AttributeApossibleValues.add("archive the log when full");
-		cs5AttributeA.setPossibleValues(cs5AttributeApossibleValues);
+		cs5AttributeA.setValues(cs5AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs5AttributeB = new EntropyCloudServiceAttribute();
 		cs5AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs5AttributeBpossibleValues = new ArrayList<String>();
 		cs5AttributeBpossibleValues.add("at_most_2_hours");
-		cs5AttributeB.setPossibleValues(cs5AttributeBpossibleValues);
+		cs5AttributeB.setValues(cs5AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs5AttributeC = new EntropyCloudServiceAttribute();
 		cs5AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs5AttributeCpossibleValues = new ArrayList<String>();
 		cs5AttributeCpossibleValues.add("Customizable Plan");
-		cs5AttributeC.setPossibleValues(cs5AttributeCpossibleValues);
+		cs5AttributeC.setValues(cs5AttributeCpossibleValues);
 		
 		
 		
@@ -197,21 +197,21 @@ public class EntropyMain {
 		
 		ArrayList<String> cs6AttributeApossibleValues = new ArrayList<String>();
 		cs6AttributeApossibleValues.add(" "); // TODO: TO be tested without any space inside/ With empty value
-		cs6AttributeA.setPossibleValues(cs6AttributeApossibleValues);
+		cs6AttributeA.setValues(cs6AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs6AttributeB = new EntropyCloudServiceAttribute();
 		cs6AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs6AttributeBpossibleValues = new ArrayList<String>();
 		cs6AttributeBpossibleValues.add("at_most_4_hours");
-		cs6AttributeB.setPossibleValues(cs6AttributeBpossibleValues);
+		cs6AttributeB.setValues(cs6AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs6AttributeC = new EntropyCloudServiceAttribute();
 		cs6AttributeC.setId("PAYMENT PLAN"); //attribute C
 		
 		ArrayList<String> cs6AttributeCpossibleValues = new ArrayList<String>();
 		cs6AttributeCpossibleValues.add("Customizable Plan");
-		cs6AttributeC.setPossibleValues(cs6AttributeCpossibleValues);
+		cs6AttributeC.setValues(cs6AttributeCpossibleValues);
 		
 		
 		
@@ -236,14 +236,14 @@ public class EntropyMain {
 		cs7AttributeApossibleValues.add("archive the log when full");
 		cs7AttributeApossibleValues.add("do not overwrite event");
 		cs4AttributeApossibleValues.add("overwrite event as needed");
-		cs7AttributeA.setPossibleValues(cs7AttributeApossibleValues);
+		cs7AttributeA.setValues(cs7AttributeApossibleValues);
 		
 		EntropyCloudServiceAttribute cs7AttributeB = new EntropyCloudServiceAttribute();
 		cs7AttributeB.setId("ServiceSupportResponsiveness"); //attribute B
 		
 		ArrayList<String> cs7AttributeBpossibleValues = new ArrayList<String>();
 		cs7AttributeBpossibleValues.add("at_most_1_working_day");
-		cs7AttributeB.setPossibleValues(cs7AttributeBpossibleValues);
+		cs7AttributeB.setValues(cs7AttributeBpossibleValues);
 		
 		EntropyCloudServiceAttribute cs7AttributeC = new EntropyCloudServiceAttribute();
 		cs7AttributeC.setId("PAYMENT PLAN"); //attribute C
@@ -251,7 +251,7 @@ public class EntropyMain {
 		ArrayList<String> cs7AttributeCpossibleValues = new ArrayList<String>();
 		cs7AttributeCpossibleValues.add("Monthly Fee");
 		cs7AttributeCpossibleValues.add("Customizable Plan");
-		cs7AttributeC.setPossibleValues(cs7AttributeCpossibleValues);
+		cs7AttributeC.setValues(cs7AttributeCpossibleValues);
 		
 		
 		
@@ -264,19 +264,11 @@ public class EntropyMain {
 		cs7.setAttributes(cs7AttributeList);
 		attributeMap.add(cs7);
 		
-		
-		
-		
-		
-		
-		
-		
-		
+				
 		
 		
 		return attributeMap;
-		
-		
+			
 		
 	}
 	

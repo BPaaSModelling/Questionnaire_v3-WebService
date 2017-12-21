@@ -3,9 +3,12 @@ package ch.fhnw.bpaas.webservice;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.Map.Entry;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -27,6 +30,7 @@ import ch.fhnw.bpaas.model.cloudservice.CloudServiceElementModel;
 import ch.fhnw.bpaas.model.cloudservice.CloudServiceModel;
 import ch.fhnw.bpaas.model.entropy.EntropyCloudService;
 import ch.fhnw.bpaas.model.entropy.EntropyCloudServiceAttribute;
+import ch.fhnw.bpaas.model.entropy.EntropyMain;
 import ch.fhnw.bpaas.model.questionnaire.Answer;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireModel;
@@ -405,134 +409,211 @@ public class Questionnaire {
 			return URI;
 		}
 	}
-	
-//	/**
-//	 * @author Devid
-//	 * @param functional requirements: action, object
-//	 * @param questionnaire
-//	 * @return the id of the max entropy question of selected functional requirement
-//	 * @throws NoActionAndObjectQuestionLeftException
-//	 * @throws NoDomainQuestionLeftException 
-//	 */
-//	
-//	public String selectQuestionFromFunctional(String action, String obj, String apqc) throws NoResultsException {
-//		
-//		EntropyCalculation e = new EntropyCalculation();
-//		
-//		//getting the list of cloud services' id matching with action and object and apqc
-//		
-//		
-//		//getting attribute list of selected cloud services and creating HashMap for their attribute	
-//		HashMap<String, ArrayList<String>> attributeMap=new HashMap<String, ArrayList<String>>();
-//		attributeMap=getAttributeMap(action, obj, apqc);
-//		
-//		//entropy calculation, return max entropy question based on the attribute
-//		HashMap<String, Float> a = e.getEntropyforAttributes(attributeMap);
-//		e.displayAttributesWithEntropy(a);
-//		
-//		//return the id of the max entropy question of selected functional requirement
-//		String question = e.getAttributeOrQuestionWithMaxEntropy(a);
-//		
-//		return question;
-//	}
-//
-//	
-//	
-//	
-//	
-//	
-//	}
-//	*/
-	
+		
 
 	private QuestionnaireItem detectNextQuestion(QuestionnaireModel qm) throws NoResultsException{
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 		
+		//Generate Attribute Map
+		// ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); The correct method, for the moment I use the test data to check entropy calc
+		ArrayList<EntropyCloudService> ecss = EntropyMain.createTestAttributeMap();
+		
+		
 		if (qm.getCompletedQuestionList().size() >2){
 			
-			getCloudServiceList(qm);					
-			//TODO: Get list of attributes
-			//TODO: Test attribute MAP | //TODO: Create attribute map	
+			HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
 			
-			//TODO: Calculate entropy and check if not 0
+			HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
+			
+			String maxEntropyAttribute = getMaxEntropyAttribute(entropyMap);		
+		
 			//TODO: Select attribute with max entropy
-			
-			String pickedAttributeQuestion="";//temp variable to store the result of the entropy calculation
-			
 
-			ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-				
-				queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
-				queryStr.append("?question rdfs:label ?label .");
-				queryStr.append("?question rdf:type ?qType . ");
-				queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
-				queryStr.append("?question rdf:type ?dType .");
-				queryStr.append("?dType rdfs:label ?dTypeLabel .");
-				queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
-				queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-				queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
-				queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
-				queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
-				queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
-				queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
-				queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
-				
-				//filter (?relation = pickedAttributeQuestion);  to check
-				queryStr.append("FILTER (?relation = "+ pickedAttributeQuestion + ")");
-				
-				queryStr.append("}");
-				queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
+			//Get question from the highest entropy attribute in the attributeMap
+			EntropyCloudServiceAttribute attr= new EntropyCloudServiceAttribute();
+
+			pickedQuestion=getQuestionFromAttribute(maxEntropyAttribute);
+		} else {
+			pickedQuestion=getFunctionalQuestion(qm);			
+		}
+		return pickedQuestion;
+	}
+	
+	
+	
+	private String getMaxEntropyAttribute(HashMap<String, Float> entropyMap) {
+		
+		String maxEntropyAttr="";
+		Float max=(float) 0;
+		for (int i = 0; i < entropyMap.size(); i++) {
+		if(entropyMap.get(i)>max) {
+			max=entropyMap.get(i);
+			//maxEntropyAttr=get(i); //TODO: change "for" to proper iterator.
+		}
+		}
+		return maxEntropyAttr;
+	}
+
+	private HashMap<String, Float> getEntropyMap(HashMap<String, HashMap<String, Integer>> attributeMap, Integer tot) {
+		
+		HashMap<String, Float> entropyMap = new HashMap<String, Float>();
+		
+		for (int i = 0; i < attributeMap.size(); i++) {
+		
+			HashMap<String, Integer> attributeImap = attributeMap.get(i);
+			Float entropyI=(float) 0;
 			
-			QueryExecution qexec = ontology.query(queryStr);
-			ResultSet results = qexec.execSelect();
+			for (int j=0; j < attributeImap.size(); j++) {
+				
+				Integer count=attributeImap.get(j);
+				Float entropyJ= entropyCalculation(count, tot);
+				entropyI=entropyI+entropyJ;
+			}
 			
-			if (results.hasNext()) {
-				while (results.hasNext()) {
-					QuestionnaireItem question = new QuestionnaireItem();
-					
-					QuerySolution soln = results.next();
-					question.setQuestionURI(soln.get("?question").toString());
-					question.setQuestionLabel(soln.get("?label").toString());
-					question.setAnswerType(soln.get("?qType").toString());
-					question.setDomainLabel(soln.get("?dTypeLabel").toString());
-					question.setAnnotationRelation(soln.get("?relation").toString());
-					
-					if (soln.get("?rule") != null ){
-						question.setRuleToApply(soln.get("?rule").toString());
-						}
-					
-					if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
-							soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
-						//Call for the answers
-						question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
-					}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
-						//Call for the namespace
-						question.setSearchNamespace(soln.get("?searchnamespace").toString());
-						//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
-						//Call for the searchType (Classes of Instances)
-						if (soln.get("?searchType").toString() == null ||
+		}			
+		
+		
+		
+		
+		
+		return entropyMap;
+	}
+
+	private HashMap<String, HashMap<String, Integer>> getAttributeMap(ArrayList<EntropyCloudService> ecss) {
+		
+		HashMap<String, HashMap<String, Integer>> attributeValueListAndEntropyTotal = new HashMap<String, HashMap<String, Integer>>();
+
+		Integer csCount=ecss.size();
+		Integer attributesCount = ecss.get(0).getAttributes().size(); 
+		//TODO: in the previous row, I assume that all the cloud services has the same number of attributes
+
+		for (int i = 0; i < csCount; i++) {
+			ArrayList<EntropyCloudServiceAttribute> attributeListI = ecss.get(i).getAttributes();
+
+			for (int j = 0; j < attributesCount; j++) {
+				EntropyCloudServiceAttribute attributeJ = attributeListI.get(j);
+				ArrayList<String> possibleValueList = attributeJ.getValues();
+
+				if (!attributeValueListAndEntropyTotal.containsKey(attributeJ.getId())) {
+
+					HashMap<String, Integer> attributeJmap = new HashMap<String, Integer>();
+
+					for (int k = 0; k < possibleValueList.size(); k++) {
+						String possibleValueK= possibleValueList.get(k);
+
+						if (!attributeJmap.containsKey(possibleValueK)) {
+							attributeJmap.put(possibleValueK, 0);
+						} //for every new possible value K starts his count to 0
+					}
+				} else {
+
+					HashMap<String, Integer> attributeJmap = attributeValueListAndEntropyTotal.get(attributeJ);
+
+					for (int k = 0; k < possibleValueList.size(); k++) {
+						String possibleValueK= possibleValueList.get(k);
+
+						if (!attributeJmap.containsKey(possibleValueK)) {
+							attributeJmap.put(possibleValueK, 0);
+						}else {
+							int actualValue= attributeJmap.get(possibleValueK);
+							attributeJmap.put(possibleValueK, actualValue+1);
+						}//for every new possible value K starts his count to 0, otherwise increment his count by 1
+					}
+				}
+			}
+		}
+
+
+		return attributeValueListAndEntropyTotal;
+	}
+
+	private float entropyCalculation(Integer count, Integer total) {
+		
+		float prob= count/total;
+		float entropy = - (float)  (prob * Math.log(prob) / Math.log(2.0)) ;
+		
+		return entropy;
+	}
+
+	private QuestionnaireItem getQuestionFromAttribute(String attr) throws NoResultsException {
+		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+
+		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+
+		queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
+		queryStr.append("?question rdfs:label ?label .");
+		queryStr.append("?question rdf:type ?qType . ");
+		queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+		queryStr.append("?question rdf:type ?dType .");
+		queryStr.append("?dType rdfs:label ?dTypeLabel .");
+		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
+		queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
+		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
+		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
+		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
+		queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
+		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
+		
+		queryStr.append("FILTER (?question = " + attr + ")");
+		
+		queryStr.append("}");
+		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
+
+		QueryExecution qexec = ontology.query(queryStr);
+		ResultSet results = qexec.execSelect();
+
+		if (results.hasNext()) {
+			while (results.hasNext()) {
+				QuestionnaireItem question = new QuestionnaireItem();
+
+				QuerySolution soln = results.next();
+				question.setQuestionURI(soln.get("?question").toString());
+				question.setQuestionLabel(soln.get("?label").toString());
+				question.setAnswerType(soln.get("?qType").toString());
+				question.setDomainLabel(soln.get("?dTypeLabel").toString());
+				question.setAnnotationRelation(soln.get("?relation").toString());
+
+				if (soln.get("?rule") != null ){
+					question.setRuleToApply(soln.get("?rule").toString());
+				}
+
+				if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
+						soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
+					//Call for the answers
+					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
+				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
+					//Call for the namespace
+					question.setSearchNamespace(soln.get("?searchnamespace").toString());
+					//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
+					//Call for the searchType (Classes of Instances)
+					if (soln.get("?searchType").toString() == null ||
 							soln.get("?searchType").toString().equals("") ||
 							soln.get("?searchType").toString().equals(GlobalVariables.BOOLEAN_FALSE_URI)){
-							question.setSearchOnClassesInsteadOfInstances(false);
-						} else {
-							question.setSearchOnClassesInsteadOfInstances(true);
-						}	
-					}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
-						//Call for the Datatype
-						question.setAnswerDatatype(soln.get("?datatype").toString());
-						question.setComparisonOperationAnswers(getComparisonOperations());
-					}
-					
-					pickedQuestion = question;
+						question.setSearchOnClassesInsteadOfInstances(false);
+					} else {
+						question.setSearchOnClassesInsteadOfInstances(true);
+					}	
+				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
+					//Call for the Datatype
+					question.setAnswerDatatype(soln.get("?datatype").toString());
+					question.setComparisonOperationAnswers(getComparisonOperations());
 				}
-			} else {
-				throw new NoResultsException("nore more results");
+
+				pickedQuestion = question;
 			}
-			qexec.close();			
-			
 		} else {
-			
-		
+			throw new NoResultsException("nore more results");
+		}
+		qexec.close();		
+
+		return pickedQuestion;
+
+	}
+
+	private QuestionnaireItem getFunctionalQuestion(QuestionnaireModel qm) throws NoResultsException {
+		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+				
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 			
 			queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
@@ -614,134 +695,18 @@ public class Questionnaire {
 		} else {
 			throw new NoResultsException("nore more results");
 		}
-		qexec.close();
+		qexec.close();		
 		
-		
-			}
 		return pickedQuestion;
-		}
+	}
 	
-	
-//	
-//	/**
-//	 * @author Devid
-//	 * @param Funcional requirement, action, obj, apqc
-//	 * @return Attribute Map based on funcional requirement 
-//	 * @throws NoDomainQuestionLeftException 
-//	 * @throws NoActionAndObjectQuestionLeftException
-//	 */
-//	
-//	private HashMap<String, ArrayList<String>> getAttributeMap(String action, String obj, String apqc ) throws NoResultsException{
-//		
-//		HashMap<String,String> attributeList=new HashMap<String,String>();
-//		attributeList=queryAttributeFullListFromCloudServiceList();
-//
-//		HashMap<String, ArrayList<String>> attributeMap=new HashMap<String, ArrayList<String>>();
-//
-//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-//		//query creation
-//		String cols="";
-//
-//		for (int i = 0; i < attributeList.size(); i++) {
-//			cols="?"+attributeList.get(i).toString()+" ";
-//		}
-//
-//		queryStr.append("SELECT ?cloudservice "+ cols +" WHERE {");
-//		queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
-//
-//		queryStr.append("?cloudservice bpaas:cloudServiceHasObject ?object .");
-//		queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?action .");
-//		queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
-//
-//		for (int j = 0; j < attributeList.size(); j++) {
-//			String key= attributeList.get(j);
-//			queryStr.append("?cloudservice bpaas:cloudServiceHasAction ?apqc .");
-//		}	
-//
-//		queryStr.append("FILTER (?object = fbpdo:"+obj+ ").");
-//		queryStr.append("FILTER (?action = fbpdo:"+action+ ").");
-//		queryStr.append("FILTER (?action = fbpdo:"+apqc+ ").");
-//		queryStr.append("}");		
-//
-//		// query execution		
-//		QueryExecution qexec = ontology.query(queryStr);
-//		ResultSet results = qexec.execSelect();
-//
-//		// resultMap will contain the Cloud Services <string, arrayList string>
-//		ArrayList<String> resultMap = new ArrayList<String>();
-//
-//		//storing result from query in HashMap containing cloudsocket's information
-//		if(!results.hasNext()){ //if result is empty throw the exception
-//			qexec.close();
-//			throw new NoResultsException("no cloud services for this action and object have been found");
-//		}else{
-//			//scan result and populate the array of Cloud Services matching with action and object
-//			while(results.hasNext()) {
-//				QuerySolution soln=results.next();
-//				String value=soln.get("?cloudservice").toString();//TODO CHECK THIS ID
-//				resultMap.add(value);
-//			}
-//		}
-//	return attributeMap;
-//
-//
-//	}
-//	
-//	
-//	/** 
-//	 * @author Devid
-//	 * @return HashMap<String,String> of Cloud Services' properties and annotationRelation
-//	 * @throws NoFunctionalRequirementLeftException
-//	 *
-//	 */
-//	
-//	private HashMap<String,String> queryAttributeFullListFromCloudServiceList() throws NoResultsException {
-//		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-//		//query creation
-//		queryStr.append("SELECT ?question ?ar WHERE {");
-//		queryStr.append("?qClass rdfs:subClassOf* questionnaire:Question .");
-//		queryStr.append("?question rdf:type ?qClass .");
-//		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?ar");
-//		queryStr.append("}");		
-//		
-//		// query execution		
-//		QueryExecution qexec = ontology.query(queryStr);
-//		ResultSet results = qexec.execSelect();
-//		
-//		// resultMap will contain property and his annotationRelation
-//		HashMap<String, String> resultMap = new HashMap<String, String>();
-//		if(!results.hasNext()){
-//			qexec.close();
-//			throw new NoResultsException("all domain questions have been answerd; asking for new domain");
-//		}else{
-//			
-//			while(results.hasNext()){
-//				QuerySolution soln = results.next();
-//				String key = soln.get("?question").toString();
-//				String value = null;
-//				try{
-//					value = soln.get("?ar").toString();
-//				}catch(NullPointerException e){
-//					value = soln.get("?ar").toString();;
-//				}
-//				
-//				if(!resultMap.containsKey(key)){
-//					resultMap.put(key, value);
-//				}
-//			}
-//			qexec.close();
-//			return resultMap;
-//		}
-//
-//	}
-	
-	
-//	@GET
+
+	//	@GET
 //	@Path("/testEntropy")
 //	public Response  getCloudServiceList(){
 	public ArrayList<EntropyCloudService> getCloudServiceList(QuestionnaireModel qm){
 		String tempStrForDomain = "";
-		//TODO:Ste buon divertimento :D io mi metto a fare il test set e l'entropia
+		
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		queryStr.append("SELECT ?q ?dType ?annotationRelation ?cs ?csLabel ?value WHERE {");
 		queryStr.append("?q rdf:type ?dType .");
@@ -830,8 +795,6 @@ public class Questionnaire {
 		return ecss;
 		
 	}
-	
-	
 	
 
 	
