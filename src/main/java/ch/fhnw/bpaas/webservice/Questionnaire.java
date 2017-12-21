@@ -409,13 +409,40 @@ public class Questionnaire {
 		}
 	}
 		
-
+	@POST		
+	 @Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})		
+	 @Consumes(MediaType.APPLICATION_JSON)		
+	 @Path("/getNextQuestion")		
+	 public Response getFunctionalQuestions(String parsed_json) {		
+	 	Gson gson = new Gson(); 		
+	 	System.out.println("\n####################<start>####################");		
+	 	System.out.println("/Received request for next question" );		
+	 	System.out.println("####################<end>####################");		
+	 			
+	 	System.out.println("/Questionnaire received: " +parsed_json);		
+	 			
+	 	QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
+	 	QuestionnaireItem result = new QuestionnaireItem();		
+	 	try {		
+	 			result = detectNextQuestion(qm);		
+	 					
+	 	} catch (NoResultsException e) {		
+	 		e.printStackTrace();		
+	 	}		
+	 			
+	 	String json = gson.toJson(result);		
+	 	System.out.println("\n####################<start>####################");		
+	 	System.out.println("/search genereated json: " +json);		
+	 	System.out.println("####################<end>####################");		
+	 	return Response.status(Status.OK).entity(json).build();		
+	 }
+	
 	private QuestionnaireItem detectNextQuestion(QuestionnaireModel qm) throws NoResultsException{
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 		
 		//Generate Attribute Map
-		// ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); The correct method, for the moment I use the test data to check entropy calc. Uncomment this and comment next row.
-		ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
+		 ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); //The correct method, for the moment I use the test data to check entropy calc. Uncomment this and comment next row.
+		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 				
 		if (qm.getCompletedQuestionList().size() >2){
 			
@@ -585,12 +612,6 @@ public class Questionnaire {
 		queryStr.append("?dType rdfs:label ?dTypeLabel .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-		queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
-		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
-		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
-		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
-		queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
-		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
 		queryStr.append("FILTER (?question = " + attr + ")");
 		queryStr.append("}");
 
@@ -748,14 +769,14 @@ public class Questionnaire {
 		queryStr.append("?q questionnaire:questionHasAnnotationRelation ?annotationRelation .");
 		queryStr.append("?cs rdf:type bpaas:CloudService .");
 		queryStr.append("?cs rdfs:label ?csLabel .");
-		queryStr.append("?cs ?annotationRelation ?value");
+		queryStr.append("?cs ?annotationRelation ?value . ");
 		//generate filter based on domains
 		
 		for (int i = 0; i < qm.getSelectedDomainList().size(); i++){
 			if (i != 0){
 				tempStrForDomain = tempStrForDomain + " || ";
 			}
-			tempStrForDomain = tempStrForDomain + "?dType = " + qm.getSelectedDomainList().get(i).getAnswerID();
+			tempStrForDomain = tempStrForDomain + "?dType = <" + qm.getSelectedDomainList().get(i).getAnswerID()+">";
 		}
 		queryStr.append("FILTER (" + tempStrForDomain + ")");
 		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
