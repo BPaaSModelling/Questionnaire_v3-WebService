@@ -445,12 +445,24 @@ public class Questionnaire {
 		
 		String maxEntropyAttr="";
 		Float max=(float) 0;
-		for (int i = 0; i < entropyMap.size(); i++) {
-		if(entropyMap.get(i)>max) {
-			max=entropyMap.get(i);
-			//maxEntropyAttr=get(i); //TODO: change "for" to proper iterator.
+		
+//		for (int i = 0; i < entropyMap.size(); i++) {
+//		if(entropyMap.get(i)>max) {
+//			max=entropyMap.get(i);
+//			//maxEntropyAttr=get(i); //TODO: change "for" to proper iterator.
+//		}
+//		}
+		for (Map.Entry<String,Float> entry : entropyMap.entrySet()) {
+			if (entry.getValue()>max) {
+				maxEntropyAttr=entry.getKey();
+				// System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());		   
+			}
+			 
 		}
-		}
+
+		
+		
+		
 		return maxEntropyAttr;
 	}
 
@@ -458,24 +470,35 @@ public class Questionnaire {
 		
 		HashMap<String, Float> entropyMap = new HashMap<String, Float>();
 		
-		for (int i = 0; i < attributeMap.size(); i++) {
+//		for (int i = 0; i < attributeMap.size(); i++) {
+//		
+//			HashMap<String, Integer> attributeImap = attributeMap.get(i);
+//			Float entropyI=(float) 0;
+//			
+//			for (int j=0; j < attributeImap.size(); j++) {
+//				
+//				Integer count=attributeImap.get(j);
+//				Float entropyJ= entropyCalculation(count, tot);
+//				entropyI=entropyI+entropyJ;
+//			}
+//			
+//		}	
 		
-			HashMap<String, Integer> attributeImap = attributeMap.get(i);
-			Float entropyI=(float) 0;
+		for (Map.Entry<String, HashMap<String, Integer>> entry : attributeMap.entrySet()) {
+			HashMap<String, Integer> attributeImap = entry.getValue();
 			
-			for (int j=0; j < attributeImap.size(); j++) {
+			Float entropyI=(float) 0;
+			for (Map.Entry<String, Integer> entry1 : attributeImap.entrySet()) {
 				
-				Integer count=attributeImap.get(j);
+				Integer count=entry1.getValue();
 				Float entropyJ= entropyCalculation(count, tot);
 				entropyI=entropyI+entropyJ;
+				
+				entropyMap.put(entry.getKey(), entropyI);
 			}
 			
-		}			
-		
-		
-		
-		
-		
+		}
+				
 		return entropyMap;
 	}
 
@@ -487,6 +510,7 @@ public class Questionnaire {
 		Integer attributesCount = ecss.get(0).getAttributes().size(); 
 		//TODO: in the previous row, I assume that all the cloud services has the same number of attributes
 
+		
 		for (int i = 0; i < csCount; i++) {
 			ArrayList<EntropyCloudServiceAttribute> attributeListI = ecss.get(i).getAttributes();
 
@@ -534,6 +558,8 @@ public class Questionnaire {
 		
 		return entropy;
 	}
+	
+	
 
 	private QuestionnaireItem getQuestionFromAttribute(String attr) throws NoResultsException {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
