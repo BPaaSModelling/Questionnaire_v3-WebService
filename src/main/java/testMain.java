@@ -6,7 +6,9 @@ import javax.ws.rs.core.Response;
 
 import ch.fhnw.bpaas.model.entropy.EntropyCloudService;
 import ch.fhnw.bpaas.model.entropy.EntropyCloudServiceAttribute;
+import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.webservice.*;
+import ch.fhnw.bpaas.webservice.exceptions.NoResultsException;
 
 public class testMain {
 
@@ -16,16 +18,42 @@ public class testMain {
 		ArrayList<EntropyCloudService> ecss = qm.createTestAttributeMap();
 		//System.out.println(ecss.toString());
 		//System.out.println("create test attribute map, fatta"+"\n"+"\n"+"\n");
-			
 		
 		HashMap<String, HashMap<String, Integer>> attributeMap= qm.getAttributeMap(ecss);
 		
 		HashMap<String, Float> entropyMap = qm.getEntropyMap(attributeMap, ecss.size());
 		
-		String maxEntropyAttribute = qm.getMaxEntropyAttribute(entropyMap);
+		String maxEntropyAttributeT = qm.getMaxEntropyAttribute(entropyMap);
 		
-		//TODO: CHECK DATA FROM RESPONSE
-		Response question= qm.getFunctionalQuestions(maxEntropyAttribute);
+		//TODO: change query in getQuestionFromAttribute() in order to work with the parameter FILE LOG RETENTION POLICY
+		
+		//maxEntropyAttribute is FILE LOG RETENTION POLICY, but no corresponding question with this label so we might use payment plan as example but
+		// also payment plan is not correctly available but it's spelled as:  bpaas:cloudServiceHasPaymentPlan
+		
+		
+		
+		String maxEntropyAttribute="bpaas:cloudServiceHasPaymentPlan";
+
+//		SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {
+//			  ?question rdfs:label ?label .
+//			  ?question rdf:type ?qType .
+//			  ?qType rdfs:subClassOf* questionnaire:AnswerType .
+//			  ?question rdf:type ?dType .
+//			  ?dType rdfs:label ?dTypeLabel .
+//			  ?dType rdfs:subClassOf questionnaire:Question .
+//			  ?question questionnaire:questionHasAnnotationRelation ?relation .
+//			 FILTER (?relation =bpaas:cloudServiceHasPaymentPlan )
+//			}
+		
+		
+		QuestionnaireItem question = null;
+		try {
+			question = qm.getQuestionFromAttribute(maxEntropyAttribute);
+		} catch (NoResultsException e) {
+			
+			e.printStackTrace();
+		}
+				
 		
 		System.out.println(question.toString());
 		
