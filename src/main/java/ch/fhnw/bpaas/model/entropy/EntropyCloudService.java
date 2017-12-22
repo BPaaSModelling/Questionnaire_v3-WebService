@@ -38,7 +38,7 @@ public void setAttributes(ArrayList<EntropyCloudServiceAttribute> attributes) {
 
 @Override
 public String toString() {
-	return "EntropyCloudService [id=" + id + ", label=" + label + ", attributes="+"\n" + attributes + "]"+"\n";
+	return "\nCS[id=" + id + ", label=" + label + ", attributes="+"\n" + attributes + "]";
 }
 
 

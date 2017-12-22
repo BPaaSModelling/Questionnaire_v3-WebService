@@ -14,19 +14,27 @@ public class testMain {
 
 	public static void main(String[] args) {
 		Questionnaire qm= new Questionnaire();	
-		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 		ArrayList<EntropyCloudService> ecss = qm.createTestAttributeMap();
-		//System.out.println(ecss.toString());
-		//System.out.println("create test attribute map, fatta"+"\n"+"\n"+"\n");
 		
 		HashMap<String, HashMap<String, Integer>> attributeMap= qm.getAttributeMap(ecss);
 		
 		HashMap<String, Float> entropyMap = qm.getEntropyMap(attributeMap, ecss.size());
 		
+		//TODO: Discuss CS[id=service6, label=null, attributes=[[id=FILE LOG RETENTION POLICY, values= [ ], domain=null] ...] Should an absent value increase Entropy for the attribute?
 		String maxEntropyAttributeT = qm.getMaxEntropyAttribute(entropyMap);
 		
-		//TODO: change query in getQuestionFromAttribute() in order to work with the parameter FILE LOG RETENTION POLICY
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
+		System.out.println("|---                                             IMPORTANT MESSSAGE                                                                                        ------|");
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
+		System.out.println("|---     maxEntropyAttribute is FILE LOG RETENTION POLICY, but no corresponding question with this label so we might use 'PAYMENT PLAN' as example but     ------|");
+		System.out.println("|---     also 'PAYMENT PLAN' is not available, as is, but it's available if spelled as: bpaas:cloudServiceHasPaymentPlan                                   ------|");
+		System.out.println("|---     so we are generating the questionnaireItem for  bpaas:cloudServiceHasPaymentPlan using the funcion: getQuestionFromAttribute()                    ------|");
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
+		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		
+		//TODO: change getQuestionFromAttribute()
 		//maxEntropyAttribute is FILE LOG RETENTION POLICY, but no corresponding question with this label so we might use payment plan as example but
 		// also payment plan is not correctly available but it's spelled as:  bpaas:cloudServiceHasPaymentPlan
 		
