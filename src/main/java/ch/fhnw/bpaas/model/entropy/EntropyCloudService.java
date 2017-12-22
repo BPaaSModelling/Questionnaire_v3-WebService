@@ -3,6 +3,7 @@ package ch.fhnw.bpaas.model.entropy;
 import java.util.ArrayList;
 
 public class EntropyCloudService {
+	
 private String id;
 private String label;
 private ArrayList<EntropyCloudServiceAttribute> attributes;
@@ -33,6 +34,11 @@ public ArrayList<EntropyCloudServiceAttribute> getAttributes() {
 
 public void setAttributes(ArrayList<EntropyCloudServiceAttribute> attributes) {
 	this.attributes = attributes;
+}
+
+@Override
+public String toString() {
+	return "EntropyCloudService [id=" + id + ", label=" + label + ", attributes="+"\n" + attributes + "]"+"\n";
 }
 
 

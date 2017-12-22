@@ -31,5 +31,10 @@ public void setDomain(String domain) {
 	this.domain = domain;
 }
 
+@Override
+public String toString() {
+	return "EntropyCloudServiceAttribute [id=" + id + ", values=" + values + ", domain=" + domain + "]"+"\n";
+}
+
 
 }
