@@ -6,7 +6,6 @@ import javax.ws.rs.core.Response;
 
 import ch.fhnw.bpaas.model.entropy.EntropyCloudService;
 import ch.fhnw.bpaas.model.entropy.EntropyCloudServiceAttribute;
-import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.webservice.*;
 import ch.fhnw.bpaas.webservice.exceptions.NoResultsException;
 
@@ -15,47 +14,133 @@ import ch.fhnw.bpaas.webservice.*;
 public class TestMain {
 
 	public static void main(String[] args) {
-		Questionnaire qm= new Questionnaire();	
+
+//----------------------------------------------------------------------//
+//																		//
+//TESTING getQuestionFromAttribute(maxEntropyAttribute)					//
+//																		//
+//----------------------------------------------------------------------//		
+		
+//		
+//		Questionnaire qm= new Questionnaire();
+//		QuestionnaireModel qModel=new QuestionnaireModel();
+//		
+//			
+//		ArrayList<Answer> selectedDomainList = new ArrayList<Answer>();
+//		
+//		Answer domainAnswer = new Answer("questionnaire:Payment","Performance");
+//		Answer domainAnswer1 = new Answer("questionnaire:ServiceSupport", "ServiceSupport");
+//		System.out.println(domainAnswer.toString());
+//		selectedDomainList.add(domainAnswer);
+//		selectedDomainList.add(domainAnswer1);
+//		System.out.println("selectedDomainList"+selectedDomainList.toString());
+//		
+//		
+//		ArrayList<QuestionnaireItem> completedQuestionList=new ArrayList<QuestionnaireItem>();
+		
+		
+
+//----------------------------------------------------------------------//
+//																		//
+//         TESTING getFunctionalQuestion()  WORK  						//
+//																		//
+//----------------------------------------------------------------------//		
+//		It's working, in the below I'm adding empty completed question to the questionnaire model
+//		the funciton detectNextQuestion check the size of qModel and return the right funcional questions
+		
+//		
+//		Questionnaire qm= new Questionnaire();
+//		QuestionnaireModel qModel=new QuestionnaireModel();
+//		
+//			
+//		ArrayList<Answer> selectedDomainList = new ArrayList<Answer>();
+//		
+//		Answer domainAnswer = new Answer("questionnaire:Payment","Performance");
+//		Answer domainAnswer1 = new Answer("questionnaire:ServiceSupport", "ServiceSupport");
+//		System.out.println(domainAnswer.toString());
+//		selectedDomainList.add(domainAnswer);
+//		selectedDomainList.add(domainAnswer1);
+//		System.out.println("selectedDomainList"+selectedDomainList.toString());
+//		
+//		
+//		ArrayList<QuestionnaireItem> completedQuestionList=new ArrayList<QuestionnaireItem>();
+//		
+//		//commenting any of the following pairs will change the number of question completed and therefore the result of
+//		// detectNextQuestion
+//		// commenting 1 pair will return the question item for APQC, commenting 2 pairs will return the question item for OBJECT, 
+//		// commenting all of them will return the question item ACTION
+//				
+//		QuestionnaireItem completedQuestion= new QuestionnaireItem();
+//		completedQuestionList.add(completedQuestion);
+//		
+//		QuestionnaireItem completedQuestion1= new QuestionnaireItem();
+//		completedQuestionList.add(completedQuestion1);
+//		
+//		QuestionnaireItem completedQuestion2= new QuestionnaireItem();
+//		completedQuestionList.add(completedQuestion2);
+//		
+//				
+//		qModel.setCompletedQuestionList(completedQuestionList);
+//		
+//		System.out.println(qModel.getCompletedQuestionList().size());
+//		
+//		qModel.setCompletedQuestionList(completedQuestionList);
+//		qModel.setSelectedQuestionDomainList(selectedDomainList);
+//		
+//		
+//		QuestionnaireItem qI= new QuestionnaireItem();
+//		
+//		try {
+//			qI =qm.detectNextQuestion(qModel);
+//			System.out.println(qI.toString());
+//		} catch (NoResultsException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	
+				
+		
+		
+		
+//----------------------------------------------------------------------//
+//																		//
+//      ENTROPY TEST + getQuestionFromAttribute				WORK		//
+//																		//		
+//----------------------------------------------------------------------//
+//	
+//	
+		
+		Questionnaire qm= new Questionnaire();
+				
 		ArrayList<EntropyCloudService> ecss = qm.createTestAttributeMap();
+	
 		
 		HashMap<String, HashMap<String, Integer>> attributeMap= qm.getAttributeMap(ecss);
 		
 		HashMap<String, Float> entropyMap = qm.getEntropyMap(attributeMap, ecss.size());
 		
 		//TODO: Discuss CS[id=service6, label=null, attributes=[[id=FILE LOG RETENTION POLICY, values= [ ], domain=null] ...] Should an absent value increase Entropy for the attribute?
-		String maxEntropyAttributeT = qm.getMaxEntropyAttribute(entropyMap);
+		String maxEntropyAttribute = qm.getMaxEntropyAttribute(entropyMap);
+		
 		
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		System.out.println("|---                                             IMPORTANT MESSSAGE                                                                                        ------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
-		System.out.println("|---     maxEntropyAttribute is FILE LOG RETENTION POLICY, but no corresponding question with this label so we might use 'PAYMENT PLAN' as example but     ------|");
-		System.out.println("|---     also 'PAYMENT PLAN' is not available, as is, but it's available if spelled as: bpaas:cloudServiceHasPaymentPlan                                   ------|");
+		System.out.println("|---     maxEntropyAttribute is '" +maxEntropyAttribute+"' , but there's no corresponding question. For the test of getQuestionFromAttribute 	   ------|");
+		System.out.println("|---     we use 'PAYMENT PLAN'. It works if spelled as: bpaas:cloudServiceHasPaymentPlan     				                              ------|");
 		System.out.println("|---     so we are generating the questionnaireItem for  bpaas:cloudServiceHasPaymentPlan using the funcion: getQuestionFromAttribute()                    ------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		
-		//TODO: change getQuestionFromAttribute()
-		//maxEntropyAttribute is FILE LOG RETENTION POLICY, but no corresponding question with this label so we might use payment plan as example but
-		// also payment plan is not correctly available but it's spelled as:  bpaas:cloudServiceHasPaymentPlan
+			
+		maxEntropyAttribute="bpaas:cloudServiceHasPaymentPlan";
+		//Viable option to change the attribute id to an acceptable value
+		//maxEntropyAttribute=maxEntropyAttribute.replace(" ","");
+		//maxEntropyAttribute ="bpaas:cloudServiceHas"+maxEntropyAttribute;
 		
-		
-		
-		String maxEntropyAttribute="bpaas:cloudServiceHasPaymentPlan";
-
-//		SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {
-//			  ?question rdfs:label ?label .
-//			  ?question rdf:type ?qType .
-//			  ?qType rdfs:subClassOf* questionnaire:AnswerType .
-//			  ?question rdf:type ?dType .
-//			  ?dType rdfs:label ?dTypeLabel .
-//			  ?dType rdfs:subClassOf questionnaire:Question .
-//			  ?question questionnaire:questionHasAnnotationRelation ?relation .
-//			 FILTER (?relation =bpaas:cloudServiceHasPaymentPlan )
-//			}
-		
-		
+		System.out.println(maxEntropyAttribute);
 		QuestionnaireItem question = null;
 		try {
 			question = qm.getQuestionFromAttribute(maxEntropyAttribute);
@@ -64,12 +149,16 @@ public class TestMain {
 			e.printStackTrace();
 		}
 				
-		
 		System.out.println(question.toString());
 		
+
 		
+		
+		//DO NOT COMMENT ANYTHING BELOW HERE!!!!!!
 	}
 
 
 
 }
+
+

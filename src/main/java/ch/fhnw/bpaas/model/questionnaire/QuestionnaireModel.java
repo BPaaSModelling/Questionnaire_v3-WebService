@@ -45,6 +45,12 @@ public class QuestionnaireModel {
 	public void setSelectedQuestionDomainList(ArrayList<Answer> selectedDomainList) {
 		this.selectedDomainList = selectedDomainList;
 	}
+
+	@Override
+	public String toString() {
+		return "QuestionnaireModel [completed=" + completed + ", completedQuestionList=" + completedQuestionList
+				+ ", currentQuestionID=" + currentQuestionID + ", selectedDomainList=" + selectedDomainList + "]";
+	}
 	
 	
 

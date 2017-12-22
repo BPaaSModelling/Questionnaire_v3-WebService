@@ -34,6 +34,7 @@ import ch.fhnw.bpaas.model.questionnaire.Answer;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireItem;
 import ch.fhnw.bpaas.model.questionnaire.QuestionnaireModel;
 import ch.fhnw.bpaas.webservice.exceptions.DomainSelectionException;
+import ch.fhnw.bpaas.webservice.exceptions.MinimumEntropyReached;
 import ch.fhnw.bpaas.webservice.exceptions.NoDomainQuestionLeftException;
 import ch.fhnw.bpaas.webservice.exceptions.NoResultsException;
 import ch.fhnw.bpaas.webservice.ontology.OntologyManager;
@@ -437,7 +438,7 @@ public class Questionnaire {
 		return Response.status(Status.OK).entity(json).build();		
 	}
 
-	private QuestionnaireItem detectNextQuestion(QuestionnaireModel qm) throws NoResultsException{
+	public QuestionnaireItem detectNextQuestion(QuestionnaireModel qm) throws NoResultsException{
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 
 		//Generate Attribute Map
@@ -470,7 +471,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 1
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs1AttributeA = new EntropyCloudServiceAttribute();
-		cs1AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs1AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs1AttributeApossibleValues = new ArrayList<String>();
 		cs1AttributeApossibleValues.add("archive the log when full");
@@ -505,7 +506,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 2
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs2AttributeA = new EntropyCloudServiceAttribute();
-		cs2AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs2AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs2AttributeApossibleValues = new ArrayList<String>();
 		cs2AttributeApossibleValues.add("archive the log when full");
@@ -539,7 +540,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 3
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs3AttributeA = new EntropyCloudServiceAttribute();
-		cs3AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs3AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs3AttributeApossibleValues = new ArrayList<String>();
 		cs3AttributeApossibleValues.add("overwrite event as needed");
@@ -576,7 +577,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 4
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs4AttributeA = new EntropyCloudServiceAttribute();
-		cs4AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs4AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs4AttributeApossibleValues = new ArrayList<String>();
 		cs4AttributeApossibleValues.add("overwrite event as needed");
@@ -612,7 +613,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 5
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs5AttributeA = new EntropyCloudServiceAttribute();
-		cs5AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs5AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs5AttributeApossibleValues = new ArrayList<String>();
 		cs5AttributeApossibleValues.add("archive the log when full");
@@ -648,7 +649,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 6
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs6AttributeA = new EntropyCloudServiceAttribute();
-		cs6AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs6AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs6AttributeApossibleValues = new ArrayList<String>();
 		cs6AttributeApossibleValues.add(" "); // TODO: TO be tested without any space inside/ With empty value
@@ -685,7 +686,7 @@ public class Questionnaire {
 		//------------ CLOUD SERVICE 7
 		//-----------------------------------------------------------------------
 		EntropyCloudServiceAttribute cs7AttributeA = new EntropyCloudServiceAttribute();
-		cs7AttributeA.setId("FILE LOG RETENTION POLICY"); //attribute A
+		cs7AttributeA.setId("Log file retention policy"); //attribute A
 
 		ArrayList<String> cs7AttributeApossibleValues = new ArrayList<String>();
 		cs7AttributeApossibleValues.add("archive the log when full");
@@ -732,19 +733,6 @@ public class Questionnaire {
 
 		HashMap<String, Float> entropyMap = new HashMap<String, Float>();
 
-		//	for (int i = 0; i < attributeMap.size(); i++) {
-		//	
-		//		HashMap<String, Integer> attributeImap = attributeMap.get(i);
-		//		Float entropyI=(float) 0;
-		//		
-		//		for (int j=0; j < attributeImap.size(); j++) {
-		//			
-		//			Integer count=attributeImap.get(j);
-		//			Float entropyJ= entropyCalculation(count, tot);
-		//			entropyI=entropyI+entropyJ;
-		//		}
-		//		
-		//	}
 		System.out.println("\n|------------------------------------");
 		System.out.println("|EntropyMap Calculation on a total of :"+ tot +" cloud Services");
 		System.out.println("|------------------------------------");
@@ -805,14 +793,15 @@ public class Questionnaire {
 
 				//System.out.println("          attributeValueListAndEntropyTotal.containsKey("+attributeJ.getId()+") "+ attributeValueListAndEntropyTotal.containsKey(attributeJ.getId()));
 				if (!attributeValueListAndEntropyTotal.containsKey(attributeJ.getId())) {
-
+					
 					HashMap<String, Integer> attributeJmap = new HashMap<String, Integer>();
 
 					for (int k = 0; k < possibleValueList.size(); k++) {
 						//	System.out.println("          k: "+ k);
 
 						String possibleValueK= possibleValueList.get(k);
-
+						
+						
 						//System.out.println("          Value "+ k + ":"+ possibleValueK);
 						//System.out.println("         	 attributeJmap: "+ attributeJmap.toString());
 						//System.out.println("                  attributeJmap.containsKey("+possibleValueK+"): "+ attributeJmap.containsKey(possibleValueK));
@@ -821,6 +810,8 @@ public class Questionnaire {
 							attributeJmap.put(possibleValueK, 1);
 							//System.out.println("          attributeJmap: "+ attributeJmap.toString());
 						} //for every new possible value K starts his count to 0
+						
+						
 						attributeValueListAndEntropyTotal.put(attributeJ.getId(), attributeJmap);
 						// System.out.println("                           attributeValueListAndEntropyTotal.toString()"+attributeValueListAndEntropyTotal.toString());
 					}
@@ -863,6 +854,19 @@ public class Questionnaire {
 
 		return entropy;
 	}
+	
+	private Boolean checkAttrMinEntropy(Float float1) throws MinimumEntropyReached {
+
+		Boolean flag=true;
+		Float minEntropyAccepted= (float) 0.3;
+		
+		if (float1< minEntropyAccepted) {
+			flag=false;
+		}
+		//System.out.println("entropy: "+ entropy);
+
+		return flag;
+	}
 
 	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap) {
 
@@ -882,6 +886,13 @@ public class Questionnaire {
 				max=entry.getValue();
 			}
 
+		}
+		
+		try {
+			checkAttrMinEntropy(entropyMap.get(maxEntropyAttr));
+		} catch (MinimumEntropyReached e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		System.out.println("\n|-----------------------------------------------------------");
 		System.out.println("|             maxEntropyAttr: "+maxEntropyAttr );
@@ -990,7 +1001,7 @@ public class Questionnaire {
 		queryStr.append("?question rdf:type ?dType .");
 		queryStr.append("?dType rdfs:label ?dTypeLabel .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
-		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
+		//queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
 		queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
 		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
 		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
@@ -1029,7 +1040,7 @@ public class Questionnaire {
 				question.setQuestionLabel(soln.get("?label").toString());
 				question.setAnswerType(soln.get("?qType").toString());
 				question.setDomainLabel(soln.get("?dTypeLabel").toString());
-				question.setAnnotationRelation(soln.get("?relation").toString());
+				//question.setAnnotationRelation(soln.get("?relation").toString());
 
 				if (soln.get("?rule") != null ){
 					question.setRuleToApply(soln.get("?rule").toString());
@@ -1088,7 +1099,7 @@ public class Questionnaire {
 			if (i != 0){
 				tempStrForDomain = tempStrForDomain + " || ";
 			}
-			tempStrForDomain = tempStrForDomain + "?dType = <" + qm.getSelectedDomainList().get(i).getAnswerID()+">";
+			tempStrForDomain = tempStrForDomain + "?dType = " + qm.getSelectedDomainList().get(i).getAnswerID()+"";
 		}
 		queryStr.append("FILTER (" + tempStrForDomain + ")");
 		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
