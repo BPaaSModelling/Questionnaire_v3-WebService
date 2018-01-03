@@ -47,7 +47,7 @@ public class TestMain {
 //----------------------------------------------------------------------//		
 //		It's working, in the below I'm adding empty completed question to the questionnaire model
 //		the funciton detectNextQuestion check the size of qModel and return the right funcional questions
-		
+//		
 //		
 //		Questionnaire qm= new Questionnaire();
 //		QuestionnaireModel qModel=new QuestionnaireModel();
@@ -70,14 +70,14 @@ public class TestMain {
 //		// commenting 1 pair will return the question item for APQC, commenting 2 pairs will return the question item for OBJECT, 
 //		// commenting all of them will return the question item ACTION
 //				
-//		QuestionnaireItem completedQuestion= new QuestionnaireItem();
-//		completedQuestionList.add(completedQuestion);
+//		//QuestionnaireItem completedQuestion= new QuestionnaireItem();
+//		//completedQuestionList.add(completedQuestion);
 //		
-//		QuestionnaireItem completedQuestion1= new QuestionnaireItem();
-//		completedQuestionList.add(completedQuestion1);
+//		//QuestionnaireItem completedQuestion1= new QuestionnaireItem();
+//		//completedQuestionList.add(completedQuestion1);
 //		
-//		QuestionnaireItem completedQuestion2= new QuestionnaireItem();
-//		completedQuestionList.add(completedQuestion2);
+//		//QuestionnaireItem completedQuestion2= new QuestionnaireItem();
+//		//completedQuestionList.add(completedQuestion2);
 //		
 //				
 //		qModel.setCompletedQuestionList(completedQuestionList);
@@ -97,18 +97,18 @@ public class TestMain {
 //			// TODO Auto-generated catch block
 //			e.printStackTrace();
 //		}
-	
-				
-		
-		
-		
+//	
+//				
+//		
+//		
+//		
 //----------------------------------------------------------------------//
 //																		//
 //      ENTROPY TEST + getQuestionFromAttribute				WORK		//
 //																		//		
 //----------------------------------------------------------------------//
-//	
-//	
+	
+	
 		
 		Questionnaire qm= new Questionnaire();
 				
@@ -138,9 +138,12 @@ public class TestMain {
 		maxEntropyAttribute="bpaas:cloudServiceHasPaymentPlan";
 		//Viable option to change the attribute id to an acceptable value
 		//maxEntropyAttribute=maxEntropyAttribute.replace(" ","");
+		
 		//maxEntropyAttribute ="bpaas:cloudServiceHas"+maxEntropyAttribute;
 		
+		maxEntropyAttribute ="bpaas:cloudServiceHasPaymentPlan";
 		System.out.println(maxEntropyAttribute);
+		
 		QuestionnaireItem question = null;
 		try {
 			question = qm.getQuestionFromAttribute(maxEntropyAttribute);
@@ -154,8 +157,8 @@ public class TestMain {
 
 		
 		
-		//DO NOT COMMENT ANYTHING BELOW HERE!!!!!!
-	}
+//		//DO NOT COMMENT ANYTHING BELOW HERE!!!!!!
+}
 
 
 
