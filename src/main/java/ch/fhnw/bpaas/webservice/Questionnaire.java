@@ -444,9 +444,9 @@ public class Questionnaire {
 		//Generate Attribute Map
 		ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); //The correct method, for the moment I use the test data to check entropy calc. Uncomment this and comment next row.
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
-
-		if (qm.getCompletedQuestionList().size() >2){
-
+		System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");	
+		if (qm.getCompletedQuestionList().size() >3){
+			System.out.println("####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
 			HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
 
 			HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
@@ -457,7 +457,8 @@ public class Questionnaire {
 
 			pickedQuestion=getQuestionFromAttribute(maxEntropyAttribute);
 		} else {
-			pickedQuestion=getFunctionalQuestion(qm);			
+			pickedQuestion=getFunctionalQuestion(qm);	
+			System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");
 		}
 		return pickedQuestion;
 	}
@@ -970,7 +971,7 @@ public class Questionnaire {
 		queryStr.append("?dType rdfs:label ?dTypeLabel .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-		queryStr.append("FILTER (?relation = " + attr + ")");
+		queryStr.append("FILTER (?relation = <" + attr + ">)");
 		queryStr.append("}");
 
 		QueryExecution qexec = ontology.query(queryStr);
@@ -1134,7 +1135,7 @@ public class Questionnaire {
 			if (i != 0){
 				tempStrForDomain = tempStrForDomain + " || ";
 			}
-			tempStrForDomain = tempStrForDomain + "?dType = " + qm.getSelectedDomainList().get(i).getAnswerID()+"";
+			tempStrForDomain = tempStrForDomain + "?dType = <" + qm.getSelectedDomainList().get(i).getAnswerID()+">";
 		}
 		queryStr.append("FILTER (" + tempStrForDomain + ")");
 		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
