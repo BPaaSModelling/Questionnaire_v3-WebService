@@ -249,6 +249,7 @@ public class Questionnaire {
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
 		try {
+			System.out.println("questionList received"+questionList.toString());
 			result = querySuitableCloudservices(questionList);
 
 			if (debug_properties){
@@ -271,7 +272,11 @@ public class Questionnaire {
 	}
 
 	private ArrayList<Answer> querySuitableCloudservices(QuestionnaireItem[] questions){
-
+		
+		
+		System.out.println("\n\n####################querySuitableCloudservices####################");
+		System.out.println("\n"+questions.toString()+"\n");
+		
 		ArrayList<Answer> cloudServices = new ArrayList<Answer>();
 		//this method takes in input all the questions, it has to:
 		//1. define which questions were answered
@@ -293,9 +298,11 @@ public class Questionnaire {
 		queryStr.append("?cloudService rdf:type bpaas:CloudService .");
 		queryStr.append("?cloudService rdfs:label ?csLabel .");
 		for (int i = 0; i < answeredQuestion.size(); i++){
+			System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-
+				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
+				
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
 						String id = UUID.randomUUID().toString();
@@ -311,7 +318,7 @@ public class Questionnaire {
 
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
-
+				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
 					String id2 = "?"+UUID.randomUUID().toString();
@@ -330,10 +337,38 @@ public class Questionnaire {
 				}
 
 				break;
+				//author devid
+			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
+				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
+				System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
+				if (answeredQuestion.get(i).getRuleToApply()!=null) {
+					String id = UUID.randomUUID().toString();
+					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
+					queryStr.append("?cloudService <" + answeredQuestion.get(i).getAnnotationRelation() + "> " + id + " .");
+					System.out.println("BIND");
+					queryStr.append("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
 
+
+				} else {
+					System.out.println("No rule to apply");
+					System.out.println("answeredQuestion.get(i)"+"i="+i+" "+answeredQuestion.get(i).toString());
+					System.out.println("Get annotation relation" +answeredQuestion.get(i).getAnnotationRelation());
+					System.out.println(formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()));
+					try {
+						System.out.println("------------------------------------------------------------");
+						System.out.println("searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
+						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
+					} catch (NoResultsException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				break;
+				//end author devid
 
 			default: //single and search answers
-
+				System.out.println("inside default SWITCH CASE= "+answeredQuestion.get(i).getAnswerType());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
@@ -358,6 +393,9 @@ public class Questionnaire {
 			QuerySolution soln = results.next();
 			cloudServices.add(new Answer(soln.get("?cloudService").toString(), soln.get("?csLabel").toString()));
 		}
+		
+		System.out.println("\n"+ cloudServices.toString()+"\n");
+		System.out.println("####################END     querySuitableCloudservices####################");
 		return cloudServices;
 	}
 
@@ -420,7 +458,7 @@ public class Questionnaire {
 		System.out.println("/Received request for next question" );		
 		System.out.println("####################<end>####################");		
 
-		System.out.println("/Questionnaire received: " +parsed_json);		
+		//System.out.println("/Questionnaire received: " +parsed_json);		
 
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
 		QuestionnaireItem result = new QuestionnaireItem();		
@@ -442,6 +480,7 @@ public class Questionnaire {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 
 		//Generate Attribute Map
+		System.out.println("questionnaire model" +qm.toString());
 		ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); //The correct method, for the moment I use the test data to check entropy calc. Uncomment this and comment next row.
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 		System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");	
@@ -803,7 +842,7 @@ public class Questionnaire {
 		HashMap<String, HashMap<String, Integer>> attributeValueListAndEntropyTotal = new HashMap<String, HashMap<String, Integer>>();
 
 		Integer csCount=ecss.size();
-		
+		System.out.println(ecss.toString());
 		//TODO: in the previous row, I assume that all the cloud services has the same number of attributes
 
 		System.out.println("\n\nCount of CloudServices: "+ csCount.toString());
@@ -1123,6 +1162,8 @@ public class Questionnaire {
 
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		queryStr.append("SELECT ?q ?dType ?annotationRelation ?cs ?csLabel ?value WHERE {");
+		//queryStr.append("SELECT ?cs ?csLabel ?value WHERE {");
+		
 		queryStr.append("?q rdf:type ?dType .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 		queryStr.append("?q questionnaire:questionHasAnnotationRelation ?annotationRelation .");
@@ -1143,7 +1184,8 @@ public class Questionnaire {
 
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
-
+		
+		
 		ArrayList<EntropyCloudService> ecss = new ArrayList<EntropyCloudService>();
 		EntropyCloudService currentCSE = null;
 		EntropyCloudServiceAttribute currentCsAttribute = null;
@@ -1204,13 +1246,66 @@ public class Questionnaire {
 		Gson gson = new Gson(); 
 
 		String json = gson.toJson(ecss);
-
+		System.out.println("---------------------------------json--------------------------------");
+		System.out.println(json);
+		System.out.println(ecss.toString());
 		//return Response.status(Status.OK).entity(json).build();
 		return ecss;
 
 	}
+	
+	private String searchAnnotationRelation(String annotationRelation, String questionURI) throws NoResultsException {
+		
+
+		if (annotationRelation!=null) {
+			return annotationRelation;
+		}else {
+
+//			SELECT ?relation WHERE {
+//			?question rdfs:label ?label .
+//			?question rdf:type ?qType . 
+//			?qType rdfs:subClassOf* questionnaire:AnswerType .
+//			?question rdf:type ?dType .
+//			?dType rdfs:label ?dTypeLabel .
+//			?dType rdfs:subClassOf questionnaire:Question . 
+//			  ?question questionnaire:questionHasAnnotationRelation ?relation .
+//			FILTER (?question =questionURI )
+//			}
+			String questionN= questionURI.replace("http://ikm-group.ch/archiMEO/", "");
+			questionN=questionN.replace("#", ":");
+			ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+
+			queryStr.append("SELECT ?relation WHERE {");
+			queryStr.append("?question rdfs:label ?label .");
+			queryStr.append("?question rdf:type ?qType . ");
+			queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+			queryStr.append("?question rdf:type ?dType .");
+			queryStr.append("?dType rdfs:label ?dTypeLabel .");
+			queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+			queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation .");
+			queryStr.append("FILTER (?question = "+questionN+"" );
+			queryStr.append(")}");
 
 
+			QueryExecution qexec = ontology.query(queryStr);
+			ResultSet results = qexec.execSelect();
 
+			if (results.hasNext()) {
+				while (results.hasNext()) {
+
+					QuerySolution soln = results.next();
+					annotationRelation=soln.get("?relation").toString();
+
+				}
+			} else {
+				throw new NoResultsException("nore more results");
+			}
+			qexec.close();
+
+			return annotationRelation;
+		}
+
+
+	}
 }
 

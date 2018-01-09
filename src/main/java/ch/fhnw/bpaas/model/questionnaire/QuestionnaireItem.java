@@ -3,7 +3,20 @@ package ch.fhnw.bpaas.model.questionnaire;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
+
+
 public class QuestionnaireItem {
+
+	@Override
+	public String toString() {
+		return "QuestionnaireItem [questionLabel=" + questionLabel + ", questionURI=" + questionURI + ", questionID="
+				+ questionID + ", answerList=" + answerList + ", answerDatatype=" + answerDatatype
+				+ ", givenAnswerList=" + givenAnswerList + ", searchNamespace=" + searchNamespace
+				+ ", comparisonOperationAnswers=" + comparisonOperationAnswers + ", comparisonAnswer="
+				+ comparisonAnswer + ", searchOnClassesInsteadOfInstances=" + searchOnClassesInsteadOfInstances
+				+ ", answerType=" + answerType + ", domainLabel=" + domainLabel + ", annotationRelation="
+				+ annotationRelation + ", ruleToApply=" + ruleToApply + "]";
+	}
 
 	public void setComparisonAnswer(String comparisonAnswer) {
 		this.comparisonAnswer = comparisonAnswer;
@@ -23,7 +36,8 @@ public class QuestionnaireItem {
 	private String domainLabel;							//the label of the domain (performance, datasecurity, etc.)	
 	private String annotationRelation;					//the uri of the CS property that the question refers
 	private String ruleToApply;							//a rule to apply when perform an answer
-	
+	//private OntologyManager ontology = OntologyManager.getInstance();
+	private boolean debug_properties = false;
 	
 	public String getSearchNamespace() {
 		return searchNamespace;
@@ -92,26 +106,27 @@ public class QuestionnaireItem {
 		this.searchOnClassesInsteadOfInstances = searchOnClassesInsteadOfInstances;
 	}
 
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("==QuestionnaireItem==\n");
-		sb.append("QuestionURI: \t" +getQuestionURI()+"\n");
-		sb.append("questionID: \t" +getQuestionID()+"\n");
-		sb.append("QuestionLabel: \t" +getQuestionLabel()+"\n");
-		sb.append("AnswerType: \t" +getAnswerType()+"\n");
-		sb.append("AnswerDataType: \t" +getAnswerDatatype()+"\n");
-		sb.append("AnswerDataType: \t" +getAnswerDrilldownNamespace() +"\n");
-		sb.append("comparisonOperationsAnswers: \t" +comparisonOperationAnswers.toString() +"\n");
-		sb.append("comparisonAnswer: \t" +comparisonAnswer);
-		
-		for (Answer answerItem : answerList) {
-			sb.append(answerItem.toString());
-		}
-//		for (String gAnswer : givenAnswerList) {
-			sb.append("given answers: " +givenAnswerList.toString() +"\n");
-//		}
-		return sb.toString();
-	}
+	// old
+	//	public String toString(){
+	//		StringBuilder sb = new StringBuilder();
+	//		sb.append("==QuestionnaireItem==\n");
+	//		sb.append("QuestionURI: \t" +getQuestionURI()+"\n");
+	//		sb.append("questionID: \t" +getQuestionID()+"\n");
+	//		sb.append("QuestionLabel: \t" +getQuestionLabel()+"\n");
+	//		sb.append("AnswerType: \t" +getAnswerType()+"\n");
+	//		sb.append("AnswerDataType: \t" +getAnswerDatatype()+"\n");
+	//		sb.append("AnswerDataType: \t" +getAnswerDrilldownNamespace() +"\n");
+	//		sb.append("comparisonOperationsAnswers: \t" +comparisonOperationAnswers.toString() +"\n");
+	//		sb.append("comparisonAnswer: \t" +comparisonAnswer);
+	//		
+	//		for (Answer answerItem : answerList) {
+	//			sb.append(answerItem.toString());
+	//		}
+	////		for (String gAnswer : givenAnswerList) {
+	//			sb.append("given answers: " +givenAnswerList.toString() +"\n");
+	////		}
+	//		return sb.toString();
+	//	}
 
 	public void removeGivenAnswer(String answerID) {
 		System.out.println("removed " +answerID);
@@ -182,5 +197,7 @@ public class QuestionnaireItem {
 	public void setRuleToApply(String ruleToApply) {
 		this.ruleToApply = ruleToApply;
 	}
+
+	
 	
 }

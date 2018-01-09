@@ -29,12 +29,18 @@ public class Answer {
 	public String getAnswerLabel() {
 		return answerLabel;
 	}
-	
-	public String toString(){
-		StringBuilder sb = new StringBuilder();
-		sb.append("=Answer=\n");
-		sb.append("AnswerID: \t" +getAnswerID()+"\n");
-		sb.append("AnswerLabel: \t" +getAnswerLabel()+"\n");
-		return sb.toString();
+
+	@Override
+	public String toString() {
+		return "Answer [answerLabel=" + answerLabel + ", answerID=" + answerID + "]";
 	}
+	
+	
+//	public String toString(){
+//		StringBuilder sb = new StringBuilder();
+//		sb.append("=Answer=\n");
+//		sb.append("AnswerID: \t" +getAnswerID()+"\n");
+//		sb.append("AnswerLabel: \t" +getAnswerLabel()+"\n");
+//		return sb.toString();
+//	}
 }
