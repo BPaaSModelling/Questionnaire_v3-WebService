@@ -54,9 +54,9 @@ public class Questionnaire {
 	@Path("/getDomains")
 	public Response getDomains() {
 
-		System.out.println("\n####################<start>####################");
-		System.out.println("/requested parameters to get question domains" );
-		System.out.println("####################<end>####################");
+		
+		System.out.println("\n----------------------------      requested parameters to get question domains      -----------------------------------" );
+		
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
 		try {
@@ -74,9 +74,9 @@ public class Questionnaire {
 		}
 
 		String json = gson.toJson(result);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search genereated json: " +json);
-		System.out.println("####################<end>####################");
+		//System.out.println("\n####################<start>####################");
+		//System.out.println("/search genereated json: " +json);
+		//System.out.println("####################<end>####################");
 		return Response.status(Status.OK).entity(json).build();
 	}
 
@@ -230,9 +230,9 @@ public class Questionnaire {
 	@GET
 	@Path("/getSuitableCloudservices")
 	public Response getSuitableCloudServices(@QueryParam("questionList") String questionList_received) {
-		System.out.println("ecco quante sono le domande: " + questionList_received);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/requested suitable cloudservices " );
+		//System.out.println("ecco quante sono le domande: " + questionList_received);
+		//System.out.println("\n####################<start> getSuitableCloudServices ####################");
+		//System.out.println("/requested suitable cloudservices " );
 		//		ArrayList<QuestionnaireItem> questionList = new ArrayList<QuestionnaireItem>();
 		//		for (int i = 0; i < questionList_received.size(); i++){
 		//			Gson gson = new Gson(); 
@@ -243,13 +243,13 @@ public class Questionnaire {
 		Gson gson = new Gson(); 
 		//QuestionnaireItem[] questionList = gson.fromJson(questionList_received, QuestionnaireItem[].class);
 		QuestionnaireItem[] questionList = gson.fromJson(questionList_received, QuestionnaireItem[].class);
-		System.out.println("/received " + questionList_received );
+		//System.out.println("/received " + questionList_received );
 		//System.out.println("/received " + questionList.length + " questions" );
-		System.out.println("####################<end>####################");
+		//System.out.println("####################<end> getSuitableCloudServices ####################");
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
 		try {
-			System.out.println("questionList received"+questionList.toString());
+			
 			result = querySuitableCloudservices(questionList);
 
 			if (debug_properties){
@@ -265,23 +265,23 @@ public class Questionnaire {
 		}
 
 		String json = gson.toJson(result);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search genereated json: " +json);
-		System.out.println("####################<end>####################");
+		//System.out.println("\n####################<start>####################");
+		//System.out.println("/search genereated json: " +json);
+		//System.out.println("####################<end>####################");
 		return Response.status(Status.OK).entity(json).build();
 	}
 
 	private ArrayList<Answer> querySuitableCloudservices(QuestionnaireItem[] questions){
-		
-		
-		System.out.println("\n\n####################querySuitableCloudservices####################");
-		System.out.println("\n"+questions.toString()+"\n");
-		
+		//TODO CHECK MULTI_SELECTION	
+		System.out.println("\n                 ####################                     querySuitableCloudservices                 ####################\n");
+				
 		ArrayList<Answer> cloudServices = new ArrayList<Answer>();
 		//this method takes in input all the questions, it has to:
 		//1. define which questions were answered
+		
 		ArrayList<QuestionnaireItem> answeredQuestion = new ArrayList<QuestionnaireItem>();
 		for (int i = questions.length-1; i>=0 ; i--){
+			System.out.println(i);
 			if (questions[i].getGivenAnswerList().size() > 0){
 				answeredQuestion.add(questions[i]);
 				System.out.println("=== ANSERED QUESTIONS: "+ questions[i].getQuestionLabel() +"===");
@@ -340,7 +340,7 @@ public class Questionnaire {
 				//author devid
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
 				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
-				System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
+				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
@@ -350,13 +350,13 @@ public class Questionnaire {
 
 
 				} else {
-					System.out.println("No rule to apply");
-					System.out.println("answeredQuestion.get(i)"+"i="+i+" "+answeredQuestion.get(i).toString());
-					System.out.println("Get annotation relation" +answeredQuestion.get(i).getAnnotationRelation());
-					System.out.println(formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()));
+					//System.out.println("No rule to apply");
+					//System.out.println("answeredQuestion.get(i)"+"i="+i+" "+answeredQuestion.get(i).toString());
+					//System.out.println("Get annotation relation" + answeredQuestion.get(i).getAnnotationRelation());
+					//System.out.println(formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()));
 					try {
-						System.out.println("------------------------------------------------------------");
-						System.out.println("searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
+						//System.out.println("------------------------------------------------------------");
+						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
 						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
 					} catch (NoResultsException e) {
 						// TODO Auto-generated catch block
@@ -394,8 +394,8 @@ public class Questionnaire {
 			cloudServices.add(new Answer(soln.get("?cloudService").toString(), soln.get("?csLabel").toString()));
 		}
 		
-		System.out.println("\n"+ cloudServices.toString()+"\n");
-		System.out.println("####################END     querySuitableCloudservices####################");
+		//System.out.println("\n"+ cloudServices.toString()+"\n");
+		System.out.println("                                         ####################       \\\\\\\\\\END     querySuitableCloudservices         ####################");
 		return cloudServices;
 	}
 
@@ -421,11 +421,24 @@ public class Questionnaire {
 	}
 
 	private Set<Answer> getAnswerList(String element_URI) {
+		//TODO fix QUERY#
+		System.out.println("element_URI "+element_URI);
+		System.out.println("getAnswerList(String element_URI)");
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		queryStr.append("SELECT ?answer ?label WHERE {");
-		queryStr.append("<"+element_URI+">" + " questionnaire:questionHasAnswers ?answer .");
-		queryStr.append("?answer rdfs:label ?label .");
-		queryStr.append("}");
+		if (element_URI.contains("http://ikm-group.ch")){
+			queryStr.append("<"+element_URI+">" + " questionnaire:questionHasAnswers ?answer .");
+			System.out.println("element_URI "+element_URI);
+			
+		}else {
+			element_URI.replace("#", ":");
+			queryStr.append(""+element_URI+"" + " questionnaire:questionHasAnswers ?answer .");
+			System.out.println("FORMATTED ELEMENT_URI");
+			
+		}
+					
+		queryStr.append("?answer rdfs:label ?label .}");
+		//queryStr.append("}");
 
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
@@ -454,25 +467,32 @@ public class Questionnaire {
 	@Path("/getNextQuestion")		
 	public Response getFunctionalQuestions(String parsed_json) {		
 		Gson gson = new Gson(); 		
-		System.out.println("\n####################<start>####################");		
-		System.out.println("/Received request for next question" );		
-		System.out.println("####################<end>####################");		
+		//System.out.println("\n####################<start>####################");		
+		//System.out.println("------------------------             Received request for next question        -------------------------" );		
+		//System.out.println("####################<end>####################");		
 
 		//System.out.println("/Questionnaire received: " +parsed_json);		
 
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
 		QuestionnaireItem result = new QuestionnaireItem();		
-		try {		
+		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("                                                                                     getFunctionalQuestions");
+		try {	
+			System.out.println("                         \ndetectNextQuestion(qm) ------------------------------------> "+detectNextQuestion(qm).getQuestionURI());
+			System.out.println("                         qm.getCompletedQuestionList().size() ------------------------------------> "+qm.getCompletedQuestionList().size());
 			result = detectNextQuestion(qm);		
 
 		} catch (NoResultsException e) {		
 			e.printStackTrace();		
 		}		
-
+		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
+		
 		String json = gson.toJson(result);		
-		System.out.println("\n####################<start>####################");		
-		System.out.println("/search genereated json: " +json);		
-		System.out.println("####################<end>####################");		
+		//System.out.println("\n####################<start>####################");		
+		//System.out.println("/search genereated json: " +json);		
+		//System.out.println("####################<end>####################");		
 		return Response.status(Status.OK).entity(json).build();		
 	}
 
@@ -480,25 +500,38 @@ public class Questionnaire {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 
 		//Generate Attribute Map
-		System.out.println("questionnaire model" +qm.toString());
-		ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); //The correct method, for the moment I use the test data to check entropy calc. Uncomment this and comment next row.
+		//System.out.println("questionnaire model" +qm.toString());
+		ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); 
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
-		System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");	
-		if (qm.getCompletedQuestionList().size() >3){
-			System.out.println("####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
+		
+				
+		//System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");	
+		if (qm.getCompletedQuestionList().size() >2){
+			System.out.println("\n\n####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
+			
 			HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
+			
+			//System.out.println("!!!!!           attributeMap.toString()                 !!!!!\n");
+			//System.out.println(attributeMap.toString());
+			
 
 			HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
 
 			String maxEntropyAttribute = getMaxEntropyAttribute(entropyMap);		
-
-			EntropyCloudServiceAttribute attr= new EntropyCloudServiceAttribute();
-
-			pickedQuestion=getQuestionFromAttribute(maxEntropyAttribute);
+			try {
+				pickedQuestion=getQuestionFromAttribute(maxEntropyAttribute);
+			} catch (NoResultsException e) {		
+				e.printStackTrace();		
+			}		
+			
+			
+			System.out.println("####################   picked Question URI---> "+ pickedQuestion.getQuestionURI().toString()+"                  ####################");
 		} else {
+			
 			pickedQuestion=getFunctionalQuestion(qm);	
-			System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");
+			//System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");
 		}
+		System.out.println("!!!!!!   picked Question URI---> "+ pickedQuestion.getQuestionURI().toString()+"                  !!!!!!");
 		return pickedQuestion;
 	}
 
@@ -800,51 +833,56 @@ public class Questionnaire {
 
 		HashMap<String, Float> entropyMap = new HashMap<String, Float>();
 
-		System.out.println("\n|------------------------------------");
-		System.out.println("|EntropyMap Calculation on a total of :"+ tot +" cloud Services");
-		System.out.println("|------------------------------------");
+		//System.out.println("\n|------------------------------------");
+		//System.out.println("|EntropyMap Calculation on a total of :"+ tot +" cloud Services");
+		//System.out.println("|------------------------------------");
 		for (Map.Entry<String, HashMap<String, Integer>> entry : attributeMap.entrySet()) {
 			HashMap<String, Integer> attributeImap = entry.getValue();
 
 			//System.out.println(entry.getKey()+": "+ attributeImap.toString());
 
 			Float entropyI=(float) 0;
-			System.out.println("\n|------------------------------------");	
-			System.out.println("|    Entropy of: "+ entry.getKey()+ "': "+ " " +entropyI);	
-			System.out.println("|------------------------------------\n\n");	
+			//System.out.println("\n|------------------------------------");	
+			//System.out.println("|    Entropy of: "+ entry.getKey()+ "': "+ " " +entropyI);	
+			//System.out.println("|------------------------------------\n\n");	
 			for (Map.Entry<String, Integer> entry1 : attributeImap.entrySet()) {
 
 				Integer count=entry1.getValue();
 
 				Float entropyJ= entropyCalculation(count, tot);
-				System.out.println("    Entropy of '"+ entry1.getKey()+ "': " +entropyJ);
-				System.out.println("    count: "+count);
-				System.out.println("    Previous total entropy of: "+ entry.getKey()+ "': "+ " " +entropyI);
+				//System.out.println("    Entropy of '"+ entry1.getKey()+ "': " +entropyJ);
+			//	System.out.println("    count: "+count);
+			//	System.out.println("    Previous total entropy of: "+ entry.getKey()+ "': "+ " " +entropyI);
 				entropyI=entropyI+entropyJ;
-				System.out.println("------------------------------------");
-				System.out.println("New entropy for "+entry.getKey()+": "+entropyI);
-				System.out.println("------------------------------------");
+			//	System.out.println("------------------------------------");
+			//	System.out.println("New entropy for "+entry.getKey()+": "+entropyI);
+			//	System.out.println("------------------------------------");
 
 
 				entropyMap.put(entry.getKey(), entropyI);
 			}
 		}
-		System.out.println("\n|-----------------------------------------------------------");
-		System.out.println("|     entropyMap generated by getEntropyMap() ");
-		System.out.println("|-----------------------------------------------------------");	
-		System.out.println("|\n|"+ entropyMap.toString()+"\n|");		
-		System.out.println("|-----------------------------------------------------------\n");
+	//	System.out.println("\n|-----------------------------------------------------------");
+	//	System.out.println("|     entropyMap generated by getEntropyMap() ");
+	//	System.out.println("|-----------------------------------------------------------");	
+	//	System.out.println("|\n|"+ entropyMap.toString()+"\n|");		
+	//	System.out.println("|-----------------------------------------------------------\n");
 		return entropyMap;
 	}
 
-	public HashMap<String, HashMap<String, Integer>> getAttributeMap(ArrayList<EntropyCloudService> ecss) {
+	public HashMap<String, HashMap<String, Integer>> getAttributeMap(ArrayList<EntropyCloudService> ecss) throws NoResultsException {
 
 		HashMap<String, HashMap<String, Integer>> attributeValueListAndEntropyTotal = new HashMap<String, HashMap<String, Integer>>();
 
 		Integer csCount=ecss.size();
-		System.out.println(ecss.toString());
+		//System.out.println(ecss.toString());
 		//TODO: in the previous row, I assume that all the cloud services has the same number of attributes
 
+		ArrayList<EntropyCloudService> ecssOld =ecss;
+		
+		ecss= createAttributeMapFromList(ecss);
+		System.out.println("!!!!!         new ecss             !!!!!");
+				
 		System.out.println("\n\nCount of CloudServices: "+ csCount.toString());
 
 		for (int i = 0; i < csCount; i++) {
@@ -877,7 +915,7 @@ public class Questionnaire {
 //							System.out.println("         	 attributeJmap: "+ attributeJmap.toString());
 //							System.out.println("                  attributeJmap.containsKey("+possibleValueK+"): "+ attributeJmap.containsKey(possibleValueK));
 							if (!attributeJmap.containsKey(possibleValueK)) {
-								System.out.println("                         adding "+possibleValueK);			
+							//	System.out.println("                         adding "+possibleValueK);			
 								attributeJmap.put(possibleValueK, 1);
 //								System.out.println("          attributeJmap: "+ attributeJmap.toString());
 							} //for every new possible value K starts his count to 0
@@ -901,7 +939,7 @@ public class Questionnaire {
 							}else {
 								int actualValue= attributeJmap.get(possibleValueK);
 								attributeJmap.put(possibleValueK, actualValue+1);
-								System.out.println("                         increasing count of "+possibleValueK+" to "+(actualValue+1));			
+							//	System.out.println("                         increasing count of "+possibleValueK+" to "+(actualValue+1));			
 
 								
 							} //for every new possible value K starts his count to 0, otherwise increment his count by 1
@@ -910,10 +948,10 @@ public class Questionnaire {
 				}
 
 		}
-		System.out.println("\n|-----------------------------------------------------------");
-		System.out.println("|     attributeValueListAndEntropyTotal generated by getAttributeMap() ");
-		System.out.println("|-----------------------------------------------------------\n");
-		System.out.println(attributeValueListAndEntropyTotal.toString());
+		//System.out.println("\n|-----------------------------------------------------------");
+		//System.out.println("|     attributeValueListAndEntropyTotal generated by getAttributeMap() ");
+		//System.out.println("|-----------------------------------------------------------\n");
+		//System.out.println(attributeValueListAndEntropyTotal.toString());
 		return attributeValueListAndEntropyTotal;
 	}
 
@@ -957,7 +995,7 @@ public class Questionnaire {
 		for (Map.Entry<String,Float> entry : entropyMap.entrySet()) {
 			if (entry.getValue()>max) {
 				maxEntropyAttr=entry.getKey();
-				System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());
+				//System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());
 				max=entry.getValue();
 			}
 
@@ -982,7 +1020,7 @@ public class Questionnaire {
 
 	public QuestionnaireItem getQuestionFromAttribute(String attr) throws NoResultsException {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
-
+		System.out.println("####################  EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		//
 		//		SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {
@@ -1010,7 +1048,7 @@ public class Questionnaire {
 		queryStr.append("?dType rdfs:label ?dTypeLabel .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-		queryStr.append("FILTER (?relation = <" + attr + ">)");
+		queryStr.append("FILTER (?relation = " + attr + ")");
 		queryStr.append("}");
 
 		QueryExecution qexec = ontology.query(queryStr);
@@ -1021,21 +1059,36 @@ public class Questionnaire {
 				QuestionnaireItem question = new QuestionnaireItem();
 
 				QuerySolution soln = results.next();
+				
 				question.setQuestionURI(soln.get("?question").toString());
 				question.setQuestionLabel(soln.get("?label").toString());
 				question.setAnswerType(soln.get("?qType").toString());
 				question.setDomainLabel(soln.get("?dTypeLabel").toString());
 				question.setAnnotationRelation(soln.get("?relation").toString());
-
+				ArrayList<Answer> answerList = new ArrayList<Answer>();
+				
 				if (soln.get("?rule") != null ){
 					question.setRuleToApply(soln.get("?rule").toString());
 				}
 
-				if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
-						soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
+				//TODO: FIX MULTI SELECTION
+				
+				String tmpV=soln.get("?qType").toString();
+				
+					System.out.println("qType is "+soln.get("?qType"));
+				
+				if (tmpV.equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || tmpV.equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
 					//Call for the answers
-					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
-				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
+					System.out.println("A");
+					Answer tempAnswer=new Answer();
+					//author devid
+					//tempAnswer.setAnswerID(soln.get("?question").toString());
+					//System.out.println(tempAnswer.toString());
+					//end					
+					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString()))); //it blocks here
+					System.out.println("b");//never printed
+					
+				}else if (tmpV.equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
 					//Call for the namespace
 					question.setSearchNamespace(soln.get("?searchnamespace").toString());
 					//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
@@ -1047,19 +1100,22 @@ public class Questionnaire {
 					} else {
 						question.setSearchOnClassesInsteadOfInstances(true);
 					}	
-				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
+				}else if (tmpV.equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
 					//Call for the Datatype
 					question.setAnswerDatatype(soln.get("?datatype").toString());
 					question.setComparisonOperationAnswers(getComparisonOperations());
 				}
-
+				System.out.println("\nD");
 				pickedQuestion = question;
 			}
 		} else {
+			System.out.println("\nE");
 			throw new NoResultsException("nore more results");
 		}
 		qexec.close();		
-
+		System.out.println("####################  end EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
+		System.out.println("!!!!   THE ATTRIBUTE:  "+attr);
+		System.out.println("!!!!   QUESTION URI SELECTED FROM THE ATTRIBUTE: "+pickedQuestion.getQuestionURI());
 		return pickedQuestion;
 
 	}
@@ -1158,6 +1214,7 @@ public class Questionnaire {
 	//	@Path("/testEntropy")
 	//	public Response  getCloudServiceList(){
 	public ArrayList<EntropyCloudService> getCloudServiceList(QuestionnaireModel qm){
+		
 		String tempStrForDomain = "";
 
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
@@ -1185,6 +1242,7 @@ public class Questionnaire {
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 		
+		//System.out.println("----------------------         results.toString()            ----------\n"+results.toString());
 		
 		ArrayList<EntropyCloudService> ecss = new ArrayList<EntropyCloudService>();
 		EntropyCloudService currentCSE = null;
@@ -1222,6 +1280,9 @@ public class Questionnaire {
 				currentAttributeValues = new ArrayList<String>();
 				//I set the new current attribute for matching
 				currentCsAttributeName = soln.get("?annotationRelation").toString();
+				
+
+				
 				//And I create a new Attribute
 				currentCsAttribute = new EntropyCloudServiceAttribute();
 				currentCsAttribute.setId(soln.get("?annotationRelation").toString());
@@ -1229,6 +1290,8 @@ public class Questionnaire {
 			}
 			currentAttributeValues.add(soln.get("?value").toString());	
 		}
+		//System.out.println("debug prop" + debug_properties);
+		
 		if (debug_properties){
 			for (int i = 0; i < ecss.size(); i++){
 				System.out.println("=======");
@@ -1245,10 +1308,10 @@ public class Questionnaire {
 
 		Gson gson = new Gson(); 
 
-		String json = gson.toJson(ecss);
-		System.out.println("---------------------------------json--------------------------------");
-		System.out.println(json);
-		System.out.println(ecss.toString());
+		//String json = gson.toJson(ecss);
+		//System.out.println("---------------------------------json--------------------------------");
+		//System.out.println(json);
+		//System.out.println("\n--------------------------------- ecss.toString -----------------------\n"+ecss.toString()+"\n");
 		//return Response.status(Status.OK).entity(json).build();
 		return ecss;
 
@@ -1306,6 +1369,172 @@ public class Questionnaire {
 		}
 
 
+	}
+
+	private ArrayList<EntropyCloudService> createAttributeMapFromList(ArrayList<EntropyCloudService> ecss) throws NoResultsException {
+		
+		ArrayList<String> csList=new ArrayList<String>();
+		 //System.out.println("creating list of cloud services for attribute map");
+		for (int i = 0; i < ecss.size(); i++){
+		 if (!csList.contains(ecss.get(i).getId())) {
+			 csList.add(ecss.get(i).getId());
+			 String temp = ecss.get(i).getId();
+			 temp=temp.replace("http://ikm-group.ch/archiMEO/", "");
+			 temp=temp.replace("#", ":");
+			 //System.out.println("added "+temp+" to the cloud service list");
+		 }		
+			
+		}
+		//System.out.println("the csList is" +csList.toString());
+		
+		ArrayList<EntropyCloudService> attributeMap= new ArrayList<EntropyCloudService>();
+		
+		for (int i = 0; i < csList.size(); i++){
+			//System.out.println("i--------> "+i);
+			String csIid=csList.get(i);
+			//System.out.println("csIid ---->"+ csIid);
+			//System.out.println("csList.get(i) "+csList.get(i));
+			csIid=csIid.replace("http://ikm-group.ch/archiMEO/", "");
+			csIid=csIid.replace("#", ":");
+			//System.out.println("csIid ---->"+ csIid);
+			EntropyCloudService csI= queryCloudService(csIid);
+			attributeMap.add(csI);
+		}
+				
+		
+		//System.out.println(" attributeMap from createAttributeMapFromList(ArrayList<EntropyCloudService> ecss)\n"+attributeMap.toString());
+		return attributeMap;
+		
+	}
+
+	private EntropyCloudService queryCloudService(String csId) throws NoResultsException {
+		
+		EntropyCloudService cs= new EntropyCloudService();
+
+		ArrayList<String> properties = new ArrayList<String>();
+		//System.out.println("csId ---->"+ csId+"\n before queryCloudServiceProperties(csId)");
+		properties= queryCloudServiceProperties(csId);
+		//System.out.println("properties"+properties);
+		
+		//System.out.println("post queryCloudServiceProperties(csId)");
+		ArrayList<EntropyCloudServiceAttribute> attributeList= new ArrayList<EntropyCloudServiceAttribute>();
+		
+		for (int i = 0; i < properties.size(); i++){
+			EntropyCloudServiceAttribute attributeI = new EntropyCloudServiceAttribute();
+			
+			String attributeIid= properties.get(i);
+			ArrayList<String> attributeIvalues= new ArrayList<String>();
+			
+			//System.out.println("csId "+csId + "\n attributeIid"+attributeIid);
+			attributeIid=attributeIid.replace("http://ikm-group.ch/archiMEO/", "");
+			attributeIid=attributeIid.replace("#", ":");
+			
+			attributeIvalues= queryCloudServiceAttributeValues(csId, attributeIid);
+			
+			attributeI.setId(attributeIid);
+			attributeI.setValues(attributeIvalues);
+			
+			attributeList.add(attributeI);
+						
+		}
+		
+		cs.setAttributes(attributeList);
+		cs.setId(csId);
+		
+		//System.out.println(" cs from queryCloudService(String csId)\n"+cs.toString());
+		return cs;
+	}
+
+	private ArrayList<String> queryCloudServiceAttributeValues(String csId, String attributeId) throws NoResultsException {
+		
+		ArrayList<String> attributeValues= new ArrayList<String>();
+		csId=csId.replace("http://ikm-group.ch/archiMEO/", "");
+		csId=csId.replace("#", ":");
+		
+		attributeId=attributeId.replace("http://ikm-group.ch/archimeo/", "");
+		attributeId=attributeId.replace("#", ":");
+		
+//		SELECT  ?value WHERE {
+//			?cloudservice rdf:type bpaas:CloudService .
+//			 ?property rdfs:domain bpaas:CloudService .
+//			  ?cloudservice bpaas:cloudServiceHasPaymentPlan ?value
+//			FILTER (?cloudservice = bdata:InvoiceNinja ).
+//			FILTER (?property = bpaas:cloudServiceHasPaymentPlan)}
+		
+		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+
+		queryStr.append("SELECT ?value WHERE {");
+		queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
+		queryStr.append("?property rdfs:domain bpaas:CloudService .");
+		queryStr.append("?cloudservice "+ attributeId+ " ?value ");
+		queryStr.append("FILTER (?cloudservice = " + csId + " ).");
+		queryStr.append("FILTER (?property = "+ attributeId +")}");
+
+		QueryExecution qexec = ontology.query(queryStr);
+		ResultSet results = qexec.execSelect();
+
+		if (results.hasNext()) {
+			while (results.hasNext()) {
+				String attributeValue ="";
+
+				QuerySolution soln = results.next();
+
+				attributeValue= soln.get("?value").toString();
+				attributeValue.replace("http://ikm-group.ch/archimeo/", "");
+				attributeValue.replace("#", ":");
+				//System.out.println("attributeValue--->  "+ attributeValue);
+				
+				attributeValues.add(attributeValue);
+			}
+		}
+		qexec.close();
+		//System.out.println(" attributeValues from queryCloudService(String csId)\n"+attributeValues.toString());
+		return attributeValues;
+	}
+
+	private ArrayList<String> queryCloudServiceProperties(String csId) throws NoResultsException {
+		ArrayList<String> properties = new ArrayList<String>();
+		
+//		SELECT ?cloudservice ?property WHERE {
+//			?cloudservice rdf:type bpaas:CloudService .
+//			?property rdfs:domain bpaas:CloudService .
+//			FILTER (?cloudservice = bdata:InvoiceNinja).} 
+		
+		csId=csId.replace("http://ikm-group.ch/archiMEO/", "");
+		csId=csId.replace("#", ":");
+		
+		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+		
+		queryStr.append("SELECT DISTINCT ?cloudservice ?property WHERE {");
+		queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
+		queryStr.append("?property rdfs:domain bpaas:CloudService .");
+		queryStr.append("FILTER (?cloudservice = "+ csId+" ).}");
+		
+
+		QueryExecution qexec = ontology.query(queryStr);
+		ResultSet results = qexec.execSelect();
+
+		if (results.hasNext()) {
+			while (results.hasNext()) {
+				String property ="";
+
+				QuerySolution soln = results.next();
+				
+				property= soln.get("?property").toString();
+				
+				//System.out.println("property--->  "+ property);
+				property= property.replace("http://ikm-group.ch/archimeo/", "");
+				property= property.replace("#", ":");
+				//System.out.println("new property--->  "+ property);
+						
+				properties.add(property);
+			}
+		} else {
+			throw new NoResultsException("nore more results");
+		}
+		qexec.close();
+		
+		return properties;
 	}
 }
 

@@ -24,9 +24,9 @@ public class Search {
 
 	@GET
 	public Response search(@QueryParam("ns") String namespace, @QueryParam("search") String search, @QueryParam("search_for_classes") String search_for_classes) {
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search received values: ns " + namespace + " :: " + search + " :: " + search_for_classes);
-		System.out.println("####################<end>####################");
+	//	System.out.println("\n####################<start>####################");
+	//	System.out.println("/search received values: ns " + namespace + " :: " + search + " :: " + search_for_classes);
+	//	System.out.println("####################<end>####################");
 		 
 		// split keywords spaces spaces
 		String[] searchItems = search.split("\\s+");
@@ -48,9 +48,9 @@ public class Search {
 		}
 		
 		String json = gson.toJson(searchResults);
-		System.out.println("\n####################<start>####################");
-		System.out.println("/search genereated json: " +json);
-		System.out.println("####################<end>####################");
+	//	System.out.println("\n####################<start>####################");
+	//	System.out.println("/search genereated json: " +json);
+	//	System.out.println("####################<end>####################");
 		return Response.status(Status.OK).entity(json).build();
 	}
 
