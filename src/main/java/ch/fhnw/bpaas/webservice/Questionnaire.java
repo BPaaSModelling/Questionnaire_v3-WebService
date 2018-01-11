@@ -273,7 +273,7 @@ public class Questionnaire {
 
 	private ArrayList<Answer> querySuitableCloudservices(QuestionnaireItem[] questions){
 		//TODO CHECK MULTI_SELECTION	
-		System.out.println("\n                 ####################                     querySuitableCloudservices                 ####################\n");
+		System.out.println("----------------------------                                                                   Matching cloud service list creation                 ----------------------------");
 				
 		ArrayList<Answer> cloudServices = new ArrayList<Answer>();
 		//this method takes in input all the questions, it has to:
@@ -281,10 +281,10 @@ public class Questionnaire {
 		
 		ArrayList<QuestionnaireItem> answeredQuestion = new ArrayList<QuestionnaireItem>();
 		for (int i = questions.length-1; i>=0 ; i--){
-			System.out.println(i);
+			
 			if (questions[i].getGivenAnswerList().size() > 0){
 				answeredQuestion.add(questions[i]);
-				System.out.println("=== ANSERED QUESTIONS: "+ questions[i].getQuestionLabel() +"===");
+				System.out.println("=== ANSERED QUESTIONS n. "+ i+ " " +questions[i].getQuestionLabel() +"===");
 			}
 		}
 
@@ -301,13 +301,14 @@ public class Questionnaire {
 			System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
+				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI());
 				
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
 						String id = UUID.randomUUID().toString();
 						//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
 						queryStr.append("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
+						System.out.println("inside multi search answeredQuestion.get(i).getAnnotationRelation()"+answeredQuestion.get(i).getAnnotationRelation());
 						queryStr.append("?cloudService <" + answeredQuestion.get(i).getAnnotationRelation() + "> " + id + " .");
 					}
 				} else {
@@ -318,7 +319,7 @@ public class Questionnaire {
 
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
-				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
+				System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI());
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
 					String id2 = "?"+UUID.randomUUID().toString();
@@ -329,6 +330,7 @@ public class Questionnaire {
 					queryStr.append("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + id2 + " ) .");
 
 				} else {
+					System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
 					String id = "?"+UUID.randomUUID().toString();
 					queryStr.append("?cloudService <" + answeredQuestion.get(i).getAnnotationRelation() + "> " + id + " .");
 					//filters.add("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID() + ") .");
@@ -339,7 +341,7 @@ public class Questionnaire {
 				break;
 				//author devid
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
-				System.out.println("inside SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
+				System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI());
 				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
@@ -395,7 +397,8 @@ public class Questionnaire {
 		}
 		
 		//System.out.println("\n"+ cloudServices.toString()+"\n");
-		System.out.println("                                         ####################       \\\\\\\\\\END     querySuitableCloudservices         ####################");
+		System.out.println("----------------------------                                                                   Matching cloud service list creation                 ----------------------------");
+		
 		return cloudServices;
 	}
 
@@ -420,36 +423,51 @@ public class Questionnaire {
 		return comparisonOps;
 	}
 
-	private Set<Answer> getAnswerList(String element_URI) {
+	private ArrayList<Answer> getAnswerList(String element_URI) throws NoResultsException {
 		//TODO fix QUERY#
-		System.out.println("element_URI "+element_URI);
-		System.out.println("getAnswerList(String element_URI)");
+		ArrayList<Answer> answers= new ArrayList<Answer>();
+		
+		element_URI=element_URI.replace("#", ":");
+		element_URI=element_URI.replace("http://ikm-group.ch/archiMEO/", "");
+		System.out.println("elementUri: "+ element_URI);
+		
+		//SELECT ?answer ?label WHERE { questiondata:Select_your_preferred_payment_plan questionnaire:questionHasAnswers ?answer .?answer rdfs:label ?label .}
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
-		queryStr.append("SELECT ?answer ?label WHERE {");
-		if (element_URI.contains("http://ikm-group.ch")){
-			queryStr.append("<"+element_URI+">" + " questionnaire:questionHasAnswers ?answer .");
-			System.out.println("element_URI "+element_URI);
-			
-		}else {
-			element_URI.replace("#", ":");
-			queryStr.append(""+element_URI+"" + " questionnaire:questionHasAnswers ?answer .");
-			System.out.println("FORMATTED ELEMENT_URI");
-			
+
+		queryStr.append("SELECT DISTINCT ?answer ?label WHERE {");
+		queryStr.append(""+element_URI +" questionnaire:questionHasAnswers ?answer .");
+		queryStr.append("?answer rdfs:label ?label .");
+		queryStr.append("}");
+
+
+		QueryExecution qexec2 = ontology.query(queryStr);
+		ResultSet results = qexec2.execSelect();
+		int i=0;
+		System.out.println(i);
+		System.out.println(element_URI);
+		if (results.hasNext()) {
+			while (results.hasNext()) {
+				i++;
+				System.out.println(i);
+				Answer answerN= new Answer();
+				String id ="";
+				String label ="";
+				
+				QuerySolution soln = results.next();
+
+				id= soln.get("?answer").toString();
+				label= soln.get("?label").toString();
+
+				answerN.setAnswerID(id);
+				answerN.setAnswerLabel(label);
+				answers.add(answerN);
+			}
+		} else {
+			throw new NoResultsException("nore more results");
 		}
-					
-		queryStr.append("?answer rdfs:label ?label .}");
-		//queryStr.append("}");
-
-		QueryExecution qexec = ontology.query(queryStr);
-		ResultSet results = qexec.execSelect();
-
-		Set<Answer> answers = new HashSet<Answer>();
-
-		while (results.hasNext()) {
-			QuerySolution soln = results.next();
-			answers.add(new Answer(soln.get("?answer").toString(), soln.get("?label").toString()));
-		}
-		qexec.close();
+		qexec2.close();
+		
+		
 		return answers;
 	}
 
@@ -465,7 +483,7 @@ public class Questionnaire {
 	@Produces({MediaType.APPLICATION_JSON, MediaType.TEXT_PLAIN})		
 	@Consumes(MediaType.APPLICATION_JSON)		
 	@Path("/getNextQuestion")		
-	public Response getFunctionalQuestions(String parsed_json) {		
+	public Response getFunctionalQuestions(String parsed_json) throws NoResultsException {		
 		Gson gson = new Gson(); 		
 		//System.out.println("\n####################<start>####################");		
 		//System.out.println("------------------------             Received request for next question        -------------------------" );		
@@ -475,20 +493,9 @@ public class Questionnaire {
 
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
 		QuestionnaireItem result = new QuestionnaireItem();		
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("                                                                                     getFunctionalQuestions");
-		try {	
-			System.out.println("                         \ndetectNextQuestion(qm) ------------------------------------> "+detectNextQuestion(qm).getQuestionURI());
-			System.out.println("                         qm.getCompletedQuestionList().size() ------------------------------------> "+qm.getCompletedQuestionList().size());
-			result = detectNextQuestion(qm);		
+			
+		result = detectNextQuestion(qm);		
 
-		} catch (NoResultsException e) {		
-			e.printStackTrace();		
-		}		
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		System.out.println("-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------");
-		
 		String json = gson.toJson(result);		
 		//System.out.println("\n####################<start>####################");		
 		//System.out.println("/search genereated json: " +json);		
@@ -503,35 +510,26 @@ public class Questionnaire {
 		//System.out.println("questionnaire model" +qm.toString());
 		ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm); 
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
-		
-				
-		//System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");	
+			
 		if (qm.getCompletedQuestionList().size() >2){
+			
 			System.out.println("\n\n####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
 			
 			HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
-			
-			//System.out.println("!!!!!           attributeMap.toString()                 !!!!!\n");
-			//System.out.println(attributeMap.toString());
-			
-
+			//System.out.println("attributeMap"+attributeMap.toString());			
 			HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
-
+			//System.out.println("entropyMap"+entropyMap.toString());
 			String maxEntropyAttribute = getMaxEntropyAttribute(entropyMap);		
-			try {
-				pickedQuestion=getQuestionFromAttribute(maxEntropyAttribute);
-			} catch (NoResultsException e) {		
-				e.printStackTrace();		
-			}		
+			//System.out.println("maxEntropyAttribute: "+maxEntropyAttribute );
 			
-			
-			System.out.println("####################   picked Question URI---> "+ pickedQuestion.getQuestionURI().toString()+"                  ####################");
+			pickedQuestion=getNonFunctionalQuestion(qm, maxEntropyAttribute);
+			System.out.println("Picked non funcional Question ---> "+ pickedQuestion.toString());
 		} else {
 			
 			pickedQuestion=getFunctionalQuestion(qm);	
-			//System.out.println("####################qm.getCompletedQuestionList().size()  --->"+qm.getCompletedQuestionList().size()+"####################");
+			System.out.println("Picked functional Question ---> "+ pickedQuestion.toString());
 		}
-		System.out.println("!!!!!!   picked Question URI---> "+ pickedQuestion.getQuestionURI().toString()+"                  !!!!!!");
+		
 		return pickedQuestion;
 	}
 
@@ -881,9 +879,9 @@ public class Questionnaire {
 		ArrayList<EntropyCloudService> ecssOld =ecss;
 		
 		ecss= createAttributeMapFromList(ecss);
-		System.out.println("!!!!!         new ecss             !!!!!");
+		//System.out.println("!!!!!         new ecss             !!!!!");
 				
-		System.out.println("\n\nCount of CloudServices: "+ csCount.toString());
+		//System.out.println("\n\nCount of CloudServices: "+ csCount.toString());
 
 		for (int i = 0; i < csCount; i++) {
 			ArrayList<EntropyCloudServiceAttribute> attributeListI = ecss.get(i).getAttributes();
@@ -1007,9 +1005,9 @@ public class Questionnaire {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		System.out.println("\n|-----------------------------------------------------------");
-		System.out.println("|             maxEntropyAttr: "+maxEntropyAttr );
-		System.out.println("|------------------------------------------------------------\n");
+		//System.out.println("\n|-----------------------------------------------------------");
+		//System.out.println("            maxEntropyAttr: "+maxEntropyAttr );
+		//System.out.println("|------------------------------------------------------------\n");
 		return maxEntropyAttr;
 	}
 
@@ -1018,8 +1016,9 @@ public class Questionnaire {
 
 
 
-	public QuestionnaireItem getQuestionFromAttribute(String attr) throws NoResultsException {
-		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+	public String getQuestionFromAttribute(String attr) throws NoResultsException {
+		String pickedQuestion ="";
+		
 		System.out.println("####################  EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 		//
@@ -1048,9 +1047,81 @@ public class Questionnaire {
 		queryStr.append("?dType rdfs:label ?dTypeLabel .");
 		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
 		queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
-		queryStr.append("FILTER (?relation = " + attr + ")");
-		queryStr.append("}");
+				
+		if (attr.contains("#")) {
+			attr= attr.replace("http://ikm-group.ch/archiMEO/", "");
+			attr=attr.replace("#", ":");
+			System.out.println("attr formatted");
+		};
+		queryStr.append("FILTER (?relation = " + attr + ")}");
+		
 
+		QueryExecution qexec = ontology.query(queryStr);
+		ResultSet results = qexec.execSelect();
+		System.out.println(queryStr);
+		int test=0;
+		if (results.hasNext()) {
+			while (results.hasNext()) {
+				QuestionnaireItem question = new QuestionnaireItem();
+
+				QuerySolution soln = results.next();
+				
+				pickedQuestion=soln.get("?question").toString();
+				
+				}
+		} else {
+			System.out.println("\nE");
+			throw new NoResultsException("nore more results");
+		}
+		qexec.close();	
+		
+		
+		System.out.println("####################  end EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
+		System.out.println("!!!!   THE QUESITON IS:  "+pickedQuestion);
+		
+		return pickedQuestion;
+
+	}
+
+
+	private QuestionnaireItem getNonFunctionalQuestion(QuestionnaireModel qm, String attr) throws NoResultsException {
+		
+		String questionID =getQuestionFromAttribute(attr);
+		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+
+		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
+		
+		queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
+		queryStr.append("?question rdfs:label ?label .");
+		queryStr.append("?question rdf:type ?qType . ");
+		queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+		queryStr.append("?question rdf:type ?dType .");
+		queryStr.append("?dType rdfs:label ?dTypeLabel .");
+		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+		//queryStr.append("?question questionnaire:questionHasAnnotationRelation ?relation . ");
+		queryStr.append("OPTIONAL {?question questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
+		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
+		queryStr.append("OPTIONAL {?question questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
+		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
+		queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
+		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
+		//			String first_part = "FILTER (";
+		//			String middle_part = "";
+		//			String last_part = ")";
+		//			for (int i = 0; i < domain_received.length; i++){
+		//				if (middle_part != ""){
+		//					middle_part =  middle_part + " || ";
+		//				}
+		//				middle_part = middle_part + "?dType = <" + domain_received[i].getAnswerID()+">";
+		//			}
+		//			queryStr.append(first_part + middle_part + last_part);
+		
+		queryStr.append("FILTER (?question = <"+ questionID+"> )");
+		queryStr.append("}");
+		
+		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
+		System.out.println("query-->"+queryStr);
+		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
@@ -1059,36 +1130,21 @@ public class Questionnaire {
 				QuestionnaireItem question = new QuestionnaireItem();
 
 				QuerySolution soln = results.next();
-				
 				question.setQuestionURI(soln.get("?question").toString());
 				question.setQuestionLabel(soln.get("?label").toString());
 				question.setAnswerType(soln.get("?qType").toString());
 				question.setDomainLabel(soln.get("?dTypeLabel").toString());
-				question.setAnnotationRelation(soln.get("?relation").toString());
-				ArrayList<Answer> answerList = new ArrayList<Answer>();
-				
+				//question.setAnnotationRelation(soln.get("?relation").toString());
+
 				if (soln.get("?rule") != null ){
 					question.setRuleToApply(soln.get("?rule").toString());
 				}
 
-				//TODO: FIX MULTI SELECTION
-				
-				String tmpV=soln.get("?qType").toString();
-				
-					System.out.println("qType is "+soln.get("?qType"));
-				
-				if (tmpV.equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || tmpV.equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
+				if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SINGLE_SELECTION) || 
+						soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_MULTI_SELECTION)){
 					//Call for the answers
-					System.out.println("A");
-					Answer tempAnswer=new Answer();
-					//author devid
-					//tempAnswer.setAnswerID(soln.get("?question").toString());
-					//System.out.println(tempAnswer.toString());
-					//end					
-					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString()))); //it blocks here
-					System.out.println("b");//never printed
-					
-				}else if (tmpV.equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
+					question.setAnswerList(new ArrayList<Answer>(getAnswerList(soln.get("?question").toString())));
+				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_SEARCH_SELECTION)){
 					//Call for the namespace
 					question.setSearchNamespace(soln.get("?searchnamespace").toString());
 					//System.out.println("=====================SEARCHTYPE: " + soln.get("?searchType"));
@@ -1100,26 +1156,23 @@ public class Questionnaire {
 					} else {
 						question.setSearchOnClassesInsteadOfInstances(true);
 					}	
-				}else if (tmpV.equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
+				}else if (soln.get("?qType").toString().equals(GlobalVariables.ANSWERTYPE_VALUEINSERT)){
 					//Call for the Datatype
 					question.setAnswerDatatype(soln.get("?datatype").toString());
 					question.setComparisonOperationAnswers(getComparisonOperations());
 				}
-				System.out.println("\nD");
+
 				pickedQuestion = question;
 			}
 		} else {
-			System.out.println("\nE");
 			throw new NoResultsException("nore more results");
 		}
 		qexec.close();		
-		System.out.println("####################  end EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
-		System.out.println("!!!!   THE ATTRIBUTE:  "+attr);
-		System.out.println("!!!!   QUESTION URI SELECTED FROM THE ATTRIBUTE: "+pickedQuestion.getQuestionURI());
-		return pickedQuestion;
 
+		return pickedQuestion;
 	}
 
+	
 	private QuestionnaireItem getFunctionalQuestion(QuestionnaireModel qm) throws NoResultsException {
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
 
@@ -1308,9 +1361,9 @@ public class Questionnaire {
 
 		Gson gson = new Gson(); 
 
-		//String json = gson.toJson(ecss);
+		String json = gson.toJson(ecss);
 		//System.out.println("---------------------------------json--------------------------------");
-		//System.out.println(json);
+		//System.out.println(json.toString());
 		//System.out.println("\n--------------------------------- ecss.toString -----------------------\n"+ecss.toString()+"\n");
 		//return Response.status(Status.OK).entity(json).build();
 		return ecss;
@@ -1463,7 +1516,7 @@ public class Questionnaire {
 		
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 
-		queryStr.append("SELECT ?value WHERE {");
+		queryStr.append("SELECT ?cloudservice ?value WHERE {");
 		queryStr.append("?cloudservice rdf:type bpaas:CloudService .");
 		queryStr.append("?property rdfs:domain bpaas:CloudService .");
 		queryStr.append("?cloudservice "+ attributeId+ " ?value ");

@@ -144,16 +144,17 @@ public class TestMain {
 		maxEntropyAttribute ="bpaas:cloudServiceHasPaymentPlan";
 		System.out.println(maxEntropyAttribute);
 		
-		QuestionnaireItem question = null;
-		try {
-			question = qm.getQuestionFromAttribute(maxEntropyAttribute);
-		} catch (NoResultsException e) {
-			
-			e.printStackTrace();
-		}
-				
-		System.out.println(question.toString());
-		
+//		QuestionnaireItem question = null;
+//		
+//		try {
+//			question = qm.getQuestionFromAttribute(maxEntropyAttribute);
+//		} catch (NoResultsException e) {
+//			
+//			e.printStackTrace();
+//		}
+//				
+//		System.out.println(question.toString());
+//		
 
 		
 		
