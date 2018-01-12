@@ -120,8 +120,9 @@ public class TestMain {
 		HashMap<String, Float> entropyMap = qm.getEntropyMap(attributeMap, ecss.size());
 		
 		//TODO: Discuss CS[id=service6, label=null, attributes=[[id=FILE LOG RETENTION POLICY, values= [ ], domain=null] ...] Should an absent value increase Entropy for the attribute?
-		String maxEntropyAttribute = qm.getMaxEntropyAttribute(entropyMap);
+		//String maxEntropyAttribute = qm.getMaxEntropyAttribute(entropyMap);
 		
+		String maxEntropyAttribute="bpaas:cloudServiceHasPaymentPlan";
 		
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
 		System.out.println("|----------------------------------------------------------------------------------------------------------------------------------------------------------------|");
