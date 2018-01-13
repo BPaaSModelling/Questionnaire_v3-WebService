@@ -24,33 +24,44 @@ public class Search {
 
 	@GET
 	public Response search(@QueryParam("ns") String namespace, @QueryParam("search") String search, @QueryParam("search_for_classes") String search_for_classes) {
-	//	System.out.println("\n####################<start>####################");
-	//	System.out.println("/search received values: ns " + namespace + " :: " + search + " :: " + search_for_classes);
-	//	System.out.println("####################<end>####################");
-		 
+		//	System.out.println("\n####################<start>####################");
+		//	System.out.println("/search received values: ns " + namespace + " :: " + search + " :: " + search_for_classes);
+		//	System.out.println("####################<end>####################");
+
 		// split keywords spaces spaces
 		String[] searchItems = search.split("\\s+");
 
 		SearchResultsModel searchResults = null;
+
+
 		try {
 			if (namespace.contains(NAMESPACE.APQC.getURI())) {
-				searchResults = queryAPQC(namespace, searchItems);
+				if (queryAPQC(namespace, searchItems) !=null) {
+					searchResults = queryAPQC(namespace, searchItems);
+				}
+
 			} else {
 				if (Boolean.valueOf(search_for_classes)){
-					searchResults = queryClasses(namespace, searchItems);
+					if (queryClasses(namespace, searchItems)!= null) {
+						searchResults = queryClasses(namespace, searchItems);
+					}
+					
 				}else{
-					searchResults = queryInstances(namespace, searchItems);
+					if (queryInstances(namespace, searchItems)!=null) {
+						searchResults = queryInstances(namespace, searchItems);	
+					}
+					
 				}
-				
+
 			}
 		} catch (NoResultsException e) {
 			e.printStackTrace();
 		}
-		
+
 		String json = gson.toJson(searchResults);
-	//	System.out.println("\n####################<start>####################");
-	//	System.out.println("/search genereated json: " +json);
-	//	System.out.println("####################<end>####################");
+		//	System.out.println("\n####################<start>####################");
+		//	System.out.println("/search genereated json: " +json);
+		//	System.out.println("####################<end>####################");
 		return Response.status(Status.OK).entity(json).build();
 	}
 
@@ -62,16 +73,16 @@ public class Search {
 		queryStr.append("?subclass rdfs:label ?label .");
 		queryStr.append("?subclass apqc:hasHierarchyID ?hir .");
 		queryStr.append("FILTER(?subclass!=<" + namespace +">)");
-		
+
 
 		for (String param : searchItems) {
 			queryStr.append("FILTER (regex(str(?label), \"" + param + "\", \"i\") || regex(str(?hir), \"" + param + "\", \"i\"))");
 		}
 		queryStr.append("}");
-		
+
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
-		
+
 		SearchResultsModel sr = new SearchResultsModel();
 		if (results.hasNext()) {
 			while (results.hasNext()) {
@@ -79,7 +90,7 @@ public class Search {
 				sr.add(new SearchResult(soln.get("?subclass").toString(), soln.get("?hir").toString() +" " +soln.get("?label").toString()));
 			}
 		} else {
-			throw new NoResultsException("nore more results");
+			//throw new NoResultsException("nore more results");
 		}
 		qexec.close();
 		return sr;
@@ -100,7 +111,7 @@ public class Search {
 
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
-		
+
 		SearchResultsModel sr = new SearchResultsModel();
 		if (results.hasNext()) {
 			while (results.hasNext()) {
@@ -108,12 +119,12 @@ public class Search {
 				sr.add(new SearchResult(soln.get("?subclass").toString(), soln.get("?label").toString()));
 			}
 		} else {
-			throw new NoResultsException("nore more results");
+			//throw new NoResultsException("nore more results"); it's not needed.
 		}
 		qexec.close();
 		return sr;
 	}
-	
+
 	private SearchResultsModel queryInstances(String namespace, String[] searchItems) throws NoResultsException {
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 
@@ -129,7 +140,7 @@ public class Search {
 
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
-		
+
 		SearchResultsModel sr = new SearchResultsModel();
 		if (results.hasNext()) {
 			while (results.hasNext()) {
@@ -137,7 +148,7 @@ public class Search {
 				sr.add(new SearchResult(soln.get("?instance").toString(), soln.get("?label").toString()));
 			}
 		} else {
-			throw new NoResultsException("nore more results");
+			//throw new NoResultsException("nore more results"); it's not needed.
 		}
 		qexec.close();
 		return sr;

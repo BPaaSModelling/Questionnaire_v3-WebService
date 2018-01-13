@@ -728,12 +728,12 @@ public class Questionnaire {
 			System.out.println("Picked non funcional Question ---> "+ pickedQuestion.toString());
 		} else {
 
-				pickedQuestion=getFunctionalQuestion(qm);	
-				System.out.println("Picked functional Question ---> "+ pickedQuestion.toString());
-			
+			pickedQuestion=getFunctionalQuestion(qm);	
+			System.out.println("Picked functional Question ---> "+ pickedQuestion.toString());
+
 		}
-		
-		
+
+
 		return pickedQuestion;
 	}
 
@@ -888,33 +888,37 @@ public class Questionnaire {
 		return flag;
 	}
 
-	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) {
+	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) throws NoResultsException {
 
 		String maxEntropyAttr="";
 		Float max=(float) 0;
 		ArrayList<String> tmpList= new ArrayList<String>();
-		
+
 		for (int i = 0; i<blackListed.size(); i++) {
-						
+
 			if (blackListed.get(i).contains("#")) {
-			String tmp=blackListed.get(i);
-			tmp=tmp.replace("http://ikm-group.ch/archiMEO/","");
-			tmp=tmp.replace("http://ikm-group.ch/archimeo/","");
-			tmp=tmp.replace("#",":");
-			tmpList.add(tmp);
+				String tmp=blackListed.get(i);
+				tmp=tmp.replace("http://ikm-group.ch/archiMEO/","");
+				tmp=tmp.replace("http://ikm-group.ch/archimeo/","");
+				tmp=tmp.replace("#",":");
+				tmpList.add(tmp);
 			}
 		}
 		blackListed.addAll(tmpList);
-		
+
 		System.out.println("\n\nBlackListed answers:" +blackListed);
-
+		int i=0;
 		for (Map.Entry<String,Float> entry : entropyMap.entrySet()) {
+			if(i==0) {
+				maxEntropyAttr=entry.getKey();
+				max=entry.getValue();
+			}
+			i++;
+			//	System.out.println("OLD ANSWER CONTAINS THE VALUE? "+answers.contains(entry.getKey()));
 
-		//	System.out.println("OLD ANSWER CONTAINS THE VALUE? "+answers.contains(entry.getKey()));
-			
-			
 			if (!blackListed.contains((entry.getKey()))) {
-				if (entry.getValue()>max) {
+
+				if (entry.getValue()>=max) {
 					maxEntropyAttr=entry.getKey();
 					System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());
 					max=entry.getValue();
@@ -924,16 +928,19 @@ public class Questionnaire {
 			}
 		}
 
-//		potentially a conceptual error, removed for the moment
-//		try {
-//			checkAttrMinEntropy(entropyMap.get(maxEntropyAttr));
-//		} catch (MinimumEntropyReached e) {
-//			e.printStackTrace();
-//		}
+
+		//		potentially a conceptual error, removed for the moment
+		//		try {
+		//			checkAttrMinEntropy(entropyMap.get(maxEntropyAttr));
+		//		} catch (MinimumEntropyReached e) {
+		//			e.printStackTrace();
+		//		}
 
 		System.out.println("\n|-----------------------------------------------------------");
 		System.out.println("            maxEntropyAttr: "+maxEntropyAttr );
 		System.out.println("|------------------------------------------------------------\n");
+
+
 		return maxEntropyAttr;
 	}
 
@@ -1035,18 +1042,18 @@ public class Questionnaire {
 			oldAnswers.add(searchAnnotationRelation(getOldAnswer,oldAnswer));
 			System.out.println(oldAnswers.toString());
 		}
-		
+
 		String maxEntropyAttribute="";
 
 		ArrayList<Answer> selectedDomainList=qm.getSelectedDomainList();
 		ArrayList<String> questionsOutOfDomain= new ArrayList<String>();
-		
+
 		questionsOutOfDomain=getQuestionsOutOfDomain(selectedDomainList);
 		ArrayList<String> blackListedQuestion= new ArrayList<String>();
 		blackListedQuestion.addAll(oldAnswers);
 		blackListedQuestion.addAll(questionsOutOfDomain);
 		System.out.println(blackListedQuestion.toString());
-		
+
 		if (entropyMap.size()>1) {
 			maxEntropyAttribute = getMaxEntropyAttribute(entropyMap, blackListedQuestion);		
 			System.out.println("maxEntropyAttribute: "+maxEntropyAttribute );	
@@ -1058,19 +1065,19 @@ public class Questionnaire {
 
 		String questionID =getQuestionFromAttribute(maxEntropyAttribute);
 		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
-		
+
 		// DEVELOPMENT PHASE: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
 		if (questionID=="Empty") {
 			//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
 			System.out.println("\nQuestionID == empty\n returning the previosly asked question or a specific question/error message");
 			pickedQuestion.setQuestionLabel("Question for "+maxEntropyAttribute + " not available, try with another answer");
-			
+
 			return pickedQuestion;
 		}
-			
-		
-		
-				
+
+
+
+
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 
 		queryStr.append("SELECT ?question ?label ?qType ?relation ?datatype ?searchnamespace ?searchType ?dTypeLabel ?rule WHERE {");
@@ -1163,7 +1170,7 @@ public class Questionnaire {
 		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
 		queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
 		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
-		
+
 		String first_part = "FILTER (";
 		String middle_part = "";
 		String last_part = ")";
@@ -1174,7 +1181,7 @@ public class Questionnaire {
 			middle_part = middle_part + "?dType != <" + domain_received.get(i).getAnswerID()+">";
 		}
 		queryStr.append(first_part + middle_part + last_part);
-		
+
 		queryStr.append("}");
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
 
@@ -1183,12 +1190,12 @@ public class Questionnaire {
 
 		if (results.hasNext()) {
 			while (results.hasNext()) {
-				
+
 				QuerySolution soln = results.next();
-				
+
 				String question =(soln.get("?relation").toString());
 				//System.out.println(question);
-				
+
 				question=question.replace("http://ikm-group.ch/archiMEO/","");
 				question=question.replace("http://ikm-group.ch/archimeo/","");
 				question=question.replace("#",":");
@@ -1201,7 +1208,7 @@ public class Questionnaire {
 		qexec.close();		
 		System.out.println("query executed\n"+queryStr);
 		System.out.println(removedQuestion.toString());
-		
+
 		return removedQuestion;
 	}
 
@@ -1224,7 +1231,7 @@ public class Questionnaire {
 		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
 		queryStr.append("OPTIONAL {?question questionnaire:hasOrderNumberForVisualization ?orderQ}");
 		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
-		
+
 		if (qm.getCompletedQuestionList().size() == 1){
 			queryStr.append("FILTER (?label = \"Which Object does reflect the functional requirement you want to express?\")");
 		}else if (qm.getCompletedQuestionList().size() == 0){
