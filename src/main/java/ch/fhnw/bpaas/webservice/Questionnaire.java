@@ -56,10 +56,7 @@ public class Questionnaire {
 	@GET
 	@Path("/getDomains")
 	public Response getDomains() {
-
-
-		System.out.println("\n----------------------------      requested parameters to get question domains      -----------------------------------" );
-
+		
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
 		try {
@@ -80,6 +77,9 @@ public class Questionnaire {
 		//System.out.println("\n####################<start>####################");
 		//System.out.println("/search genereated json: " +json);
 		//System.out.println("####################<end>####################");
+
+		System.out.println("\n----------------------------      Domain List generated      -----------------------------------" );
+
 		return Response.status(Status.OK).entity(json).build();
 	}
 
@@ -251,11 +251,11 @@ public class Questionnaire {
 		//System.out.println("####################<end> getSuitableCloudServices ####################");
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
-		System.out.println("Inside Response get Suitable Cloudservice, QuestionList received \n" +questionList.toString());
+		//System.out.println("Inside Response get Suitable Cloudservice, QuestionList received \n" +questionList.toString());
 		try {
 
 			result = querySuitableCloudservices(questionList);
-			System.out.println("Inside Response get Suitable Cloudservice, result result \n" +result.toString());
+			//System.out.println("Inside Response get Suitable Cloudservice, result \n" +result.toString());
 			if (debug_properties){
 				for (int index = 0; index < result.size(); index++){
 					System.out.println("CS number "+index+": ");
@@ -276,7 +276,7 @@ public class Questionnaire {
 	}
 
 	private ArrayList<Answer> querySuitableCloudservices(QuestionnaireItem[] questions) throws NoResultsException{
-		System.out.println("----------------------------                                                                   Matching cloud service list creation                 ----------------------------");
+		//System.out.println("----------------------------                                                                   Matching cloud service list creation                 ----------------------------");
 
 		ArrayList<Answer> cloudServices = new ArrayList<Answer>();
 		//this method takes in input all the questions, it has to:
@@ -287,7 +287,7 @@ public class Questionnaire {
 
 			if (questions[i].getGivenAnswerList().size() > 0){
 				answeredQuestion.add(questions[i]);
-				System.out.println("=== ANSERED QUESTIONS n. "+ i+ " " +questions[i].getQuestionLabel() +"===");
+				//System.out.println("=== ANSERED QUESTIONS n. "+ i+ " " +questions[i].getQuestionLabel() +"===");
 			}
 		}
 
@@ -326,7 +326,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}	
-				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
 
@@ -354,7 +354,7 @@ public class Questionnaire {
 
 
 				} else {
-					System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
+					//System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
 					//String id = "?"+UUID.randomUUID().toString();
 					try {
 						//System.out.println("------------------------------------------------------------");
@@ -369,7 +369,7 @@ public class Questionnaire {
 
 
 				}
-				System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
@@ -397,7 +397,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 
 
@@ -431,7 +431,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("inside default SWITCH CASE= "+answeredQuestion.get(i).getAnswerType()+"i-->"+i);
+				//System.out.println("inside default SWITCH CASE= "+answeredQuestion.get(i).getAnswerType()+"i-->"+i);
 				break;
 			}
 		}
@@ -453,7 +453,7 @@ public class Questionnaire {
 	}
 
 	private ArrayList<EntropyCloudService> querySuitableCloudservices(ArrayList<QuestionnaireItem> answeredQuestion) throws NoResultsException{
-		System.out.println("----------------------------              CREATING SUITABLE CLOUDSERVICE LIST                 ----------------------------");
+		//System.out.println("----------------------------              CREATING SUITABLE CLOUDSERVICE LIST                 ----------------------------");
 
 		ArrayList<EntropyCloudService> cloudServices = new ArrayList<EntropyCloudService>();
 		//this method takes in input all the questions, it has to:
@@ -502,7 +502,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}	
-				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
 				
@@ -530,7 +530,7 @@ public class Questionnaire {
 					
 
 				} else {
-					System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
+					//System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
 					//String id = "?"+UUID.randomUUID().toString();
 					try {
 						//System.out.println("------------------------------------------------------------");
@@ -545,7 +545,7 @@ public class Questionnaire {
 					
 					
 				}
-				System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
@@ -579,7 +579,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
+				//System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 				
 		
@@ -613,7 +613,7 @@ public class Questionnaire {
 						e.printStackTrace();
 					}
 				}
-				System.out.println("inside default SWITCH CASE= "+answeredQuestion.get(i).getAnswerType()+"i-->"+i);
+				//System.out.println("inside default SWITCH CASE= "+answeredQuestion.get(i).getAnswerType()+"i-->"+i);
 				break;
 			}
 		}
@@ -636,8 +636,8 @@ public class Questionnaire {
 				//throw new NoResultsException("nore more results");
 			}
 		qexec.close();
-		System.out.println("\ncs suitable\n"+ cloudServices.toString()+"\n");
-		System.out.println("----------------------------       end of checking cs suitable               ----------------------------");
+		//System.out.println("\ncs suitable\n"+ cloudServices.toString()+"\n");
+		//System.out.println("----------------------------       end of checking cs suitable               ----------------------------");
 
 		return cloudServices;
 	}
@@ -724,10 +724,10 @@ public class Questionnaire {
 	public Response getFunctionalQuestions(String parsed_json) throws NoResultsException {		
 		Gson gson = new Gson(); 		
 		//System.out.println("\n####################<start>####################");		
-		System.out.println("------------------------             Received request for next question        -------------------------" );		
+		//System.out.println("------------------------             Received request for next question        -------------------------" );		
 		//System.out.println("####################<end>####################");		
 
-		System.out.println("/Questionnaire received: " +parsed_json);		
+		//System.out.println("Questionnaire received: " +parsed_json);		
 
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
 		QuestionnaireItem result = new QuestionnaireItem();		
@@ -754,27 +754,18 @@ public class Questionnaire {
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 
 		if (qm.getCompletedQuestionList().size() >2){
-
-
 			//System.out.println("####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
 			try {
 				pickedQuestion=getNonFunctionalQuestion(qm);
 			} catch (NoResultsException e) {
 				e.printStackTrace();
 			}
-//			if (pickedQuestion.getQuestionLabel()=="empty") {
-//				//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
-//				pickedQuestion=qm.getCompletedQuestionList().get((qm.getCurrentQuestionID()-1));
-//			}
-//			System.out.println("Picked non funcional Question ---> "+ pickedQuestion.toString());
+			System.out.println("\n|----------------------------------------|\n#### Picked Non functional Question ---> "+ pickedQuestion.getQuestionLabel());
 		} else {
 
 			pickedQuestion=getFunctionalQuestion(qm);	
-			System.out.println("Picked functional Question\n "+ pickedQuestion.toString());
-
+			System.out.println("\n|----------------------------------------|\n#### Picked functional Question ---> "+ pickedQuestion.getQuestionLabel());
 		}
-
-
 		return pickedQuestion;
 	}
 
@@ -820,8 +811,24 @@ public class Questionnaire {
 		return entropyMap;
 	}
 
-	public HashMap<String, HashMap<String, Integer>> getAttributeMap(ArrayList<EntropyCloudService> ecss) throws NoResultsException {
+	public HashMap<String, HashMap<String, Integer>> getAttributeMap(ArrayList<EntropyCloudService> ecss, ArrayList<String> blackListed) throws NoResultsException {
 
+		ArrayList<String> tmpList= new ArrayList<String>();
+
+		for (int i = 0; i<blackListed.size(); i++) {
+
+			if (blackListed.get(i).contains("#")) {
+				String tmp=blackListed.get(i);
+				tmp=tmp.replace("http://ikm-group.ch/archiMEO/","");
+				tmp=tmp.replace("http://ikm-group.ch/archimeo/","");
+				tmp=tmp.replace("#",":");
+				tmpList.add(tmp);
+			}
+		}
+		blackListed.addAll(tmpList);
+
+		//System.out.println("\n\nBlackListed answers:" +blackListed);
+		
 		HashMap<String, HashMap<String, Integer>> attributeValueListAndEntropyTotal = new HashMap<String, HashMap<String, Integer>>();
 
 		Integer csCount=ecss.size();
@@ -829,7 +836,7 @@ public class Questionnaire {
 
 		//ArrayList<EntropyCloudService> ecssOld =ecss;
 
-		ecss= createAttributeMapFromList(ecss);
+		ecss= createAttributeMapFromList(ecss, blackListed );
 
 		//System.out.println("\n\nCount of CloudServices: "+ csCount.toString());
 
@@ -947,7 +954,7 @@ public class Questionnaire {
 		}
 		blackListed.addAll(tmpList);
 
-		System.out.println("\n\nBlackListed answers:" +blackListed);
+		//System.out.println("\n\nBlackListed answers:" +blackListed);
 		
 		for (Map.Entry<String,Float> entry : entropyMap.entrySet()) {
 			
@@ -1108,7 +1115,7 @@ public class Questionnaire {
 			answerListTmp.add(a1);
 						
 			pickedQuestion.setAnswerList(answerListTmp);
-			pickedQuestion.setQuestionLabel("Less than 2 matching Cloud Service, no more questions will be generated");
+			pickedQuestion.setQuestionLabel("There are no matching Cloud Service");
 			pickedQuestion.setAnnotationRelation("SKIP");
 			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
 			pickedQuestion.setQuestionURI(" ");
@@ -1117,7 +1124,7 @@ public class Questionnaire {
 		}
 		
 		//TODO: USE BLACKLIST ON ATTRIBUTE MAP, INSTEAD OF GET MAX ENTROPY ATTR
-		HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
+		HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss, blackListedQuestion);
 		//System.out.println("attributeMap"+attributeMap.toString());		
 
 		HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
@@ -1223,6 +1230,7 @@ public class Questionnaire {
 
 		return pickedQuestion;
 	}
+
 
 
 	private ArrayList<String> getQuestionsOutOfDomain(ArrayList<Answer> domain_received) throws NoResultsException {
@@ -1528,7 +1536,7 @@ public class Questionnaire {
 
 	}
 
-	private ArrayList<EntropyCloudService> createAttributeMapFromList(ArrayList<EntropyCloudService> ecss) throws NoResultsException {
+	private ArrayList<EntropyCloudService> createAttributeMapFromList(ArrayList<EntropyCloudService> ecss, ArrayList<String> blackListed) throws NoResultsException {
 
 		ArrayList<String> csList=new ArrayList<String>();
 		//System.out.println("creating list of cloud services for attribute map");
@@ -1554,7 +1562,7 @@ public class Questionnaire {
 			csIid=csIid.replace("http://ikm-group.ch/archiMEO/", "");
 			csIid=csIid.replace("#", ":");
 			//System.out.println("csIid ---->"+ csIid);
-			EntropyCloudService csI= queryCloudService(csIid);
+			EntropyCloudService csI= queryCloudService(csIid, blackListed);
 			attributeMap.add(csI);
 		}
 
@@ -1564,13 +1572,14 @@ public class Questionnaire {
 
 	}
 
-	private EntropyCloudService queryCloudService(String csId) throws NoResultsException {
+	private EntropyCloudService queryCloudService(String csId, ArrayList<String> blackListed) throws NoResultsException {
 
 		EntropyCloudService cs= new EntropyCloudService();
 
 		ArrayList<String> properties = new ArrayList<String>();
 		//System.out.println("csId ---->"+ csId+"\n before queryCloudServiceProperties(csId)");
-		properties= queryCloudServiceProperties(csId);
+		
+		properties= queryCloudServiceProperties(csId, blackListed );
 		//System.out.println("properties"+properties);
 
 		//System.out.println("post queryCloudServiceProperties(csId)");
@@ -1649,7 +1658,7 @@ public class Questionnaire {
 		return attributeValues;
 	}
 
-	private ArrayList<String> queryCloudServiceProperties(String csId) throws NoResultsException {
+	private ArrayList<String> queryCloudServiceProperties(String csId, ArrayList<String> blackListed) throws NoResultsException {
 		ArrayList<String> properties = new ArrayList<String>();
 
 		//		SELECT ?cloudservice ?property WHERE {
@@ -1658,6 +1667,7 @@ public class Questionnaire {
 		//			FILTER (?cloudservice = bdata:InvoiceNinja).} 
 
 		csId=csId.replace("http://ikm-group.ch/archiMEO/", "");
+		csId=csId.replace("http://ikm-group.ch/archimeo/", "");
 		csId=csId.replace("#", ":");
 
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
@@ -1690,6 +1700,10 @@ public class Questionnaire {
 			throw new NoResultsException("no more results");
 		}
 		qexec.close();
+
+		//System.out.println("-----------------------------------------------------\n Properties of cloudservies are:" +properties.toString() + "\nthe blacklisted attributes are \n" +blackListed.toString());
+		properties.removeAll(blackListed);
+		//System.out.println("Resulting properties are:" +properties.toString());
 
 		return properties;
 	}
