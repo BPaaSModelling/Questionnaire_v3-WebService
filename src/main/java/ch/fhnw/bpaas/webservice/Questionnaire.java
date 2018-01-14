@@ -332,20 +332,41 @@ public class Questionnaire {
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
+					id=id.replace("-", "");
 					String id2 = "?"+UUID.randomUUID().toString();
-					queryStr.append("?cloudService <" + answeredQuestion.get(i).getAnnotationRelation() + "> " + id + " .");
+					id2=id2.replace("-", "");
 
+					try {
+						//System.out.println("------------------------------------------------------------");
+						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
+						//queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
+						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> ?value .");
+
+					} catch (NoResultsException e) {
+						e.printStackTrace();
+					}
+					//TODO: @STEFANO?
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id2 + ") .");
 					queryStr.append("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id2 + ") .");
 					//filters.add("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + id2 + " ) .");
-					queryStr.append("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + id2 + " ) .");
+					queryStr.append("FILTER( ?value " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0)+ answeredQuestion.get(i).getAnswerDatatype() );
+					System.out.println("answeredQuestion.get(i).getAnswerDatatype()"+answeredQuestion.get(i).getAnswerDatatype());
+
 
 				} else {
 					System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
-					String id = "?"+UUID.randomUUID().toString();
-					queryStr.append("?cloudService <" + answeredQuestion.get(i).getAnnotationRelation() + "> " + id + " .");
+					//String id = "?"+UUID.randomUUID().toString();
+					try {
+						//System.out.println("------------------------------------------------------------");
+						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
+						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> ?value .");
+					} catch (NoResultsException e) {
+						e.printStackTrace();
+					}
+
 					//filters.add("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID() + ") .");
-					queryStr.append("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID() + ") .");
+					queryStr.append("FILTER( ?value " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerLabel()+")" );
+
 
 				}
 				System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
@@ -379,8 +400,14 @@ public class Questionnaire {
 				break;
 
 
-			default: //single and search answers
 
+
+			default: //single
+
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
+				
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
@@ -481,34 +508,42 @@ public class Questionnaire {
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
+					id=id.replace("-", "");
 					String id2 = "?"+UUID.randomUUID().toString();
+					id2=id2.replace("-", "");
+
 					try {
 						//System.out.println("------------------------------------------------------------");
 						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
-						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
+						//queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
+						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> ?value .");
+						
 					} catch (NoResultsException e) {
 						e.printStackTrace();
 					}
-
+					//TODO: @STEFANO?
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id2 + ") .");
 					queryStr.append("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id2 + ") .");
 					//filters.add("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + id2 + " ) .");
-					queryStr.append("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + id2 + " ) .");
+					queryStr.append("FILTER( ?value " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0)+ answeredQuestion.get(i).getAnswerDatatype() );
+					System.out.println("answeredQuestion.get(i).getAnswerDatatype()"+answeredQuestion.get(i).getAnswerDatatype());
+					
 
 				} else {
 					System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
-					String id = "?"+UUID.randomUUID().toString();
+					//String id = "?"+UUID.randomUUID().toString();
 					try {
 						//System.out.println("------------------------------------------------------------");
 						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
-						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> " + formatURIForQueries(answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + " .");
+						queryStr.append("?cloudService <" + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()) + "> ?value .");
 					} catch (NoResultsException e) {
 						e.printStackTrace();
 					}
 
 					//filters.add("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID() + ") .");
-					queryStr.append("FILTER( " + id + " " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID() + ") .");
-
+					queryStr.append("FILTER( ?value " + GlobalVariables.getComparisonOperatorString(answeredQuestion.get(i).getComparisonAnswer()) + answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerLabel()+")" );
+					
+					
 				}
 				System.out.println("inside ANSWERTYPE_VALUEINSERT for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
@@ -546,10 +581,16 @@ public class Questionnaire {
 				}
 				System.out.println("inside ANSWERTYPE_SEARCH_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
+				
+		
+	
 
+			default: //single
 
-			default: //single and search answers
-
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
+				
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
 					//rules.add("BIND (" + answeredQuestion.get(i).getRuleToApply().replaceAll(hotword_rule, answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID()) + ") AS " + id + ") .");
@@ -592,7 +633,7 @@ public class Questionnaire {
 				cloudServices.add(e);
 			}}else {
 				System.out.println("no cloud service matching");
-				throw new NoResultsException("nore more results");
+				//throw new NoResultsException("nore more results");
 			}
 		qexec.close();
 		System.out.println("\ncs suitable\n"+ cloudServices.toString()+"\n");
@@ -888,10 +929,10 @@ public class Questionnaire {
 		return flag;
 	}
 
-	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) throws NoResultsException {
+	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) {
 
 		String maxEntropyAttr="";
-		Float max=(float) 0;
+		Float max=0.0f;
 		ArrayList<String> tmpList= new ArrayList<String>();
 
 		for (int i = 0; i<blackListed.size(); i++) {
@@ -907,25 +948,25 @@ public class Questionnaire {
 		blackListed.addAll(tmpList);
 
 		System.out.println("\n\nBlackListed answers:" +blackListed);
-		int i=0;
+		
 		for (Map.Entry<String,Float> entry : entropyMap.entrySet()) {
-			if(i==0) {
-				maxEntropyAttr=entry.getKey();
-				max=entry.getValue();
-			}
-			i++;
+			
 			//	System.out.println("OLD ANSWER CONTAINS THE VALUE? "+answers.contains(entry.getKey()));
 
 			if (!blackListed.contains((entry.getKey()))) {
 
 				if (entry.getValue()>=max) {
 					maxEntropyAttr=entry.getKey();
-					System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());
+					//System.out.println("New max entropy attribute is: "+entry.getKey() + " => " + entry.getValue());
 					max=entry.getValue();
 				}else {
-					System.out.println("Entropy attribute "+entry.getKey() + " => " + entry.getValue()+"is lower than "+maxEntropyAttr );
+					//System.out.println("Entropy attribute "+entry.getKey() + " => " + entry.getValue()+"is lower than "+maxEntropyAttr );
 				}
 			}
+		}
+		if (maxEntropyAttr=="") {
+			System.out.println("All the questions available have been answered");
+			new NoResultsException("no more results");
 		}
 
 
@@ -1017,7 +1058,8 @@ public class Questionnaire {
 
 
 	private QuestionnaireItem getNonFunctionalQuestion(QuestionnaireModel qm) throws NoResultsException {
-
+		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+		
 		//ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm);
 		ArrayList<EntropyCloudService> ecss=querySuitableCloudservices(qm.getCompletedQuestionList());
 
@@ -1053,29 +1095,56 @@ public class Questionnaire {
 		blackListedQuestion.addAll(oldAnswers);
 		blackListedQuestion.addAll(questionsOutOfDomain);
 		System.out.println(blackListedQuestion.toString());
-
-		if (entropyMap.size()>1) {
-			maxEntropyAttribute = getMaxEntropyAttribute(entropyMap, blackListedQuestion);		
-			System.out.println("maxEntropyAttribute: "+maxEntropyAttribute );	
-			System.out.println("Entropy calculated on "+entropyMap.size()+" properties");
-		}else {
-			System.out.println("Entropy calculated on "+entropyMap.size()+" cloud Services");
-			throw new NoResultsException("only 1 matching Cloud Service, no more questions are needed");
+		
+				
+		if (ecss.size()==0) {
+			
+			System.out.println("less than 2 Cloud service matching");
+			//throw new NoResultsException("only 1 matching Cloud Service, no more questions are needed");
+			
+			// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
+			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
+			Answer a1= new Answer();
+			a1.setAnswerID("SKIP");
+			a1.setAnswerLabel("press back to try another answer of the previous question OR next to finish the questionnaire");
+			
+			answerListTmp.add(a1);
+						
+			pickedQuestion.setAnswerList(answerListTmp);
+			pickedQuestion.setQuestionLabel("Less than 2 matching Cloud Service, no more questions are needed");
+			pickedQuestion.setAnnotationRelation("SKIP");
+			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
+			pickedQuestion.setQuestionURI(" ");
+			return pickedQuestion;
+						
 		}
 
+		maxEntropyAttribute = getMaxEntropyAttribute(entropyMap, blackListedQuestion);	
+		
 		String questionID =getQuestionFromAttribute(maxEntropyAttribute);
-		QuestionnaireItem pickedQuestion = new QuestionnaireItem();
+		
 
-		// DEVELOPMENT PHASE: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
+		// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
 		if (questionID=="Empty") {
 			//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
 			System.out.println("\nQuestionID == empty\n returning the previosly asked question or a specific question/error message");
-			pickedQuestion.setQuestionLabel("Question for "+maxEntropyAttribute + " not available, try with another answer");
+			
+			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
+			Answer a1= new Answer();
+			a1.setAnswerID("SKIP");
+			a1.setAnswerLabel("press back to try another answer of the previous question OR next to finish the questionnaire");
 
+			answerListTmp.add(a1);
+			
+			pickedQuestion.setAnswerList(answerListTmp);
+			pickedQuestion.setQuestionLabel("Question for "+maxEntropyAttribute + " not available, try with another answer");
+			pickedQuestion.setAnnotationRelation(maxEntropyAttribute);
+			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
+			pickedQuestion.setQuestionURI("skippable");
+			
 			return pickedQuestion;
 		}
-
-
+		//end  
 
 
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
