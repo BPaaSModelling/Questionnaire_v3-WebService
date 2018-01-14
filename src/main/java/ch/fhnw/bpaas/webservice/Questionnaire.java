@@ -305,7 +305,9 @@ public class Questionnaire {
 			//System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
@@ -329,6 +331,9 @@ public class Questionnaire {
 				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
@@ -373,6 +378,9 @@ public class Questionnaire {
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
 
 				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
@@ -481,7 +489,9 @@ public class Questionnaire {
 			//System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
@@ -505,7 +515,10 @@ public class Questionnaire {
 				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
-
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
+				
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
 					id=id.replace("-", "");
@@ -549,7 +562,9 @@ public class Questionnaire {
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
-
+				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
+					break;
+				}
 				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
@@ -753,7 +768,7 @@ public class Questionnaire {
 
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 
-		if (qm.getCompletedQuestionList().size() >2){
+		if (qm.getCompletedQuestionList().size() >3){
 
 
 			//System.out.println("####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
