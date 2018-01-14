@@ -929,7 +929,7 @@ public class Questionnaire {
 		return flag;
 	}
 
-	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) {
+	public String getMaxEntropyAttribute(HashMap<String, Float> entropyMap, ArrayList<String> blackListed) throws NoResultsException {
 
 		String maxEntropyAttr="";
 		Float max=0.0f;
@@ -966,7 +966,8 @@ public class Questionnaire {
 		}
 		if (maxEntropyAttr=="") {
 			System.out.println("All the questions available have been answered");
-			new NoResultsException("no more results");
+			
+			throw new NoResultsException("All the questions available have been answered");
 		}
 
 
@@ -1099,19 +1100,19 @@ public class Questionnaire {
 				
 		if (ecss.size()==0) {
 			
-			System.out.println("less than 2 Cloud service matching");
+			System.out.println("No Cloud service matching based on the previous question's answers");
 			//throw new NoResultsException("only 1 matching Cloud Service, no more questions are needed");
 			
 			// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
 			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
 			Answer a1= new Answer();
 			a1.setAnswerID("SKIP");
-			a1.setAnswerLabel("press back to try another answer of the previous question OR next to finish the questionnaire");
+			a1.setAnswerLabel("press back to try another answer of the previous question OR start a new questionnaire, clicking next won't generate a new question");
 			
 			answerListTmp.add(a1);
 						
 			pickedQuestion.setAnswerList(answerListTmp);
-			pickedQuestion.setQuestionLabel("Less than 2 matching Cloud Service, no more questions are needed");
+			pickedQuestion.setQuestionLabel("Less than 2 matching Cloud Service, no more questions will be generated");
 			pickedQuestion.setAnnotationRelation("SKIP");
 			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
 			pickedQuestion.setQuestionURI(" ");
