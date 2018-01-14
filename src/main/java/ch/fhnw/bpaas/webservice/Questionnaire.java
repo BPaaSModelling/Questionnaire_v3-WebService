@@ -251,10 +251,11 @@ public class Questionnaire {
 		//System.out.println("####################<end> getSuitableCloudServices ####################");
 		ArrayList<Answer> result = new ArrayList<Answer>();
 
+		System.out.println("Inside Response get Suitable Cloudservice, QuestionList received \n" +questionList.toString());
 		try {
 
 			result = querySuitableCloudservices(questionList);
-
+			System.out.println("Inside Response get Suitable Cloudservice, result result \n" +result.toString());
 			if (debug_properties){
 				for (int index = 0; index < result.size(); index++){
 					System.out.println("CS number "+index+": ");
@@ -305,9 +306,6 @@ public class Questionnaire {
 			//System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
@@ -331,9 +329,6 @@ public class Questionnaire {
 				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
@@ -378,9 +373,7 @@ public class Questionnaire {
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
+
 
 				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
@@ -489,9 +482,6 @@ public class Questionnaire {
 			//System.out.println("SWITCH CASE = "+answeredQuestion.get(i).getAnswerType());
 			switch (answeredQuestion.get(i).getAnswerType()){
 			case GlobalVariables.ANSWERTYPE_MULTI_SELECTION:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
 
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					for (int j = 0; j < answeredQuestion.get(i).getGivenAnswerList().size(); j++){
@@ -515,9 +505,6 @@ public class Questionnaire {
 				System.out.println("inside ANSWERTYPE_MULTI_SELECTION for "+ answeredQuestion.get(i).getQuestionURI()+"i-->"+i);
 				break;
 			case GlobalVariables.ANSWERTYPE_VALUEINSERT:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
 				
 				if (answeredQuestion.get(i).getRuleToApply()!=null){
 					String id = "?"+UUID.randomUUID().toString();
@@ -562,9 +549,7 @@ public class Questionnaire {
 				break;
 
 			case GlobalVariables.ANSWERTYPE_SEARCH_SELECTION:
-				if (answeredQuestion.get(i).getAnswerList().get(0).getAnswerID().equals("SKIP")) {
-					break;
-				}
+
 				//System.out.println("answeredQuestion.get(i).getRuleToApply()="+answeredQuestion.get(i).getRuleToApply());
 				if (answeredQuestion.get(i).getRuleToApply()!=null) {
 					String id = UUID.randomUUID().toString();
@@ -768,7 +753,7 @@ public class Questionnaire {
 
 		//ArrayList<EntropyCloudService> ecss = createTestAttributeMap();
 
-		if (qm.getCompletedQuestionList().size() >3){
+		if (qm.getCompletedQuestionList().size() >2){
 
 
 			//System.out.println("####################qm.getCompletedQuestionList().size() inside if --->"+qm.getCompletedQuestionList().size()+"####################");
@@ -777,15 +762,15 @@ public class Questionnaire {
 			} catch (NoResultsException e) {
 				e.printStackTrace();
 			}
-			if (pickedQuestion.getQuestionLabel()=="empty") {
-				//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
-				pickedQuestion=qm.getCompletedQuestionList().get((qm.getCurrentQuestionID()-1));
-			}
-			System.out.println("Picked non funcional Question ---> "+ pickedQuestion.toString());
+//			if (pickedQuestion.getQuestionLabel()=="empty") {
+//				//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
+//				pickedQuestion=qm.getCompletedQuestionList().get((qm.getCurrentQuestionID()-1));
+//			}
+//			System.out.println("Picked non funcional Question ---> "+ pickedQuestion.toString());
 		} else {
 
 			pickedQuestion=getFunctionalQuestion(qm);	
-			System.out.println("Picked functional Question ---> "+ pickedQuestion.toString());
+			System.out.println("Picked functional Question\n "+ pickedQuestion.toString());
 
 		}
 
@@ -1079,11 +1064,7 @@ public class Questionnaire {
 		//ArrayList<EntropyCloudService> ecss = getCloudServiceList(qm);
 		ArrayList<EntropyCloudService> ecss=querySuitableCloudservices(qm.getCompletedQuestionList());
 
-		HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
-		//System.out.println("attributeMap"+attributeMap.toString());		
-
-		HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
-		//System.out.println("entropyMap"+entropyMap.toString());
+		
 
 		ArrayList<String> oldAnswers=new ArrayList<String>();
 		for (int i=0;i<qm.getCompletedQuestionList().size();i++) {
@@ -1098,7 +1079,7 @@ public class Questionnaire {
 			}
 
 			oldAnswers.add(searchAnnotationRelation(getOldAnswer,oldAnswer));
-			System.out.println(oldAnswers.toString());
+			//System.out.println(oldAnswers.toString());
 		}
 
 		String maxEntropyAttribute="";
@@ -1110,7 +1091,7 @@ public class Questionnaire {
 		ArrayList<String> blackListedQuestion= new ArrayList<String>();
 		blackListedQuestion.addAll(oldAnswers);
 		blackListedQuestion.addAll(questionsOutOfDomain);
-		System.out.println(blackListedQuestion.toString());
+		//System.out.println(blackListedQuestion.toString());
 		
 				
 		if (ecss.size()==0) {
@@ -1134,6 +1115,13 @@ public class Questionnaire {
 			return pickedQuestion;
 						
 		}
+		
+		//TODO: USE BLACKLIST ON ATTRIBUTE MAP, INSTEAD OF GET MAX ENTROPY ATTR
+		HashMap<String, HashMap<String, Integer>> attributeMap= getAttributeMap(ecss);
+		//System.out.println("attributeMap"+attributeMap.toString());		
+
+		HashMap<String, Float> entropyMap = getEntropyMap(attributeMap, ecss.size());
+		//System.out.println("entropyMap"+entropyMap.toString());
 
 		maxEntropyAttribute = getMaxEntropyAttribute(entropyMap, blackListedQuestion);	
 		
@@ -1143,8 +1131,7 @@ public class Questionnaire {
 		// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
 		if (questionID=="Empty") {
 			//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
-			System.out.println("\nQuestionID == empty\n returning the previosly asked question or a specific question/error message");
-			
+						
 			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
 			Answer a1= new Answer();
 			a1.setAnswerID("SKIP");
@@ -1184,7 +1171,8 @@ public class Questionnaire {
 		queryStr.append("}");
 
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
-		System.out.println("query-->"+queryStr);
+		
+		System.out.println("query for non functional question\n"+queryStr);
 
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
@@ -1291,8 +1279,8 @@ public class Questionnaire {
 			throw new NoResultsException("No quesiton for the domain");
 		}
 		qexec.close();		
-		System.out.println("query executed\n"+queryStr);
-		System.out.println(removedQuestion.toString());
+		//System.out.println("query executed\n"+queryStr);
+		//System.out.println(removedQuestion.toString());
 
 		return removedQuestion;
 	}
@@ -1327,6 +1315,7 @@ public class Questionnaire {
 		queryStr.append("}");
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
 
+		System.out.println("Get functional question query:\n"+ queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
