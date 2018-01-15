@@ -437,7 +437,7 @@ public class Questionnaire {
 		}
 		queryStr.append("}");
 		queryStr.append("ORDER BY ?csLabel");
-		System.out.println("query executed for query suitable\n"+queryStr);
+		//System.out.println("query executed for query suitable\n"+queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
@@ -619,7 +619,7 @@ public class Questionnaire {
 		}
 		queryStr.append("}");
 		queryStr.append("ORDER BY ?csLabel");
-		System.out.println("Query execute to create the ArrayList of \n"+queryStr);
+		//System.out.println("Query execute to create the ArrayList of cs\n"+queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
@@ -732,12 +732,27 @@ public class Questionnaire {
 		QuestionnaireModel qm = gson.fromJson(parsed_json, QuestionnaireModel.class);		
 		QuestionnaireItem result = new QuestionnaireItem();		
 
+		
+		if (!qm.getCompletedQuestionList().isEmpty()) {
+			if (qm.getCompletedQuestionList().size()>1)	{
+				int lastQ= qm.getCompletedQuestionList().size()-1;
+				
+				QuestionnaireItem lastQuestion= qm.getCompletedQuestionList().get((lastQ));
+				QuestionnaireItem lastLastQuestion= qm.getCompletedQuestionList().get((lastQ)-1);
+				
+				if(lastQuestion.getQuestionURI().equals("Empty")) {
+					String json = gson.toJson(result);		
+					return Response.status(Status.NOT_ACCEPTABLE).entity(json).build();	
+				}
+			}
+		}
+		
 		try {
 			result = detectNextQuestion(qm);
 		} catch (MinimumEntropyReached e) {
 			e.printStackTrace();
-		}		
-
+		}
+		
 		String json = gson.toJson(result);		
 		//System.out.println("\n####################<start>####################");		
 		//System.out.println("/search genereated json: " +json);		
@@ -974,7 +989,7 @@ public class Questionnaire {
 		if (maxEntropyAttr=="") {
 			System.out.println("All the questions available have been answered");
 			
-			throw new NoResultsException("All the questions available have been answered");
+			//throw new NoResultsException("All the questions available have been answered");
 		}
 
 
@@ -1050,7 +1065,7 @@ public class Questionnaire {
 
 			}
 		} else {
-			System.out.println("QUERY EXECUTED WITH ZERO RESULT\n"+queryStr+"\n");
+			System.out.println("The question is not available in the triple store for the annotation relation: "+attr+" Query executed:\n"+queryStr+"\n");
 			return pickedQuestion="Empty";
 			//throw new NoResultsException("No matching question for "+ attr);
 		}
@@ -1058,7 +1073,7 @@ public class Questionnaire {
 
 
 		//System.out.println("####################  end EXECUTION OF getQuestionFromAttribute("+ attr+")         ####################");
-		System.out.println("!!!!   THE QUESITON IS:  "+pickedQuestion);
+		//System.out.println("!!!!   THE QUESITON IS:  "+pickedQuestion);
 
 		return pickedQuestion;
 
@@ -1118,7 +1133,7 @@ public class Questionnaire {
 			pickedQuestion.setQuestionLabel("There are no matching Cloud Service");
 			pickedQuestion.setAnnotationRelation("SKIP");
 			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
-			pickedQuestion.setQuestionURI(" ");
+			pickedQuestion.setQuestionURI("Empty");
 			return pickedQuestion;
 						
 		}
@@ -1323,7 +1338,7 @@ public class Questionnaire {
 		queryStr.append("}");
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
 
-		System.out.println("Get functional question query:\n"+ queryStr);
+		//System.out.println("Get functional question query:\n"+ queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
