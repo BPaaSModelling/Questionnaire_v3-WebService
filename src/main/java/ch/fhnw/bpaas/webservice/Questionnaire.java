@@ -743,6 +743,20 @@ public class Questionnaire {
 				if(lastQuestion.getQuestionURI().equals("Empty")) {
 					String json = gson.toJson(result);		
 					return Response.status(Status.NOT_ACCEPTABLE).entity(json).build();	
+				}else {
+					
+//					try {
+//						result = detectNextQuestion(qm);
+//					} catch (MinimumEntropyReached e) {
+//						e.printStackTrace();
+//					}
+//					System.out.println(result.toString());
+					
+					if(lastQuestion.getQuestionURI().equals("End")) {
+						String json = gson.toJson(result);		
+						//System.out.println(json.toString());
+						return Response.status(Status.NOT_ACCEPTABLE).entity(json).build();	
+					}
 				}
 			}
 		}
@@ -988,7 +1002,7 @@ public class Questionnaire {
 		}
 		if (maxEntropyAttr=="") {
 			System.out.println("All the questions available have been answered");
-			
+			maxEntropyAttr="End";
 			//throw new NoResultsException("All the questions available have been answered");
 		}
 
@@ -1111,6 +1125,7 @@ public class Questionnaire {
 
 		questionsOutOfDomain=getQuestionsOutOfDomain(selectedDomainList);
 		ArrayList<String> blackListedQuestion= new ArrayList<String>();
+		blackListedQuestion.add("bpaas:cloudServiceHasDescription");
 		blackListedQuestion.addAll(oldAnswers);
 		blackListedQuestion.addAll(questionsOutOfDomain);
 		//System.out.println(blackListedQuestion.toString());
@@ -1125,10 +1140,10 @@ public class Questionnaire {
 			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
 			Answer a1= new Answer();
 			a1.setAnswerID("SKIP");
-			a1.setAnswerLabel("press back to try another answer of the previous question OR start a new questionnaire, clicking next won't generate a new question");
+			a1.setAnswerLabel("Please, press back to try another answer of the previous question OR start a new questionnaire, clicking next won't generate a new question");
 			
 			answerListTmp.add(a1);
-						
+			
 			pickedQuestion.setAnswerList(answerListTmp);
 			pickedQuestion.setQuestionLabel("There are no matching Cloud Service");
 			pickedQuestion.setAnnotationRelation("SKIP");
@@ -1147,9 +1162,30 @@ public class Questionnaire {
 
 		maxEntropyAttribute = getMaxEntropyAttribute(entropyMap, blackListedQuestion);	
 		
+		if (maxEntropyAttribute=="End") {
+			//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
+						
+			System.out.println("All questions for the selected domain have been answered");
+			//throw new NoResultsException("only 1 matching Cloud Service, no more questions are needed");
+			
+			// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
+			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
+			Answer a1= new Answer();
+			a1.setAnswerID("SKIP");
+			a1.setAnswerLabel("Please, press back to try another answer of the previous questions OR start a new questionnaire, clicking next won't generate a new question");
+			
+			answerListTmp.add(a1);
+						
+			pickedQuestion.setAnswerList(answerListTmp);
+			pickedQuestion.setQuestionLabel("All questions for the selected domain have been answered");
+			pickedQuestion.setAnnotationRelation("SKIP");
+			pickedQuestion.setAnswerType("http://ikm-group.ch/archiMEO/questionnaire#SingleSelection");
+			pickedQuestion.setQuestionURI("Empty");
+			return pickedQuestion;
+		}
+		
 		String questionID =getQuestionFromAttribute(maxEntropyAttribute);
 		
-
 		// TODO: TO BE DISCUSSED: IF THE ATTRIBUTE HAS NOT A QUESTION, SHOW THE MESSAGE INSTEAD OF CRASH
 		if (questionID=="Empty") {
 			//TODO: NEW APPROACH TESTING, TO BE DISCUSSED
@@ -1157,7 +1193,7 @@ public class Questionnaire {
 			ArrayList<Answer> answerListTmp= new ArrayList<Answer>();
 			Answer a1= new Answer();
 			a1.setAnswerID("SKIP");
-			a1.setAnswerLabel("press back to try another answer of the previous question OR next to finish the questionnaire");
+			a1.setAnswerLabel("Please, press back to try another answer of the previous questions OR next to ignore the question");
 
 			answerListTmp.add(a1);
 			
