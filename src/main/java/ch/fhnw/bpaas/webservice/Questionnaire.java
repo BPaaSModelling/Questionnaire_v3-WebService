@@ -335,7 +335,7 @@ public class Questionnaire {
 					id=id.replace("-", "");
 					String id2 = "?"+UUID.randomUUID().toString();
 					id2=id2.replace("-", "");
-
+					
 					try {
 						//System.out.println("------------------------------------------------------------");
 						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
@@ -356,6 +356,13 @@ public class Questionnaire {
 				} else {
 					//System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
 					//String id = "?"+UUID.randomUUID().toString();
+					System.out.println("Parsing insert value of "+ answeredQuestion.toString());
+					
+					if (answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID().equals("0")) {
+						System.out.println("Parsing: Skipped question ");
+						break;
+					}
+					
 					try {
 						//System.out.println("------------------------------------------------------------");
 						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
@@ -532,6 +539,11 @@ public class Questionnaire {
 				} else {
 					//System.out.println("inside ELSE for "+ answeredQuestion.get(i).getQuestionURI());
 					//String id = "?"+UUID.randomUUID().toString();
+					if (answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerID().equals("0")) {
+						System.out.println("Parsing: Skipped question "+ answeredQuestion.get(i).getGivenAnswerList().get(0).getAnswerLabel());
+						break;
+					}
+					
 					try {
 						//System.out.println("------------------------------------------------------------");
 						//System.out.println("                 searchAnnotationRelation    " + searchAnnotationRelation(answeredQuestion.get(i).getAnnotationRelation(),answeredQuestion.get(i).getQuestionURI()));
