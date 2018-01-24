@@ -99,7 +99,48 @@ public class Insert {
 		queryStr.append("}");
 		queryStr.append("}");
 		queryStr.append("ORDER BY ?domain ?field");
+		
+		//POSSIBLE ALTERNATIVE, INSTEAD OF MANUALLY CREATING THE NEW LIST OF questionnaire:CloudServiceDomain
+//		queryStr.append("SELECT ?field ?label ?qType ?qType ?searchnamespace ?searchType ?datatype ?lblDomain ?rule ");
+//		queryStr.append("WHERE {");
+//		queryStr.append("?field rdfs:label ?label .");
+//		queryStr.append("?field rdf:type ?qType .");
+//		queryStr.append("?qType rdfs:subClassOf* questionnaire:AnswerType .");
+//		queryStr.append("?field rdf:type ?dType .");
+//		queryStr.append("?dType rdfs:label ?lblDomain .");
+//		queryStr.append("?dType rdfs:subClassOf questionnaire:Question . ");
+//		queryStr.append("OPTIONAL {?field questionnaire:valueInsertAnswerTypeHasDatatype ?qType .}");
+//		queryStr.append("OPTIONAL {?field questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}");
+//		queryStr.append("OPTIONAL{?field questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}");
+//		queryStr.append("OPTIONAL {?field questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}");
+//		queryStr.append("OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}");
+//		queryStr.append("OPTIONAL {?field questionnaire:hasOrderNumberForVisualization ?orderQ}");
+//		queryStr.append("OPTIONAL {?field questionnaire:questionHasRuleToApply ?rule}}");
+//		queryStr.append("ORDER BY ?lbldomain ?field");
 
+//		here the query:		
+//		SELECT ?field ?label ?qType ?qType ?searchnamespace ?searchType ?datatype ?lblDomain ?rule 
+//		WHERE {
+//		?field rdfs:label ?label .
+//		?field rdf:type ?qType .
+//		?qType rdfs:subClassOf* questionnaire:AnswerType .
+//		?field rdf:type ?dType .
+//		?dType rdfs:label ?lblDomain .
+//		?dType rdfs:subClassOf questionnaire:Question . 
+//		OPTIONAL {?field questionnaire:valueInsertAnswerTypeHasDatatype ?qType .}
+//		OPTIONAL {?field questionnaire:searchSelectionHasSearchNamespace ?searchnamespace .}
+//		OPTIONAL{?field questionnaire:valueInsertAnswerTypeHasDatatype ?datatype .}
+//		OPTIONAL {?field questionnaire:searchSelectionOnClassesInsteadOfInstances ?searchType .}
+//		OPTIONAL {?dType questionnaire:hasOrderNumberForVisualization ?orderD}
+//		OPTIONAL {?field questionnaire:hasOrderNumberForVisualization ?orderQ}
+//		OPTIONAL {?field questionnaire:questionHasRuleToApply ?rule}}
+//		ORDER BY ?lbldomain ?field
+		
+		
+		
+		
+		System.out.println("Query executed for query raw Cs Elements \n"+ queryStr);
+				
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 		//I query comparison operators only one time and I store them in a temp array

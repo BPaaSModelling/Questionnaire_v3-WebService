@@ -444,7 +444,8 @@ public class Questionnaire {
 		}
 		queryStr.append("}");
 		queryStr.append("ORDER BY ?csLabel");
-		//System.out.println("query executed for query suitable\n"+queryStr);
+		
+		System.out.println("query executed for query suitable\n"+queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
