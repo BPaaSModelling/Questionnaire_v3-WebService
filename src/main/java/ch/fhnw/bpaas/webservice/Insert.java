@@ -208,7 +208,7 @@ public class Insert {
 		ParameterizedSparqlString querStr = new ParameterizedSparqlString();
 		
 		querStr.append("INSERT DATA{");
-		querStr.append("bdata:CloudService" + "CloudService"+id  +" rdf:type bpaas:CloudService ;");
+		querStr.append("bdata:CloudService_" + id  +" rdf:type bpaas:CloudService ;");
 		System.out.println("    CloudService ID: "+ "CloudService"+id);
 		querStr.append("rdfs:label \"" + csm.getLabel() +"\" ;");
 		System.out.println("    CloudService Label: "+ csm.getLabel());
@@ -228,7 +228,7 @@ public class Insert {
 	
 		querStr.append("}");
 		//Model modelTpl = ModelFactory.createDefaultModel();
-		ontology.insertQuery(querStr);
+		ontology.insertQueryAndApplyRules(querStr);
 	
 		return Response.status(Status.OK).entity("{}").build();
 

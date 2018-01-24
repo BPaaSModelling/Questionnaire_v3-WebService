@@ -68,6 +68,16 @@ public final class OntologyManager {
 		}
 		
 	}
+	
+	private List<String> getReasoningRules() {
+		List<String> ruleSet = null;
+		try {
+			ruleSet = RuleParser.parseRules(this.getClass().getClassLoader().getResourceAsStream(GlobalVariables.REASONING_RULESET));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return ruleSet;
+	}
 
 	public Model applyReasoningRulesToTempModel(Model tempModel, ParameterizedSparqlString constructQuery) {
 		return performConstructRule(tempModel, constructQuery);	
@@ -185,6 +195,25 @@ public final class OntologyManager {
 
 	public static String getREADENDPOINT() {
 		return READENDPOINT;
+	}
+	
+	public void insertQueryAndApplyRules(ParameterizedSparqlString queryStr) {
+		
+		//ONLINE ONLY METHOD - WORKS ONLY WITH FUSEKI OR ONLINE REPOSITORY
+		List<String> ruleSet = this.getReasoningRules();
+		
+			addNamespacesToQuery(queryStr);
+			Model tempModel = ModelFactory.createOntologyModel();
+			UpdateAction.parseExecute(queryStr.toString(), tempModel);
+			
+			for (String rule : ruleSet) {
+				tempModel = performConstructRule(tempModel, new ParameterizedSparqlString(rule));	
+			}	
+		
+			DatasetAccessor da = DatasetAccessorFactory.createHTTP(DATAENDPOINT);
+			da.add(tempModel);
+			//da.putModel(tempModel);
+			
 	}
 
 }
