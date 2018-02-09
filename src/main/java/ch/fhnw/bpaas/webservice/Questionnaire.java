@@ -1419,11 +1419,11 @@ public class Questionnaire {
 		queryStr.append("OPTIONAL {?question questionnaire:questionHasRuleToApply ?rule}");
 
 		if (qm.getCompletedQuestionList().size() == 1){
-			queryStr.append("FILTER (?label = \"Which Object does reflect the functional requirement you want to express?\")");
+			queryStr.append("FILTER (?label = \"Which Object does match the chosen Action?  the combination Action and Object reflects the purpose of the service\")");
 		}else if (qm.getCompletedQuestionList().size() == 0){
-			queryStr.append("FILTER (?label = \"Which Action does reflect the functional requirement you want to express?\")");
+			queryStr.append("FILTER (?label = \"Which Action does your service reflect?\")");
 		}else if (qm.getCompletedQuestionList().size()== 2){
-			queryStr.append("FILTER (?label = \"Which APQC category does reflect the functional requirement you want to express?\")");
+			queryStr.append("FILTER (?label = \"What does your service do? Please select an appropriate APQC category?\")");
 		}
 		queryStr.append("}");
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
@@ -1508,7 +1508,7 @@ public class Questionnaire {
 		queryStr.append("FILTER (" + tempStrForDomain + ")");
 		//queryStr.append("FILTER (?dType = questionnaire:DataSecurity || ?dType = questionnaire:Payment)");
 		queryStr.append("} ORDER BY ?csLabel ?annotationRelation ?value");
-
+		System.out.println("\n-------------------------------------------------"+queryStr);
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
