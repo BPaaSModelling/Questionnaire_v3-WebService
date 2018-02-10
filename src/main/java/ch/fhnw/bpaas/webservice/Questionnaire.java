@@ -1424,7 +1424,7 @@ public class Questionnaire {
 		}else if (qm.getCompletedQuestionList().size() == 0){
 			queryStr.append("FILTER (?label = \"Which Action does your service reflect?\")");
 		}else if (qm.getCompletedQuestionList().size()== 2){
-			queryStr.append("FILTER (?label = \"What does your service do? Please select an appropriate APQC category?\")");
+			queryStr.append("FILTER (?label = \"What does your service do? Please select an appropriate APQC category\")");
 		}
 		queryStr.append("}");
 		queryStr.append("ORDER BY DESC(?orderD) DESC(?orderQ)");
