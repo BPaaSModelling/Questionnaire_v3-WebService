@@ -723,11 +723,12 @@ public class Questionnaire {
 		//SELECT ?answer ?label WHERE { questiondata:Select_your_preferred_payment_plan questionnaire:questionHasAnswers ?answer .?answer rdfs:label ?label .}
 		ParameterizedSparqlString queryStr = new ParameterizedSparqlString();
 
-		queryStr.append("SELECT DISTINCT ?answer ?label WHERE {");
+		queryStr.append("SELECT DISTINCT ?answer ?label ?order WHERE {");
 		queryStr.append(""+element_URI +" questionnaire:questionHasAnswers ?answer .");
 		queryStr.append("?answer rdfs:label ?label .");
+		queryStr.append("OPTIONAL {?answer questionnaire:hasOrderNumberForVisualization ?order} ." );
 		queryStr.append("}");
-
+		queryStr.append("ORDER BY ?order");
 
 		QueryExecution qexec2 = ontology.query(queryStr);
 		ResultSet results = qexec2.execSelect();
