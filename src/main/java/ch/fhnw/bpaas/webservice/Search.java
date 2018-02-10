@@ -72,14 +72,16 @@ public class Search {
 		queryStr.append("?subclass rdfs:subClassOf* <" + namespace + "> .");
 		queryStr.append("?subclass rdfs:label ?label .");
 		queryStr.append("?subclass apqc:hasHierarchyID ?hir .");
-		queryStr.append("FILTER(?subclass!=<" + namespace +">)");
+		queryStr.append("FILTER(?subclass!=<" + namespace +">) .");
+		
 
 
 		for (String param : searchItems) {
 			queryStr.append("FILTER (regex(str(?label), \"" + param + "\", \"i\") || regex(str(?hir), \"" + param + "\", \"i\"))");
 		}
 		queryStr.append("}");
-
+		queryStr.append("LIMIT 10");
+		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
@@ -108,7 +110,8 @@ public class Search {
 			queryStr.append("FILTER regex(str(?label), \"" + param + "\", \"i\")");
 		}
 		queryStr.append("}");
-
+		queryStr.append("LIMIT 10");
+		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 
@@ -137,7 +140,8 @@ public class Search {
 			queryStr.append("FILTER regex(str(?label), \"" + param + "\", \"i\")");
 		}
 		queryStr.append("}");
-
+		queryStr.append("LIMIT 10");
+		
 		QueryExecution qexec = ontology.query(queryStr);
 		ResultSet results = qexec.execSelect();
 

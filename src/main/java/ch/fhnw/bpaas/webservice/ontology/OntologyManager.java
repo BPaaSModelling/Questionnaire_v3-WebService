@@ -141,13 +141,14 @@ public final class OntologyManager {
 
 	public QueryExecution query(ParameterizedSparqlString queryStr) {
 		addNamespacesToQuery(queryStr);
-		//System.out.println("***Performed query***\n" + queryStr.toString() + "***Performed query***\n");
+		System.out.println("***Performed query***\n" + queryStr.toString() + "***Performed query***\n");
 		Query query = QueryFactory.create(queryStr.toString());
 		QueryExecution qexec;
 		qexec = QueryExecutionFactory.sparqlService(QUERYENDPOINT, query);
 		
 		return qexec;
 	}
+	
 	
 	public ResultSet query(Model model, ParameterizedSparqlString queryStr) {
 		addNamespacesToQuery(queryStr);
