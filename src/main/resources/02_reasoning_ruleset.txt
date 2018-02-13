@@ -1,7 +1,4 @@
 ##################################################
-
-
-##################################################
 # APQC Reasoning
 ##################################################
 [CONSTRUCT {
@@ -36,139 +33,1216 @@
 	?action rdfs:subClassOf* fbpdo:Object .
 	?objectSub rdfs:subClassOf* ?object .
 }]
+
 ##################################################
 # Location Reasoning
 ##################################################
-#top down
+
 [CONSTRUCT {
-	?cs bpaas:cloudServiceHasProcessedDataLocation ?objectSub .
+	?cs bpaas:cloudServiceHasStoredDataLocation bpaas:Europe .
 } WHERE {
-	?cs bpaas:cloudServiceHasProcessedDataLocation ?object.
+	?cs bpaas:cloudServiceHasStoredDataLocation ?loc.
 	?cs rdf:type bpaas:CloudService .
-	?action rdfs:subClassOf* bpaas:Continent .
-	?objectSub rdfs:subClassOf* ?object .
+
+	FILTER(?loc != bpaas:Europe)
+	FILTER(?loc = bpaas:Finland  || ?loc = bpaas:The_Netherlands || ?loc = bpaas:Germany || ?loc = bpaas:Italy || ?loc = bpaas:France || ?loc = bpaas:Austria || ?loc =  bpaas:Spain || ?loc = bpaas:Denmark )
 }]
 
-#bottom up
+##################################################
+# Encryption Reasoning
+##################################################
+# Level Low
 [CONSTRUCT {
-	?cs bpaas:cloudServiceHasProcessedDataLocation ?parent .
+	?cs bpaas:cloudServiceHasHasEncryptionLevel bpaas:Low .
 } WHERE {
-	?cs bpaas:cloudServiceHasProcessedDataLocation ?loc.
+	?cs bpaas:cloudServiceHasHasEncryptionType ?enc.
 	?cs rdf:type bpaas:CloudService .
-	?loc rdfs:subClassOf* ?parent .
-	?parent rdfs:subClassOf* bpaas:Continent .
-	FILTER(?parent != bpaas:Continent)
+
+	FILTER(?enc = bpaas:SSL || ?enc = bpaas:HIPAA || ?enc = bpaas:SHA256 )
 }]
 
-
-##################################################
-# transforming availability % in downtime %
-##################################################
+# Level Medium
 [CONSTRUCT {
-	?cs bpaas:cloudServiceHasDowntimeInPercent ?downtimeInPercent .
+	?cs bpaas:cloudServiceHasHasEncryptionLevel bpaas:Medium .
 } WHERE {
+	?cs bpaas:cloudServiceHasHasEncryptionType ?enc.
 	?cs rdf:type bpaas:CloudService .
-	?cs bpaas:cloudServiceHasAvailabilityInPercent ?availability .
-	BIND (100-?availability AS ?downtimeInPercent) 
+
+	FILTER(?enc = bpaas:SOX || ?enc = bpaas:FDA || ?enc = bpaas:ISO27001 || ?enc = bpaas:IAAS || ?enc = bpaas:PSN || ?enc = bpaas:FIPS )
+}]
+
+# Level High
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasHasEncryptionLevel bpaas:High .
+} WHERE {
+	?cs bpaas:cloudServiceHasHasEncryptionType ?enc.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?enc = bpaas:AES || ?enc = bpaas:TLS || ?enc = bpaas:TLS_VPN || ?enc = bpaas:Ipsec )
 }]
 
 ##################################################
-# bpaas:cloudServiceHasBackupFrequency
+# Availability Reasoning
 ##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:monthly .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:weekly .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:yearly .
+ ?cs bpaas:cloudServiceHasMonthlyDowntimeInMinute ?downtime.
+ } WHERE {
+  ?cs rdf:type bpaas:CloudService .
+   ?cs bpaas:cloudServiceHasAvailabilityInPercent ?availability .
+
+BIND ((100-?availability)/100*43200 AS ?downtime) 
 }
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:daily .
+
+##################################################
+# Backup Retention Reasoning
+##################################################
+#longest backup retention
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Longer_than_1_year .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_year .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_6_months .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Five_years)
 }]
 
+#Longer_than_1_year
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:weekly .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:yearly .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:monthly .
+	
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_year .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_6_months .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Longer_than_1_year)
 }]
 
+#Up_to_1_year
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:yearly .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupFrequency bpaas:weekly .
+	
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_6_months .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_1_year)
+}]
+
+#Up_to_6_months
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_6_months)
+}]
+
+#Up_to_2_month
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_2_month)
+}]
+
+#Monthly
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_month .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Monthly)
+}]
+
+
+#Up_to_1_month
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_2_weeks .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_1_month)
+}]
+
+#Up_to_2_weeks
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:twenty8_days .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_2_weeks)
+}]
+
+#twenty8_days
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:twenty8_days)
+}]
+
+#Weekly
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_week .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Weekly)
+}]
+
+#Up_to_1_week
+[CONSTRUCT {
+
+	
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_1_week)
+}]
+
+#Daily
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Up_to_1_day .
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Daily)
+}]
+
+#Up_to_1_day
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupRetentionTime bpaas:Hourly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupRetentionTime ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Up_to_1_day)
+}]
+
+##################################################
+# Backup Frequency Reasoning
+##################################################
+#Hourly
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Yearly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Daily .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Every_3_hours .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupFrequency ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Hourly)
+}]
+
+#Every_3_hours
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Yearly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Weekly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Daily .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupFrequency ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Every_3_hours)
+}]
+
+#Daily
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Yearly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Monthly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Weekly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupFrequency ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Daily)
+}]
+
+#Weekly
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Yearly .
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Monthly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupFrequency ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Weekly)
+}]
+
+#Monthly
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasBackupFrequency bpaas:Yearly .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasBackupFrequency ?bf.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?bf = bpaas:Monthly)
+}]
+
+##################################################
+# Service Support Responsiveness
+##################################################
+
+#At_most_15_minutes
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_30_minutes .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_40_minutes .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_hour .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_15_minutes)
+}]
+
+#At_most_30_minutes
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_40_minutes .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_hour .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_30_minutes)
+}]
+
+#At_most_40_minutes
+[CONSTRUCT { 
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_40_minutes)
+}]
+
+#At_most_1_hour
+[CONSTRUCT {
+	
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_1_hour)
+}]
+
+#At_most_1_5_hours
+[CONSTRUCT {
+	
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_1_5_hours)
+}]
+
+#At_most_1_hour
+[CONSTRUCT {
+	
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_2_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_1_hour)
+}]
+
+#At_most_2_hours
+[CONSTRUCT {
+	
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_2_hours)
+}]
+
+#At_most_3_hours
+[CONSTRUCT {
+	
+
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_3_hours)
+}]
+
+#At_most_4_hours 
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_4_hours )
+}]
+
+
+#At_most_5_hours 
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_6_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_5_hours )
+}]
+
+#At_most_6_hours 
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_8_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_6_hours )
+}]
+
+#At_most_8_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_working_day .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_8_hours )
+}]
+
+#At_most_1_working_day
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_12_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_1_working_day )
+}]
+
+#At_most_12_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_13_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_12_hours )
+}]
+
+#At_most_13_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_16_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_13_hours )
+}]
+
+#At_most_16_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_24_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_16_hours )
+}]
+
+#At_most_24_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_3_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_24_hours )
+}]
+
+#At_most_3_working_days 
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_3_working_days  )
+}]
+
+
+#At_most_3_working_days 
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_4_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_3_working_days  )
+}]
+
+#At_most_4_working_days
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_5_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_4_working_days  )
+}]
+
+#At_most_5_working_days
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_7_working_days .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_5_working_days  )
+}]
+
+#At_most_7_working_days
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_120_hours .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_7_working_days  )
+}]
+
+
+#At_most_120_hours
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:At_most_1_month .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_120_hours  )
+}]
+
+#At_most_1_month
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_two_weeks .
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:At_most_1_month  )
+}]
+
+
+#Up_to_two_weeks
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness bpaas:Up_to_four_weeks .
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupportResponsiveness ?ssr.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ssr = bpaas:Up_to_two_weeks  )
 }]
 
 
 ##################################################
-# bpaas:cloudServiceHasBackupRetentionTime
+# ServiceSupport
+##################################################
+
+#Twenty4Seven
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:SevenDaysAWeek .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Sun .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Sat .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Fri .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Twenty4five .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:Twenty4Seven)
+}]
+
+#SevenDaysAWeek
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Sun .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Sat .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Fri .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Twenty4five .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:SevenDaysAWeek)
+}]
+
+#Mon-Sun
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Sat .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Fri .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Twenty4five .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:Mon-Sun)
+}]
+
+#Mon-Sat
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Mon-Fri .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Twenty4five .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:Mon-Sat)
+}]
+
+#Mon-Fri 
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:Twenty4five .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:Mon-Fri )
+}]
+
+#Twenty4five
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:EightThirtytToFive .
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:Twenty4five )
+}]
+
+#EightThirtytToFive
+[CONSTRUCT {
+
+	?cs bpaas:cloudServiceHasServiceSupport bpaas:NineToFive .
+
+} WHERE {
+	?cs bpaas:cloudServiceHasServiceSupport ?ss.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ss = bpaas:EightThirtytToFive )
+}]
+
+##################################################
+# ResponseTime_in_ms
 ##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_month .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_month .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_weeks .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_7_days .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_day .
+	?cs bpaas:cloudServiceHasResponseTime_in_ms questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasResponseTime_in_ms ?ms.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ms != "0"^^xsd:float && ?ms != 0)
+	
 }]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasResponseTime_in_ms questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasResponseTime_in_ms ?ms.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ms = "0"^^xsd:float && ?ms = 0)
+	
+}]
+
+##################################################
+# SimultaneousUsers
+##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_month .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_month .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_weeks .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_7_days .
+	?cs bpaas:cloudServiceHasSimultaneousUsers questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasSimultaneousUsers ?su.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?su != "0"^^xsd:float && ?su != 0)
+	
 }]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasSimultaneousUsers questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasResponseTime_in_ms ?su.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?su = "0"^^xsd:float && ?su = 0)
+	
+}]
+
+##################################################
+# AccessLogRetentionPeriodInMonths
+##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_month .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_month .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_weeks .
+	?cs bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet != "0"^^xsd:float && ?logRet != 0)
+	
 }]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet = "0"^^xsd:float && ?logRet = 0)
+	
+}]
+
+##################################################
+# AccessLogRetentionPeriodInMonths
+##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_month .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_month .
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet != "0"^^xsd:float && ?logRet != 0)
+	
 }]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet = "0"^^xsd:float && ?logRet = 0)
+	
+}]
+
+##################################################
+# AuditLogAvailabilityInMonth
+##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_2_month .
+	?cs bpaas:cloudServiceHasAuditLogAvailabilityInMonth questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasAuditLogAvailabilityInMonth ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet != "0"^^xsd:float && ?logRet != 0)
+	
 }]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasAuditLogAvailabilityInMonth questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasAuditLogAvailabilityInMonth ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet = "0"^^xsd:float && ?logRet = 0)
+	
+}]
+
+
+##################################################
+# AuditLogRetentionPeriodInMonths
+##################################################
 
 [CONSTRUCT {
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_1_year .
-}
-WHERE{
-	?cservice rdf:type bpaas:CloudService .
-	?cservice bpaas:cloudServiceHasBackupRetentionTime bpaas:up_to_half_year .
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet != "0"^^xsd:float && ?logRet != 0)
+	
+}]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?logRet = "0"^^xsd:float && ?logRet = 0)
+	
 }]
 
 
+##################################################
+# dataStorageInGb
+##################################################
+
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasDataStorageInGB questionnaire:Yes .
+} WHERE {
+	?cs bpaas:cloudServiceHasDataStorageInGB ?logRet.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ds != "0"^^xsd:float && ?ds != 0)
+	
+}]
+[CONSTRUCT {
+	?cs bpaas:cloudServiceHasDataStorageInGB questionnaire:No .
+} WHERE {
+	?cs bpaas:cloudServiceHasDataStorageInGB ?ds.
+	?cs rdf:type bpaas:CloudService .
+
+	FILTER(?ds = "0"^^xsd:float && ?ds = 0)
+	
+}]
