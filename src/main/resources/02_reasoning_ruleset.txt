@@ -51,7 +51,7 @@
 	?cs rdf:type bpaas:CloudService .
 
 	FILTER(?loc != bpaas:Europe)
-	FILTER(?loc = bpaas:Finland  || ?loc = bpaas:The_Netherlands || ?loc = bpaas:Germany || ?loc = bpaas:Italy) || ?loc = bpaas:France || ?loc = bpaas:Austria || ?loc =  bpaas:Spain || ?loc = bpaas:Denmark )
+	FILTER(?loc = bpaas:Finland  || ?loc = bpaas:The_Netherlands || ?loc = bpaas:Germany || ?loc = bpaas:Italy || ?loc = bpaas:France || ?loc = bpaas:Austria || ?loc =  bpaas:Spain || ?loc = bpaas:Denmark )
 }]
 
 ##################################################
@@ -1311,7 +1311,7 @@ BIND ((100-?availability)/100*43200 AS ?downtime)
 	?cs rdf:type bpaas:CloudService .
 
 	FILTER(?loc != bpaas:Europe)
-	FILTER(?loc = bpaas:Finland  || ?loc = bpaas:The_Netherlands || ?loc = bpaas:Germany || ?loc = bpaas:Italy) || ?loc = bpaas:France || ?loc = bpaas:Austria || ?loc =  bpaas:Spain || ?loc = bpaas:Denmark )
+	FILTER(?loc = bpaas:Finland  || ?loc = bpaas:The_Netherlands || ?loc = bpaas:Germany || ?loc = bpaas:Italy || ?loc = bpaas:France || ?loc = bpaas:Austria || ?loc =  bpaas:Spain || ?loc = bpaas:Denmark )
 }]
 
 ##################################################
