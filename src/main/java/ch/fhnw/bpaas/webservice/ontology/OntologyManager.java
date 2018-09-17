@@ -206,11 +206,11 @@ public final class OntologyManager {
 			addNamespacesToQuery(queryStr);
 			Model tempModel = ModelFactory.createOntologyModel();
 			UpdateAction.parseExecute(queryStr.toString(), tempModel);
-			
+			printModel(tempModel, "Only insert.txt");
 			for (String rule : ruleSet) {
 				tempModel = performConstructRule(tempModel, new ParameterizedSparqlString(rule));	
 			}	
-		
+			printModel(tempModel, "Insert + Rules applied.txt");
 			DatasetAccessor da = DatasetAccessorFactory.createHTTP(DATAENDPOINT);
 			da.add(tempModel);
 			//da.putModel(tempModel);
