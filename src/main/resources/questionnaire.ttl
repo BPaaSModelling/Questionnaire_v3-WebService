@@ -37,6 +37,11 @@ questionnaire:AttributeHasQuestionRelation
   rdfs:label "AttributeHasQuestionRelation" ;
   rdfs:range questionnaire:Question ;
 .
+questionnaire:Availability
+  rdf:type owl:Class ;
+  rdfs:label "Availability" ;
+  rdfs:subClassOf questionnaire:Question ;
+.
 questionnaire:CloudServiceDomain
   rdf:type owl:Class ;
   rdfs:subClassOf questionnaire:Model ;
@@ -44,11 +49,6 @@ questionnaire:CloudServiceDomain
 questionnaire:CloudServiceElement
   rdf:type owl:Class ;
   rdfs:subClassOf questionnaire:Model ;
-.
-questionnaire:DataSecurity
-  rdf:type owl:Class ;
-  rdfs:label "Data Security" ;
-  rdfs:subClassOf questionnaire:Question ;
 .
 questionnaire:Equality
   rdf:type owl:Class ;
@@ -61,9 +61,13 @@ questionnaire:Equals
 .
 questionnaire:Functional
   rdf:type owl:Class ;
-  questionnaire:hasOrderNumberForVisualization 0 ;
   rdfs:label "Functional" ;
   rdfs:subClassOf questionnaire:Question ;
+.
+questionnaire:GeneralAnswers
+  rdf:type owl:Class ;
+  rdfs:label "General questions" ;
+  rdfs:subClassOf questionnaire:Answer ;
 .
 questionnaire:GreaterEqualsThan
   rdf:type questionnaire:Inequality ;
@@ -77,6 +81,11 @@ questionnaire:Inequality
   rdf:type owl:Class ;
   rdfs:label "Inequality" ;
   rdfs:subClassOf questionnaire:LogicalOperators ;
+.
+questionnaire:Interoperability
+  rdf:type owl:Class ;
+  rdfs:label "Interoperability" ;
+  rdfs:subClassOf questionnaire:Question ;
 .
 questionnaire:LessEqualsThan
   rdf:type questionnaire:Inequality ;
@@ -100,14 +109,17 @@ questionnaire:MultiSelection
   rdfs:label "MultiSelection" ;
   rdfs:subClassOf questionnaire:AnswerType ;
 .
+questionnaire:No
+  rdf:type questionnaire:GeneralAnswers ;
+  rdfs:label "No" ;
+.
 questionnaire:NotEqual
   rdf:type questionnaire:Inequality ;
   rdfs:label "not equal (!=)" ;
 .
-questionnaire:NotSortedYet
-  rdf:type owl:Class ;
-  rdfs:label "NotSortedYet" ;
-  rdfs:subClassOf questionnaire:Question ;
+questionnaire:Not_Specified
+  rdf:type questionnaire:GeneralAnswers ;
+  rdfs:label "Not important" ;
 .
 questionnaire:Payment
   rdf:type owl:Class ;
@@ -129,10 +141,20 @@ questionnaire:Questionnaire
   rdfs:label "Questionnaire" ;
   rdfs:subClassOf questionnaire:Model ;
 .
+questionnaire:Reliability
+  rdf:type owl:Class ;
+  rdfs:label "Reliability" ;
+  rdfs:subClassOf questionnaire:Question ;
+.
 questionnaire:SearchSelection
   rdf:type owl:Class ;
   rdfs:label "DrilldownSelection" ;
   rdfs:subClassOf questionnaire:AnswerType ;
+.
+questionnaire:Security
+  rdf:type owl:Class ;
+  rdfs:label "Security" ;
+  rdfs:subClassOf questionnaire:Question ;
 .
 questionnaire:ServiceSupport
   rdf:type owl:Class ;
@@ -154,6 +176,10 @@ questionnaire:ValueInsert
   rdfs:label "Value Insert" ;
   rdfs:subClassOf questionnaire:AnswerType ;
 .
+questionnaire:Yes
+  rdf:type questionnaire:GeneralAnswers ;
+  rdfs:label "Yes" ;
+.
 questionnaire:cloudServiceElementHasCloudServiceDomain
   rdf:type owl:ObjectProperty ;
   rdfs:domain questionnaire:CloudServiceElement ;
@@ -161,7 +187,8 @@ questionnaire:cloudServiceElementHasCloudServiceDomain
 .
 questionnaire:hasOrderNumberForVisualization
   rdf:type owl:DatatypeProperty ;
-  rdfs:label "Order Number" ;
+  rdfs:domain owl:Thing ;
+  rdfs:label "has order number for visualization" ;
   rdfs:range xsd:integer ;
 .
 questionnaire:questionHasAnnotationRelation
@@ -181,11 +208,6 @@ questionnaire:questionHasDomainAnswer
   rdfs:domain questionnaire:Question ;
   rdfs:label "questionHasDomainAnswer" ;
   rdfs:range owl:Class ;
-.
-questionnaire:questionHasRuleToApply
-  rdf:type owl:DatatypeProperty ;
-  rdfs:domain questionnaire:Question ;
-  rdfs:range xsd:string ;
 .
 questionnaire:questionIsAnswerdByAnswer
   rdf:type rdf:Property ;

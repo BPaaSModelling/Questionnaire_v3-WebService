@@ -1,4 +1,5 @@
 # baseURI: http://ikm-group.ch/archimeo/bpaas
+# imports: http://ikm-group.ch/archiMEO/questionnaire
 # imports: http://ikm-group.ch/archimeo
 # imports: http://ikm-group.ch/archimeo/apqc
 # imports: http://ikm-group.ch/archimeo/bmm
@@ -18,6 +19,7 @@
 @prefix media-types: <http://www.iana.org/assignments/media-types#> .
 @prefix nco: <http://ikm-group.ch/archiMEO/NCO#> .
 @prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix questionnaire: <http://ikm-group.ch/archiMEO/questionnaire#> .
 @prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
 @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
 @prefix sp: <http://spinrdf.org/sp#> .
@@ -31,6 +33,7 @@ apqc:AmericanProductivityAndQualityCenter
 .
 <http://ikm-group.ch/archimeo/bpaas>
   rdf:type owl:Ontology ;
+  owl:imports <http://ikm-group.ch/archiMEO/questionnaire> ;
   owl:imports <http://ikm-group.ch/archimeo> ;
   owl:imports <http://ikm-group.ch/archimeo/apqc> ;
   owl:imports <http://ikm-group.ch/archimeo/bmm> ;
@@ -45,27 +48,154 @@ bpaas:AES
   rdfs:label "AES" ;
 .
 bpaas:Africa
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Africa" ;
-  rdfs:subClassOf bpaas:Continent ;
+.
+bpaas:App_Developers
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "App Developers" ;
 .
 bpaas:ApplicationActivity
   rdf:type owl:Class ;
   rdfs:label "ApplicationActivity" ;
   rdfs:subClassOf archi:ApplicationService ;
 .
-bpaas:Archive_the_log_when_full
-  rdf:type bpaas:LogFileRetentionPolicy ;
-  rdfs:label "Archive the log when full" ;
-.
 bpaas:ArchivedData
   rdf:type owl:Class ;
   rdfs:subClassOf archi:DataObject ;
 .
 bpaas:Asia
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Asia" ;
-  rdfs:subClassOf bpaas:Continent ;
+.
+bpaas:At_most_120_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 220 ;
+  rdfs:label "at_most_120_hours" ;
+.
+bpaas:At_most_12_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 120 ;
+  rdfs:label "at_most_12_hours" ;
+.
+bpaas:At_most_13_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 130 ;
+  rdfs:label "At most 13 hours" ;
+.
+bpaas:At_most_15_minutes
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 10 ;
+  rdfs:label "at most 15 minutes" ;
+.
+bpaas:At_most_16_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 140 ;
+  rdfs:label "At most 16 hours" ;
+.
+bpaas:At_most_1_5_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 50 ;
+  rdfs:label "at_most_1_5_hours" ;
+.
+bpaas:At_most_1_hour
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 40 ;
+  rdfs:label "at_most_1_hours" ;
+.
+bpaas:At_most_1_month
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 270 ;
+  rdfs:label "At_most_1_month" ;
+.
+bpaas:At_most_1_working_day
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 160 ;
+  rdfs:label "at_most_1_working_day" ;
+.
+bpaas:At_most_24_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 150 ;
+  rdfs:label "At most 24 hours" ;
+.
+bpaas:At_most_2_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 60 ;
+  rdfs:label "At most 2 hours" ;
+.
+bpaas:At_most_2_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 180 ;
+  rdfs:label "At most 2 working days" ;
+.
+bpaas:At_most_30_minutes
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 20 ;
+  rdfs:label "30 minutes" ;
+.
+bpaas:At_most_30_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  rdfs:label "At most 30 working days" ;
+.
+bpaas:At_most_3_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 70 ;
+  rdfs:label "At most 3 hours" ;
+.
+bpaas:At_most_3_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 200 ;
+  rdfs:label "At most 3 working days" ;
+.
+bpaas:At_most_40_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 170 ;
+  rdfs:label "At most 40 hours" ;
+.
+bpaas:At_most_40_minutes
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 30 ;
+  rdfs:label "At most 40 minutes" ;
+.
+bpaas:At_most_4_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 80 ;
+  rdfs:label "At most 4 hours" ;
+.
+bpaas:At_most_4_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 210 ;
+  rdfs:label "At most 4 working days" ;
+.
+bpaas:At_most_50_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 190 ;
+  rdfs:label "At most 50 hours" ;
+.
+bpaas:At_most_5_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 90 ;
+  rdfs:label "At most 5 hours" ;
+.
+bpaas:At_most_5_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 230 ;
+  rdfs:label "At most 5 working days" ;
+.
+bpaas:At_most_6_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 100 ;
+  rdfs:label "At most 6 hours" ;
+.
+bpaas:At_most_7_working_days
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 240 ;
+  rdfs:label "At most 7 working days" ;
+.
+bpaas:At_most_8_hours
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 110 ;
+  rdfs:label "At most 8 hours" ;
 .
 bpaas:Auditing
   rdf:type owl:Class ;
@@ -73,9 +203,8 @@ bpaas:Auditing
   rdfs:subClassOf bpaas:SecurityService ;
 .
 bpaas:Austria
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Austria" ;
-  rdfs:subClassOf bpaas:Europe ;
 .
 bpaas:Authentication
   rdf:type owl:Class ;
@@ -91,11 +220,6 @@ bpaas:BPRhasDowntimePerMonthInMinutes
   rdf:type owl:DatatypeProperty ;
   rdfs:domain bpaas:BusinessProcessRequirement ;
   rdfs:range xsd:integer ;
-.
-bpaas:BPRhasMediaType
-  rdf:type owl:ObjectProperty ;
-  rdfs:domain bpaas:BusinessProcessRequirement ;
-  rdfs:range bpaas:MediaType ;
 .
 bpaas:BPRhasNumberOfProcessExecution
   rdf:type owl:DatatypeProperty ;
@@ -141,15 +265,9 @@ bpaas:BackupRetentionTime
   rdfs:label "bpaas:BackupRetentionTime" ;
   rdfs:subClassOf bpaas:BackupManagement ;
 .
-bpaas:Blowfish
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:High ;
-  rdfs:label "Blowfish" ;
-.
 bpaas:Brazil
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Brazil" ;
-  rdfs:subClassOf bpaas:SouthAmerica ;
 .
 bpaas:BusinessProcessAnnotationGroup
   rdf:type owl:Class ;
@@ -171,9 +289,8 @@ bpaas:Capacity
   rdfs:subClassOf bpaas:Performance ;
 .
 bpaas:China
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "China" ;
-  rdfs:subClassOf bpaas:Asia ;
 .
 bpaas:CloudBroker
   rdf:type owl:Class ;
@@ -192,29 +309,45 @@ bpaas:CloudService
   rdfs:label "CloudService" ;
   rdfs:subClassOf archi:ApplicationService ;
 .
+bpaas:CloudServiceHasMediaTypeImportExport
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain bpaas:CloudService ;
+  rdfs:range bpaas:MediaType ;
+.
 bpaas:ConsultingService
   rdf:type owl:Class ;
   rdfs:label "ConsultingService" ;
   rdfs:subClassOf archi:BusinessService ;
-.
-bpaas:Continent
-  rdf:type owl:Class ;
-  rdfs:label "Continent" ;
-  rdfs:subClassOf bpaas:PhysicalLocation ;
 .
 bpaas:ContractHasPaymentMethod
   rdf:type rdf:Property ;
   rdfs:domain archi:Contract ;
   rdfs:range xsd:string ;
 .
+bpaas:Csv
+  rdf:type bpaas:MediaType ;
+  bpaas:mediaTypeHasMinimumSizeInGB 0.4 ;
+  rdfs:label "csv" ;
+.
+bpaas:CultureArcheology
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Culture/Archeology" ;
+.
 bpaas:CustomizablePlan
   rdf:type bpaas:PaymentPlan ;
   rdfs:label "Customizable Plan" ;
 .
-bpaas:DES
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:Low ;
-  rdfs:label "DES" ;
+bpaas:DOC
+  rdf:type bpaas:MediaType ;
+  rdfs:label "DOC" ;
+.
+bpaas:DOCX
+  rdf:type bpaas:MediaType ;
+  rdfs:label "DOC" ;
+.
+bpaas:Daily
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "daily" ;
 .
 bpaas:DataManagement
   rdf:type owl:Class ;
@@ -225,17 +358,41 @@ bpaas:DataTransparency
   rdfs:label "DataTransparency" ;
   rdfs:subClassOf bpaas:PersonalDataProtection ;
 .
+bpaas:Defined_by_customer
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "defined by customer" ;
+.
+bpaas:Denmark
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "Denmark" ;
+.
+bpaas:Development_Agencies
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Development Agencies" ;
+.
 bpaas:Differential
   rdf:type bpaas:BackupManagement ;
-.
-bpaas:Do_not_overwrite_events
-  rdf:type bpaas:LogFileRetentionPolicy ;
-  rdfs:label "do not overwrite events" ;
 .
 bpaas:DocumentManagementSystem
   rdf:type owl:Class ;
   rdfs:label "cs a" ;
   rdfs:subClassOf bpaas:DataManagement ;
+.
+bpaas:EES
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "EES" ;
+.
+bpaas:EU-US_Privacy_Shield_agreement_locations
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "EU-US Privacy Shield agreement locations" ;
+.
+bpaas:Education
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Education" ;
+.
+bpaas:EightThirtytToFive
+  rdf:type bpaas:ServiceSupport ;
+  rdfs:label "8:30 - 17:00" ;
 .
 bpaas:EncryptionType
   rdf:type owl:Class ;
@@ -243,48 +400,115 @@ bpaas:EncryptionType
   rdfs:subClassOf bpaas:SecurityService ;
 .
 bpaas:Europe
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Europe" ;
-  rdfs:subClassOf bpaas:Continent ;
+.
+bpaas:European_Economic_Area_EEA
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "European Economic Area (EEA)" ;
+.
+bpaas:European_Union
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "European Union" ;
+.
+bpaas:Every_3_hours
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "every 3 hours" ;
+.
+bpaas:Excel
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Excel" ;
+.
+bpaas:FDA
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "FDA" ;
+.
+bpaas:FIPS
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "FIPS" ;
 .
 bpaas:File_System
   rdf:type bpaas:DocumentManagementSystem ;
   rdfs:label "Local (File system)" ;
+.
+bpaas:Finland
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "Finland" ;
+.
+bpaas:Five_years
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to a 5 years" ;
+.
+bpaas:Fixed_Subscription
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Fixed Subscription" ;
 .
 bpaas:FreeofCharge
   rdf:type bpaas:PaymentPlan ;
   rdfs:label "Free of Charge" ;
 .
 bpaas:French
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "French" ;
-  rdfs:subClassOf bpaas:Europe ;
-.
-bpaas:Friday
-  rdf:type eo:CalendarFriday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Friday" ;
 .
 bpaas:Full
   rdf:type bpaas:BackupManagement ;
 .
 bpaas:Germany
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Germany" ;
-  rdfs:subClassOf bpaas:Europe ;
 .
-bpaas:GrowingTeams
+bpaas:Government_Institutions
   rdf:type bpaas:TargetMarket ;
-  rdfs:label "Growing Teams" ;
+  rdfs:label "Government Institutions" ;
+.
+bpaas:HIPAA
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "HIPAA" ;
+.
+bpaas:HIPAA_and_HITECH
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "HIPAA and HITECH" ;
 .
 bpaas:HasReferencedSubBusinessProcess
   rdf:type owl:ObjectProperty ;
   rdfs:domain owl:Thing ;
   rdfs:range owl:Thing ;
 .
+bpaas:Health_Care
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Health Care" ;
+.
 bpaas:High
   rdf:type bpaas:RequirementLevel ;
   rdfs:label "high" ;
+.
+bpaas:Hourly
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "hourly" ;
+.
+bpaas:Html
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Html" ;
+.
+bpaas:IAAS
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "IAAS" ;
+.
+bpaas:IP_Filtering
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "IP Filtering" ;
+.
+bpaas:ISO27001
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "ISO:27001" ;
 .
 bpaas:ISO_IEC_29115
   rdf:type bpaas:LevelOfAssurance ;
@@ -295,22 +519,29 @@ bpaas:IdentityAssuranceFramework
 bpaas:Incremental
   rdf:type bpaas:BackupManagement ;
 .
-bpaas:Individuals
-  rdf:type bpaas:TargetMarket ;
-  rdfs:label "Individuals" ;
+bpaas:Initial_Base_Fee
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Initial Base Fee" ;
+.
+bpaas:Ipsec
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "Ipsec" ;
 .
 bpaas:Israel
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Israel" ;
-  rdfs:subClassOf bpaas:Asia ;
 .
 bpaas:Italy
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Italy" ;
-  rdfs:subClassOf bpaas:Europe ;
 .
 bpaas:JiraUIGroup
   rdf:type bpaas:WorkflowAnnotationGroup ;
+.
+bpaas:Justice_sector
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Justice sector" ;
 .
 bpaas:LevelOfAssurance
   rdf:type owl:Class ;
@@ -320,11 +551,6 @@ bpaas:LogFile
   rdf:type owl:Class ;
   rdfs:label "Log file" ;
   rdfs:subClassOf archi:DataObject ;
-.
-bpaas:LogFileRetentionPolicy
-  rdf:type owl:Class ;
-  rdfs:label "Log file retention policy" ;
-  rdfs:subClassOf bmm:BusinessPolicy ;
 .
 bpaas:Logging
   rdf:type owl:Class ;
@@ -342,9 +568,17 @@ bpaas:LoggingKeepsALogFile
   rdfs:label "Logging keeps ALog file" ;
   rdfs:range bpaas:LogFile ;
 .
+bpaas:Longer_than_1_year
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "longer than 1 year" ;
+.
 bpaas:Low
   rdf:type bpaas:RequirementLevel ;
   rdfs:label "low" ;
+.
+bpaas:Mail
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Mail" ;
 .
 bpaas:MediaType
   rdf:type owl:Class ;
@@ -363,17 +597,29 @@ bpaas:Mon-Sat
   rdf:type bpaas:ServiceSupport ;
   rdfs:label "Mon-Sat" ;
 .
-bpaas:Monday
-  rdf:type eo:CalendarMonday ;
+bpaas:Mon-Sun
   rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Monday" ;
+  rdfs:label "Mon-Sun" ;
+.
+bpaas:Monthly
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "monthly" ;
 .
 bpaas:MonthlyFee
   rdf:type bpaas:PaymentPlan ;
   rdfs:label "Monthly Fee" ;
 .
+bpaas:Mp3
+  rdf:type bpaas:MediaType ;
+  bpaas:mediaTypeHasMinimumSizeInGB 0.1 ;
+  rdfs:label "mp3" ;
+.
 bpaas:NIST_SP_800-63
   rdf:type bpaas:LevelOfAssurance ;
+.
+bpaas:NineToFive
+  rdf:type bpaas:ServiceSupport ;
+  rdfs:label "9am-5pm" ;
 .
 bpaas:NoPlan
   rdf:type bpaas:PaymentPlan ;
@@ -383,25 +629,45 @@ bpaas:NoTarget
   rdf:type bpaas:TargetMarket ;
   rdfs:label "No Target" ;
 .
-bpaas:None
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:Low ;
-  rdfs:label "None" ;
+bpaas:North_America
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "North America" ;
 .
-bpaas:NorthAmerica
-  rdf:type owl:Class ;
-  rdfs:label "NorthAmerica" ;
-  rdfs:subClassOf bpaas:Continent ;
+bpaas:Odf
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Odf" ;
+.
+bpaas:On_Site_Support
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "On site support" ;
 .
 bpaas:One-timePasswordDevice
   rdf:type bpaas:Authentication ;
 .
-bpaas:Overwrite_events_as_needed
-  rdf:type bpaas:LogFileRetentionPolicy ;
-  rdfs:label "Overwrite events as needed" ;
+bpaas:Online_Ticketing
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Online Ticketing" ;
+.
+bpaas:Other
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Other" ;
+.
+bpaas:PCI_DSS
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "PCI DSS" ;
+.
+bpaas:PSN
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "PSN" ;
 .
 bpaas:Password
   rdf:type bpaas:Authentication ;
+.
+bpaas:Pay-as-you-go
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Pay-as-you-go" ;
 .
 bpaas:PaymentPlan
   rdf:type owl:Class ;
@@ -412,6 +678,59 @@ bpaas:PaymentPlanHasTarget
   rdf:type owl:DatatypeProperty ;
   rdfs:range bpaas:TargetMarket ;
 .
+bpaas:Pdf
+  rdf:type bpaas:MediaType ;
+  bpaas:mediaTypeHasMinimumSizeInGB 0.02 ;
+  rdfs:label "pdf" ;
+.
+bpaas:Per-Item
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-Item" ;
+.
+bpaas:Per-day
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-day" ;
+.
+bpaas:Per-gigabyte
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per gigabyte" ;
+.
+bpaas:Per-hour
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-hour" ;
+.
+bpaas:Per-instance
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-instance" ;
+.
+bpaas:Per-licence
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-licence" ;
+.
+bpaas:Per-minute
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per minute" ;
+.
+bpaas:Per-month
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per Month" ;
+.
+bpaas:Per-terabyte
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-terabyte" ;
+.
+bpaas:Per-unit
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-unit" ;
+.
+bpaas:Per-user
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per-user" ;
+.
+bpaas:Per_transaction
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Per transaction" ;
+.
 bpaas:Performance
   rdf:type owl:Class ;
   rdfs:subClassOf bpaas:ServiceLevelObjective ;
@@ -420,13 +739,17 @@ bpaas:PersonalDataProtection
   rdf:type owl:Class ;
   rdfs:subClassOf bpaas:ServiceLevelObjective ;
 .
-bpaas:PhysicalLocation
-  rdf:type owl:Class ;
-  rdfs:label "PhysicalLocation" ;
-  rdfs:subClassOf owl:Thing ;
+bpaas:Phone
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Phone" ;
 .
 bpaas:Pin
   rdf:type bpaas:Authentication ;
+.
+bpaas:Ppt
+  rdf:type bpaas:MediaType ;
+  bpaas:mediaTypeHasMinimumSizeInGB 0.02 ;
+  rdfs:label "ppt" ;
 .
 bpaas:PrepaidAnnualPlan
   rdf:type bpaas:PaymentPlan ;
@@ -452,9 +775,22 @@ bpaas:PricingModel
   rdfs:label "Pricing Model" ;
   rdfs:subClassOf archi:BusinessObject ;
 .
+bpaas:Privacy_Shield
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "Privacy Shield" ;
+.
 bpaas:ProcessedData
   rdf:type owl:Class ;
   rdfs:subClassOf archi:DataObject ;
+.
+bpaas:Public_Sector
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Public Sector" ;
+.
+bpaas:Publishers
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Publishers" ;
 .
 bpaas:Raid0
   rdf:type bpaas:TypeOfRaid ;
@@ -501,10 +837,18 @@ bpaas:Raid60
   bpaas:typeOfRaidHasRequirementLevel bpaas:High ;
   rdfs:label "RAID 60" ;
 .
+bpaas:Rdf
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Rdf" ;
+.
 bpaas:RequirementLevel
   rdf:type owl:Class ;
   rdfs:label "RequirementLevel" ;
   rdfs:subClassOf eo:MotivationElement ;
+.
+bpaas:Resourcebasedpricing
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Resource based pricing " ;
 .
 bpaas:ResponseTime
   rdf:type owl:Class ;
@@ -512,18 +856,31 @@ bpaas:ResponseTime
   rdfs:subClassOf bpaas:Performance ;
 .
 bpaas:Romania
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Romania" ;
-  rdfs:subClassOf bpaas:Europe ;
 .
-bpaas:Saturday
-  rdf:type eo:CalendarSaturday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Saturday" ;
+bpaas:SHA256
+  rdf:type bpaas:EncryptionType ;
+  rdfs:label "SHA256" ;
 .
-bpaas:SchoolsAndUniversities
+bpaas:SOX
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "SOX" ;
+.
+bpaas:SSH
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "SSH" ;
+.
+bpaas:SSL
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "SSL (Secure Sockets Layer)" ;
+.
+bpaas:School_and_Universities
   rdf:type bpaas:TargetMarket ;
-  rdfs:label "Schools and Universities" ;
+  rdfs:label "School and Universities" ;
 .
 bpaas:SecurityIncidentManagement
   rdf:type owl:Class ;
@@ -556,40 +913,40 @@ bpaas:ServiceSupport
   rdfs:subClassOf archi:BusinessService ;
   rdfs:subClassOf bpaas:ServiceLevelObjective ;
 .
-bpaas:ServiceSupportChannel
-  rdf:type owl:Class ;
-  rdfs:label "Service support channel" ;
-  rdfs:subClassOf bpaas:ServiceSupport ;
-.
 bpaas:ServiceSupportResponsiveness
   rdf:type owl:Class ;
   rdfs:label "ServiceSupportResponsiveness" ;
   rdfs:subClassOf bpaas:ServiceLevelObjective ;
 .
-bpaas:Sha1
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
-  rdfs:label "SHA-1" ;
-.
-bpaas:Sha256
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:High ;
-  rdfs:label "SHA-256" ;
-.
-bpaas:SmallTeams
-  rdf:type bpaas:TargetMarket ;
-  rdfs:label "Small Teams" ;
+bpaas:SevenDaysAWeek
+  rdf:type bpaas:ServiceSupport ;
+  rdfs:label "7 days a week" ;
 .
 bpaas:SocialMediaExecutionGroup
   rdf:type bpaas:BusinessProcessAnnotationGroup ;
 .
+bpaas:Social_Care
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Social Care" ;
+.
+bpaas:Social_Media
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Social Media" ;
+.
+bpaas:Social_Sector
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Social_Sector" ;
+.
 bpaas:SoftCryptoToken
   rdf:type bpaas:Authentication ;
 .
-bpaas:SouthAmerica
-  rdf:type owl:Class ;
-  rdfs:label "SouthAmerica" ;
-  rdfs:subClassOf bpaas:Continent ;
+bpaas:South_America
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "South America" ;
+.
+bpaas:Spreadsheet
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Spreadsheet" ;
 .
 bpaas:StoragePeriodInMonths
   rdf:type owl:DatatypeProperty ;
@@ -599,66 +956,52 @@ bpaas:Storage_Service
   rdf:type bpaas:DocumentManagementSystem ;
   rdfs:label "Storage Service" ;
 .
-bpaas:StoredData
+bpaas:StoredDataLocation
   rdf:type owl:Class ;
   rdfs:subClassOf archi:DataObject ;
 .
-bpaas:Sunday
-  rdf:type eo:CalendarSunday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Sunday" ;
-.
-bpaas:SupportEmail
-  rdf:type bpaas:ServiceSupportChannel ;
-  rdfs:label "Support email" ;
-.
-bpaas:SupportFacebook
-  rdf:type bpaas:ServiceSupportChannel ;
-  rdfs:label "Support facebook" ;
-.
-bpaas:SupportForum
-  rdf:type bpaas:ServiceSupportChannel ;
-  rdfs:label "Support forum" ;
+bpaas:SupportChannel
+  rdf:type owl:Class ;
+  rdfs:label "Support Channel" ;
+  rdfs:subClassOf owl:Thing ;
 .
 bpaas:SupportServiceHasServiceSupportPeriod
   rdf:type owl:ObjectProperty ;
 .
-bpaas:SupportTelephone
-  rdf:type bpaas:ServiceSupportChannel ;
-  rdfs:label "Support telephone" ;
-.
 bpaas:Switzerland
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "Switzerland" ;
-  rdfs:subClassOf bpaas:Europe ;
+.
+bpaas:TLS
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "TLS" ;
+.
+bpaas:TLS_VPN
+  rdf:type bpaas:EncryptionType ;
+  bpaas:encryptionTypeHasRequirementLevel bpaas:Medium ;
+  rdfs:label "TLS VPN" ;
 .
 bpaas:TargetMarket
   rdf:type owl:Class ;
   rdfs:label "Target Market" ;
   rdfs:subClassOf archi:BusinessRole ;
 .
-bpaas:ThreeDES
-  rdf:type bpaas:EncryptionType ;
-  bpaas:encryptionTypeHasRequirementLevel bpaas:Low ;
-  rdfs:label "3DES" ;
-.
-bpaas:Thursday
-  rdf:type eo:CalendarThursday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Thursday" ;
+bpaas:The_Netherlands
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "The Netherlands" ;
 .
 bpaas:TryFreeFirst
   rdf:type bpaas:PaymentPlan ;
   rdfs:label "Try Free First" ;
 .
-bpaas:Tuesday
-  rdf:type eo:CalendarTuesday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Tuesday" ;
-.
 bpaas:Twenty4Seven
   rdf:type bpaas:ServiceSupport ;
   rdfs:label "24-7" ;
+.
+bpaas:Twenty4five
+  rdf:type bpaas:ServiceSupport ;
+  rdfs:label "24-5" ;
 .
 bpaas:TypeOfRaid
   rdf:type owl:Class ;
@@ -666,12 +1009,62 @@ bpaas:TypeOfRaid
   rdfs:subClassOf bpaas:SecurityService ;
 .
 bpaas:USA
-  rdf:type owl:Class ;
+  rdf:type bpaas:StoredDataLocation ;
   rdfs:label "USA" ;
-  rdfs:subClassOf bpaas:NorthAmerica ;
+.
+bpaas:United_Kingdom
+  rdf:type bpaas:StoredDataLocation ;
+  rdfs:label "United Kingdom" ;
+.
+bpaas:Up_to_1_day
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to 1 day" ;
+.
+bpaas:Up_to_1_month
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to 1 month" ;
+.
+bpaas:Up_to_1_week
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to 1 week" ;
+.
+bpaas:Up_to_1_year
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to 1 year" ;
+.
+bpaas:Up_to_2_month
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "Up_to_2_month" ;
+.
+bpaas:Up_to_2_weeks
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to 1 week" ;
+  rdfs:label "up to 2 weeks" ;
+.
+bpaas:Up_to_6_months
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "up to a 6 months" ;
+.
+bpaas:Up_to_four_weeks
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 250 ;
+  rdfs:label "Up to four weeks " ;
+.
+bpaas:Up_to_two_weeks
+  rdf:type bpaas:ServiceSupportResponsiveness ;
+  questionnaire:hasOrderNumberForVisualization 260 ;
+  rdfs:label "Up to two weeks" ;
 .
 bpaas:UserInterfaceGroup
   rdf:type bpaas:BusinessProcessAnnotationGroup ;
+.
+bpaas:Utility
+  rdf:type bpaas:PaymentPlan ;
+  rdfs:label "Utility" ;
+.
+bpaas:VOX
+  rdf:type bpaas:MediaType ;
+  rdfs:label "VOX" ;
 .
 bpaas:Video_mp4
   rdf:type bpaas:MediaType ;
@@ -713,14 +1106,17 @@ bpaas:WFDhasTypeOfRaid
   rdfs:domain bpaas:WorkflowDescription ;
   rdfs:range bpaas:TypeOfRaid ;
 .
-bpaas:Wednesday
-  rdf:type eo:CalendarWednesday ;
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Wednesday" ;
+bpaas:Web-Developers
+  rdf:type bpaas:TargetMarket ;
+  rdfs:label "Web-Developers" ;
 .
-bpaas:Weekend
-  rdf:type bpaas:ServiceSupport ;
-  rdfs:label "Weekend" ;
+bpaas:Web-support
+  rdf:type bpaas:SupportChannel ;
+  rdfs:label "Web-support" ;
+.
+bpaas:Weekly
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "weekly" ;
 .
 bpaas:Workflow
   rdf:type owl:Class ;
@@ -742,20 +1138,24 @@ bpaas:WorkflowTask
   rdfs:label "ApplicationActivity" ;
   rdfs:subClassOf bpaas:ApplicationActivity ;
 .
+bpaas:XLS
+  rdf:type bpaas:MediaType ;
+  rdfs:label "XLS" ;
+.
+bpaas:Xml
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Xml" ;
+.
+bpaas:Yearly
+  rdf:type bpaas:BackupFrequency ;
+  rdfs:label "yearly" ;
+.
 bpaas:ZapierOneShotGroup
   rdf:type bpaas:WorkflowAnnotationGroup ;
 .
-bpaas:at_most_1_working_day
-  rdf:type bpaas:ServiceSupportResponsiveness ;
-  rdfs:label "at_most_1_working_day" ;
-.
-bpaas:at_most_2_hours
-  rdf:type bpaas:ServiceSupportResponsiveness ;
-  rdfs:label "at_most_2_hours" ;
-.
-bpaas:at_most_4_hours
-  rdf:type bpaas:ServiceSupportResponsiveness ;
-  rdfs:label "at_most_4_hours" ;
+bpaas:Zipped_EML
+  rdf:type bpaas:MediaType ;
+  rdfs:label "Zipped EML" ;
 .
 bpaas:auditingIncludesApplicableCertifications
   rdf:type owl:DatatypeProperty ;
@@ -898,10 +1298,11 @@ bpaas:cloudConsumerIsPartOfTargetMarket
   rdfs:domain bpaas:CloudConsumer ;
   rdfs:range bpaas:TargetMarket ;
 .
-bpaas:cloudServiceHandlesData
+bpaas:cloudServiceHasAPI
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
-  rdfs:range archi:DataObject ;
+  rdfs:label "Cloud service Has api integration" ;
+  rdfs:range questionnaire:GeneralAnswers ;
 .
 bpaas:cloudServiceHasAPQC
   rdf:type owl:ObjectProperty ;
@@ -920,12 +1321,6 @@ bpaas:cloudServiceHasAccessLogRetentionPeriodInMonths
   rdfs:label "cloud service has access log retention period in months" ;
   rdfs:range xsd:integer ;
 .
-bpaas:cloudServiceHasAccessLogRetentionPolicies
-  rdf:type owl:ObjectProperty ;
-  rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloud service has access log retention policies" ;
-  rdfs:range bpaas:LogFileRetentionPolicy ;
-.
 bpaas:cloudServiceHasAction
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
@@ -938,17 +1333,17 @@ bpaas:cloudServiceHasAuditLogAvailabilityInMonth
   rdfs:label "cloudServiceHasAuditLogAvailabilityInMonth" ;
   rdfs:range xsd:integer ;
 .
-bpaas:cloudServiceHasAuditLogRetentionPeriodInMonths
+bpaas:cloudServiceHasAuditLogRetentionAvailabilityInMonth
   rdf:type owl:DatatypeProperty ;
   rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloud service has audit log retention period in months" ;
+  rdfs:label "cloudServiceHasAuditLogRetentionAvailabilityInMonth" ;
   rdfs:range xsd:integer ;
 .
-bpaas:cloudServiceHasAuditLogRetentionPolicies
+bpaas:cloudServiceHasAutomatedPasswordManagement
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloud service has audit log retention policies" ;
-  rdfs:range bpaas:LogFileRetentionPolicy ;
+  rdfs:label "Cloud service Has Automated Password Management system" ;
+  rdfs:range questionnaire:GeneralAnswers ;
 .
 bpaas:cloudServiceHasAvailabilityInPercent
   rdf:type owl:DatatypeProperty ;
@@ -961,20 +1356,19 @@ bpaas:cloudServiceHasBackupFrequency
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:label "Backup Frequency" ;
-  rdfs:label "CloudServiceHasDescription" ;
   rdfs:range bpaas:BackupFrequency ;
-.
-bpaas:cloudServiceHasBackupRestoreInGBPerHour
-  rdf:type owl:DatatypeProperty ;
-  rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloudServiceHasBackupRestoreInGBPerHour" ;
-  rdfs:range xsd:integer ;
 .
 bpaas:cloudServiceHasBackupRetentionTime
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:label "bpaas:cloudServiceHasBackupRetentionTime" ;
   rdfs:range bpaas:BackupRetentionTime ;
+.
+bpaas:cloudServiceHasDataMigration
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain bpaas:CloudService ;
+  rdfs:label "Cloud service Has data migration can be performed independently from the provider" ;
+  rdfs:range questionnaire:GeneralAnswers ;
 .
 bpaas:cloudServiceHasDataStorageInGB
   rdf:type owl:DatatypeProperty ;
@@ -989,21 +1383,21 @@ bpaas:cloudServiceHasDescription
   rdfs:label "cloudServiceHasDescription" ;
   rdfs:range xsd:string ;
 .
-bpaas:cloudServiceHasDocumentManagementSystem
+bpaas:cloudServiceHasEncryptionLevel
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
-  rdfs:range bpaas:DocumentManagementSystem ;
+  rdfs:range bpaas:RequirementLevel ;
 .
 bpaas:cloudServiceHasEncryptionType
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:range bpaas:EncryptionType ;
 .
-bpaas:cloudServiceHasExecutionCapacity
-  rdf:type rdf:Property ;
+bpaas:cloudServiceHasMonthlyDowntimeInMinute
+  rdf:type owl:DatatypeProperty ;
   rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloudServiceHasExecutionCapacity" ;
-  rdfs:range xsd:integer ;
+  rdfs:label "HasMonthlyDowntimeInMinute" ;
+  rdfs:range xsd:float ;
 .
 bpaas:cloudServiceHasObject
   rdf:type owl:ObjectProperty ;
@@ -1021,16 +1415,22 @@ bpaas:cloudServiceHasPhysicalID
   rdfs:domain bpaas:CloudService ;
   rdfs:range xsd:string ;
 .
-bpaas:cloudServiceHasProcessedDataLocation
-  rdf:type owl:ObjectProperty ;
-  rdfs:domain bpaas:CloudService ;
-  rdfs:label "cloudServiceHasProcessedDataLocation" ;
-  rdfs:range bpaas:PhysicalLocation ;
-.
 bpaas:cloudServiceHasResponseTime_in_ms
   rdf:type owl:DatatypeProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:range xsd:integer ;
+.
+bpaas:cloudServiceHasScalableProcessingPower
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain bpaas:CloudService ;
+  rdfs:label "Cloud service Has scalable ProcessingPower" ;
+  rdfs:range questionnaire:GeneralAnswers ;
+.
+bpaas:cloudServiceHasScalableStorage
+  rdf:type owl:ObjectProperty ;
+  rdfs:domain bpaas:CloudService ;
+  rdfs:label "Cloud service Has Scalable Storage" ;
+  rdfs:range questionnaire:GeneralAnswers ;
 .
 bpaas:cloudServiceHasServiceSupport
   rdf:type owl:ObjectProperty ;
@@ -1052,13 +1452,13 @@ bpaas:cloudServiceHasStoredDataLocation
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:label "cloudServiceHasStoredDataLocation" ;
-  rdfs:range bpaas:PhysicalLocation ;
+  rdfs:range bpaas:StoredDataLocation ;
 .
 bpaas:cloudServiceHasSupportChannel
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:CloudService ;
   rdfs:label "cloud service has support channel" ;
-  rdfs:range bpaas:ServiceSupportChannel ;
+  rdfs:range bpaas:SupportChannel ;
 .
 bpaas:cloudServiceHasTargetMarket
   rdf:type owl:ObjectProperty ;
@@ -1069,10 +1469,6 @@ bpaas:contractIncludesPricingModel
   rdf:type owl:ObjectProperty ;
   rdfs:domain archi:Contract ;
   rdfs:range bpaas:PricingModel ;
-.
-bpaas:daily
-  rdf:type bpaas:BackupFrequency ;
-  rdfs:label "daily" ;
 .
 bpaas:dataProcessingHasLocation
   rdf:type owl:ObjectProperty ;
@@ -1165,14 +1561,9 @@ bpaas:mediaTypeHasMinimumSizeInGB
   rdfs:label "MediaType" ;
   rdfs:range xsd:decimal ;
 .
-bpaas:monthly
+bpaas:not_specified
   rdf:type bpaas:BackupFrequency ;
-  rdfs:label "monthly" ;
-.
-bpaas:mp3
-  rdf:type bpaas:MediaType ;
-  bpaas:mediaTypeHasMinimumSizeInGB 0.1 ;
-  rdfs:label "mp3" ;
+  rdfs:label "not specified" ;
 .
 bpaas:obtainsService
   rdf:type owl:ObjectProperty ;
@@ -1195,20 +1586,10 @@ bpaas:paymentPlanHasPaymentType
   rdfs:domain bpaas:PaymentPlan ;
   rdfs:range xsd:string ;
 .
-bpaas:pdf
-  rdf:type bpaas:MediaType ;
-  bpaas:mediaTypeHasMinimumSizeInGB 0.02 ;
-  rdfs:label "pdf" ;
-.
 bpaas:performanceHasLevel
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:Performance ;
   rdfs:range bpaas:RequirementLevel ;
-.
-bpaas:ppt
-  rdf:type bpaas:MediaType ;
-  bpaas:mediaTypeHasMinimumSizeInGB 0.02 ;
-  rdfs:label "ppt" ;
 .
 bpaas:refersToALocation
   rdf:type owl:ObjectProperty ;
@@ -1283,38 +1664,14 @@ bpaas:totalHoursOfServiceSupport
   rdf:type owl:DatatypeProperty ;
   rdfs:range xsd:integer ;
 .
+bpaas:twenty8_days
+  rdf:type bpaas:BackupRetentionTime ;
+  rdfs:label "28 days" ;
+.
 bpaas:typeOfRaidHasRequirementLevel
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:TypeOfRaid ;
   rdfs:range bpaas:RequirementLevel ;
-.
-bpaas:up_to_1_day
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 1 day" ;
-.
-bpaas:up_to_1_month
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 1 month" ;
-.
-bpaas:up_to_1_year
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 1 year" ;
-.
-bpaas:up_to_2_month
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 2 month" ;
-.
-bpaas:up_to_2_weeks
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 2 weeks" ;
-.
-bpaas:up_to_7_days
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to 7 days" ;
-.
-bpaas:up_to_half_year
-  rdf:type bpaas:BackupRetentionTime ;
-  rdfs:label "up to a half year" ;
 .
 bpaas:vulnerabilityManagementHasPercentageOfTimelyVulnerabilityCorrections
   rdf:type owl:DatatypeProperty ;
@@ -1331,10 +1688,6 @@ bpaas:vunerabilityManagementHasPercentageOfTimelyVulnerabilityReports
   rdfs:domain bpaas:VulnerabilityManagement ;
   rdfs:range xsd:decimal ;
 .
-bpaas:weekly
-  rdf:type bpaas:BackupFrequency ;
-  rdfs:label "weekly" ;
-.
 bpaas:workflowAnnotationGroupRefersToWorkflowDescription
   rdf:type owl:ObjectProperty ;
   rdfs:domain bpaas:WorkflowAnnotationGroup ;
@@ -1344,7 +1697,15 @@ bpaas:workflowHasWorkflowDescription
   rdfs:domain bpaas:Workflow ;
   rdfs:range bpaas:WorkflowDescription ;
 .
-bpaas:yearly
-  rdf:type bpaas:BackupFrequency ;
-  rdfs:label "yearly" ;
+fbpdo:Collaborate
+  rdf:type owl:Class ;
+  rdfs:label "Collaborate" ;
+  rdfs:subClassOf fbpdo:Action ;
+.
+fbpdo:fbpdo_Action-label-
+  rdf:type rdf:Statement ;
+  rdf:object "Action" ;
+  rdf:predicate rdfs:label ;
+  rdf:subject fbpdo:Action ;
+  rdfs:label "Collaborate" ;
 .
